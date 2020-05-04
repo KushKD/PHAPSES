@@ -19,6 +19,7 @@ import com.doi.himachal.epasshp.R;
 import com.doi.himachal.lazyloader.ImageLoader;
 import com.doi.himachal.presentation.CustomDialog;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 /**
@@ -103,6 +104,16 @@ public class HomeGridViewAdapter extends BaseAdapter {
                     CD.showDialog((Activity) c, Integer.toString(DB.getNoOfRowsCount()));
 
                 }
+                if (s.getName().equalsIgnoreCase("Search Pass")) {
+                    try {
+                        CD.showDialogSearchByPassId((Activity) c);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    //TODO
+
+                }
+
 
 
             }

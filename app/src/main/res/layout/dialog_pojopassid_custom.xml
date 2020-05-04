@@ -1,0 +1,377 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/customborder_dialog">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:id="@+id/a"
+        android:gravity="center"
+
+        android:src="@drawable/searchpass"
+        android:background="@color/darkblue"
+        android:padding="10dp"
+        android:scaleType="fitCenter" />
+
+    <!--android:src="@drawable/dialog_cross"-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search Via Pass Number"
+        android:id="@+id/name"
+        android:layout_below="@+id/a"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="22sp"
+        android:textColor="@color/blue"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal" />
+
+
+
+    <LinearLayout
+        android:id="@+id/layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name"
+        android:orientation="vertical">
+
+        <!--android:minWidth="300dp"-->
+        <!--android:minHeight="400dp"-->
+
+
+
+
+        <!-- Brief -->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="#fff"
+            android:id="@+id/brief"
+            android:elevation="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="Pass Number "
+                android:textColor="@color/darkblue" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:text="HP- "
+                android:textColor="@color/darkblue" />
+
+            <EditText
+                android:id="@+id/passnumber"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:textStyle="bold"
+
+                android:background="@drawable/customborder_dialog"
+                android:layout_weight="1"
+                android:padding="5dp"/>
+
+        </LinearLayout>
+
+        <!-- Hindi -->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:id="@+id/hindi"
+            android:background="#fff"
+            android:visibility="gone"
+            android:elevation="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="Vehicle Number"
+                android:textColor="@color/darkblue" />
+
+            <TextView
+                android:id="@+id/vehiclenumber"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+               
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="View" />
+
+        </LinearLayout>
+
+        <!-- English -->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:visibility="gone"
+            android:background="#fff"
+            android:id="@+id/english"
+            android:elevation="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="Mobile Number"
+                android:textColor="@color/darkblue" />
+
+            <TextView
+                android:id="@+id/mobile"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="View" />
+
+        </LinearLayout>
+
+        <!-- Nothing -->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="2dp"
+            android:background="#fff"
+            android:visibility="gone"
+            android:id="@+id/nothing"
+            android:elevation="4dp"
+            android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center|center_vertical|center_horizontal"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:text="Pass Valid Date"
+            android:textColor="@color/darkblue" />
+
+        <TextView
+            android:id="@+id/dateissue"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center|center_vertical|center_horizontal"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:text="View" />
+        </LinearLayout>
+
+        <!-- Nothing -->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="2dp"
+            android:background="#fff"
+            android:elevation="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="District"
+                android:textColor="@color/darkblue" />
+
+            <TextView
+                android:id="@+id/district"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="View" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="2dp"
+            android:background="#fff"
+            android:elevation="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="Barrier"
+                android:textColor="@color/darkblue" />
+
+            <TextView
+                android:id="@+id/barrier"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="View" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="2dp"
+            android:background="#fff"
+            android:elevation="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="Date of Scan"
+                android:textColor="@color/darkblue" />
+
+            <TextView
+                android:id="@+id/datescan"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:padding="5dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="2dp"
+            android:background="#fff"
+            android:elevation="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="Time of Scan"
+                android:textColor="@color/darkblue" />
+
+            <TextView
+                android:id="@+id/timescan"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:padding="5dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="2dp"
+            android:background="#fff"
+            android:elevation="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="No. of Persons"
+                android:textColor="@color/darkblue" />
+
+            <EditText
+                android:id="@+id/number_of_passengers"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:inputType="number"
+                android:maxLength="1"
+                android:textStyle="bold"
+                android:background="@drawable/customborder_dialog"
+                android:layout_weight="1"
+                android:padding="5dp" />
+        </LinearLayout>
+
+
+
+
+
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/dialog_ok"
+        android:layout_width="match_parent"
+        android:layout_margin="5dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/layout"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/cancel"
+            android:layout_centerHorizontal="true"
+            android:background="@color/darkblue"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="Cancel"
+            android:layout_marginRight="2dp"
+            android:textColor="#ffffffff"
+            android:layout_weight="1"/>
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/proceed"
+            android:layout_centerHorizontal="true"
+            android:background="@color/green"
+            android:layout_marginLeft="2dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="Verify"
+            android:textColor="#ffffffff"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <!--android:background="@drawable/btn_flat_red_selector"-->
+
+</RelativeLayout>

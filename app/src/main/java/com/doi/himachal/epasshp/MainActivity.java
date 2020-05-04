@@ -103,13 +103,19 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
 
         ModulesPojo mp2 = new ModulesPojo();
         mp2.setId("2");
-        mp2.setName("Total Scanned Passes");
-        mp2.setLogo("history");
+        mp2.setName("Search Pass");
+        mp2.setLogo("searchpass");
+
+        ModulesPojo mp3 = new ModulesPojo();
+        mp3.setId("2");
+        mp3.setName("Total Scanned Passes");
+        mp3.setLogo("history");
 
 
 
         modules.add(mp);
         modules.add(mp2);
+        modules.add(mp3);
 
         adapter_modules = new HomeGridViewAdapter(this, (ArrayList<ModulesPojo>) modules);
         home_gv.setAdapter(adapter_modules);
@@ -171,6 +177,34 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
                     }
 
                 }
+                else if (intent.getAction() == "UploadServerManual") {
+                    //SCAN_DATA
+                    Log.e("We are Here 2",intent.getAction());
+
+                    if(AppStatus.getInstance(MainActivity.this).isOnline()){
+                        Bundle extras = intent.getExtras();
+                        ScanDataPojo data = (ScanDataPojo) extras.getSerializable("SCAN_DATA");
+
+
+                        //TODO Update LAT LONG
+                        data = updateLocation(data);
+                        Log.e("UploadServerManual",data.toString());
+                        UploadObject object = new UploadObject();
+                        object.setUrl("http://covid19epass.hp.gov.in/api/v1/savebarrierdata");
+                        object.setTasktype(TaskType.UPLOAD_SCANNED_PASS);
+                        object.setMethordName("savebarrierdata");
+                        object.setScanDataPojo(data);
+
+                        new GenericAsyncPostObject(
+                                MainActivity.this,
+                                MainActivity.this,
+                                TaskType.UPLOAD_SCANNED_PASS).
+                                execute(object);
+                    }else{
+                        CD.showDialog(MainActivity.this,"Please Connect to Internet and try again.");
+                    }
+
+                }
                 else if(intent.getAction() == "verifyData"){
 
                         //SCAN_DATA
@@ -204,6 +238,23 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
         };
 
 
+    }
+
+    private ScanDataPojo updateLocation(ScanDataPojo scanData) {
+        if(!userLocation.isEmpty()){
+            try{
+                String [] locations = userLocation.split(",");
+                scanData.setLatitude(locations[0]);
+                scanData.setLongitude(locations[1]);
+            }catch (Exception ex){
+                CD.showDialog(MainActivity.this,"Unable to get the Location.");
+            }
+        }else{
+            scanData.setLatitude("0");
+            scanData.setLongitude("0");
+        }
+
+        return scanData;
     }
 
     @Override
@@ -303,6 +354,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
         super.onResume();
         registerReceiver(mReceiver, new IntentFilter("UploadServer"));
         registerReceiver(mReceiver, new IntentFilter("verifyData"));
+        registerReceiver(mReceiver, new IntentFilter("UploadServerManual"));
         if (getLocationManager().isWaitingForLocation()
                 && !getLocationManager().isAnyDialogShowing()) {
             displayProgress();
@@ -388,12 +440,16 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
              }else{
                  //TODO PArse Json Response
                 // Toast.makeText(MainActivity.this, "Data Stored Locally", Toast.LENGTH_SHORT).show();
-                 SuccessResponse response =  JsonParse.getSuccessResponse(result.getResponse());
-                 if(response.getStatus().equalsIgnoreCase("200")){
-                     CD.showDialogHTML(MainActivity.this,response.getResponse(), response.getMessage());
-                 }else{
-                     CD.showDialog(MainActivity.this,response.getResponse());
-                 }
+                try{
+                    SuccessResponse response =  JsonParse.getSuccessResponse(result.getResponse());
+                    if(response.getStatus().equalsIgnoreCase("200")){
+                        CD.showDialogHTML(MainActivity.this,response.getResponse(), response.getMessage());
+                    }else{
+                        CD.showDialog(MainActivity.this,response.getResponse());
+                    }
+                }catch (Exception ex){
+                    CD.showDialog(MainActivity.this,result.getResponse());
+                }
 
              }
 

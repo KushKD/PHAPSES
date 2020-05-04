@@ -68,7 +68,7 @@ public class HttpManager {
                     .key("longititute").value(data.getScanDataPojo().getLongitude())
                     .key("pass_id").value(data.getScanDataPojo().getPassNo())
                     .key("scanned_date_time").value(data.getScanDataPojo().getScanDate())
-                    .key("mobile_information").value("")
+                    .key("mobile_information").value(data.getScanDataPojo().getScannedByPhoneNumber())
                     .key("other_information").value(data.getScanDataPojo().getNumber_of_passengers_manual())
 
 
