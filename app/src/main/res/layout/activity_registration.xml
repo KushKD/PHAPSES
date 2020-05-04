@@ -1,0 +1,188 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:gravity="center_vertical|center_horizontal"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical|center_horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:paddingTop="10dp"
+                android:paddingLeft="40dp"
+                android:id="@+id/imageView1"
+                android:src="@drawable/epass_splash"
+                android:layout_width="100dp"
+                android:layout_height="100dp"/>
+
+
+            <TextView
+                android:paddingTop="10dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25dp"
+                android:textColor="@color/darkblue"
+                android:textStyle="bold"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_toEndOf="@+id/imageView1"
+                android:layout_toRightOf="@+id/imageView1"
+                android:gravity="center_vertical"
+                android:onClick="bugAndLuggage"
+                android:text="Login"
+                android:paddingLeft="10dp"/>
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.7"
+        android:padding="10dp"
+        android:background="@drawable/customborder_dialog"
+        android:gravity="center_vertical|center_horizontal">
+
+        <ProgressBar
+            android:id="@+id/login_progress"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <ScrollView
+            android:id="@+id/login_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/email_login_form"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:paddingTop="10dp"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="15dp"
+                        android:fontFamily="@font/raleway_semibold"
+                        android:textColor="@color/darkblue"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_toEndOf="@+id/imageView1"
+                        android:layout_toRightOf="@+id/imageView1"
+                        android:gravity="center_vertical"
+
+                        android:text="Select District "
+                        android:paddingLeft="10dp"/>
+                    <com.doi.spinnersearchable.SearchableSpinner
+                        android:id="@+id/sp_district"
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_margin="10dp"
+                        android:fontFamily="@font/raleway_semibold"
+                        android:textColor="@color/blue"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:paddingTop="10dp"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="15dp"
+                        android:fontFamily="@font/raleway_semibold"
+                        android:textColor="@color/darkblue"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_toEndOf="@+id/imageView1"
+                        android:layout_toRightOf="@+id/imageView1"
+                        android:gravity="center_vertical"
+
+                        android:text="Select Barrier "
+                        android:paddingLeft="10dp"/>
+
+                    <com.doi.spinnersearchable.SearchableSpinner
+                        android:id="@+id/sp_barrier"
+                        android:layout_margin="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent"
+                        android:fontFamily="@font/raleway_semibold"
+                        android:textColor="@color/blue"
+                        android:layout_weight="1" />
+
+
+
+
+                    <EditText
+                        android:id="@+id/phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:hint="Phone Number"
+                        android:imeActionLabel="Phone Number"
+                        android:imeOptions="actionUnspecified"
+                        android:maxLines="1"
+                        android:textSize="15sp"
+                        android:inputType="number"
+                        android:maxLength="10"
+                        android:singleLine="true"
+                        android:textColor="@color/darkblue"
+                        android:textColorHint="@color/darkblue" />
+
+
+                    <Button
+                        android:id="@+id/register"
+                        style="?android:textAppearanceSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@color/darkblue"
+                        android:text="Sign In"
+                        android:textColor="@color/white"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.2"
+        android:gravity="bottom|center_horizontal">
+
+        <TextView
+            android:id="@+id/signUpTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:visibility="gone"
+            android:gravity="center|center_horizontal|center_vertical"
+            android:layout_weight="1.1"
+            android:text="Register Yourself"
+            android:textColor="#ffffffff" />
+    </LinearLayout>
+</LinearLayout>

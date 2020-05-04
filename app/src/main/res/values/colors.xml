@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#366988</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="dark_grey">#292929</color>
+    <color name="white">#FFFFFF</color>
+    <color name="border_grey">#a9a9a9</color>
+
+    <color name="blue">#0091D7</color>
+    <color name="darkblue">#366988</color>
+
+    <color name="progress_color">#ef6c00</color>
+
+    <color name="red">#B7171C</color>
+    <color name="green">#668D15</color>
+    <color name="icon_blue">#0C74A6</color>
+
+    <color name="cream">#EDF4F4</color>
+
+    <color name="slide_1">#5197c9</color>
+    <color name="slide_2">#fb9c25</color>
+    <color name="slide_3">#cc7b7b</color>
+    <color name="slide_4">#aa3a3a</color>
+
+    <color name="tutorial_buttonTextColor">#000000</color>
+
+
+
+
+</resources>
