@@ -462,8 +462,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         while (cursor.moveToNext()) {
             DistrictPojo md = new DistrictPojo();
-            Log.e("ID", cursor.getString(2));
-            Log.e("name", cursor.getString(4));
+
             md.setDistrict_id(cursor.getString(2));
             md.setDistrict_name(cursor.getString(4));
 
@@ -484,8 +483,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         while (cursor.moveToNext()) {
             TehsilPojo md = new TehsilPojo();
-            Log.e("Tehsil ID", cursor.getString(1));
-            Log.e("Tehil name", cursor.getString(2));
+
             md.setTehsil_id(cursor.getString(1));
             md.setTehsil_name(cursor.getString(2));
 
@@ -506,8 +504,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         while (cursor.moveToNext()) {
             GramPanchayatPojo md = new GramPanchayatPojo();
-            Log.e("GP ID", cursor.getString(0));
-            Log.e("GP name", cursor.getString(1));
+
             md.setGp_id(cursor.getString(0));
             md.setGp_name(cursor.getString(1));
 
@@ -528,8 +525,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         while (cursor.moveToNext()) {
             BlockPojo block = new BlockPojo();
-            Log.e("Block Id ID", cursor.getString(0));
-            Log.e("Block name", cursor.getString(1));
+
             block.setBlock_code(cursor.getString(0));
             block.setBlock_name(cursor.getString(1));
 
@@ -705,15 +701,5 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_OFFLINE_STORAGE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_Tehsil);
     }
-
-
-//    public boolean updateData( String passno,) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues values = new ContentValues();
-//        values.put(OFFLINE_PASS_VERIFIED_TAG, pojo.gett);
-//
-//        db.update(TABLE_OFFLINE_STORAGE, values, "pass_number = ? ",new String[] { passno,offline_object.getUserId(), offline_object.getRoleId() , offline_object.getBifurcation() });
-//        return true;
-//    }
 
 }

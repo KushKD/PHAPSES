@@ -12,9 +12,10 @@ public class OfflineDataEntry implements Serializable {
     private String names;
     private String no_of_persons;
     private String vehicle_number;
-    private String mobile;
+    private Long mobile;
     private String address;
     private String state_from;
+    private String district_from;
     private String place_form;
     private String district_to;
     private String tehsil_to;
@@ -31,6 +32,14 @@ public class OfflineDataEntry implements Serializable {
     private String latitude;
     private String longitude;
     private String timeStamp;
+
+    public String getDistrict_from() {
+        return district_from;
+    }
+
+    public void setDistrict_from(String district_from) {
+        this.district_from = district_from;
+    }
 
     public String getTimeStamp() {
         return timeStamp;
@@ -64,11 +73,11 @@ public class OfflineDataEntry implements Serializable {
         this.vehicle_number = vehicle_number;
     }
 
-    public String getMobile() {
+    public Long getMobile() {
         return mobile;
     }
 
-    public void setMobile(String mobile) {
+    public void setMobile(Long mobile) {
         this.mobile = mobile;
     }
 
@@ -217,6 +226,7 @@ public class OfflineDataEntry implements Serializable {
                 ", mobile='" + mobile + '\'' +
                 ", address='" + address + '\'' +
                 ", state_from='" + state_from + '\'' +
+                ", district_from='" + district_from + '\'' +
                 ", place_form='" + place_form + '\'' +
                 ", district_to='" + district_to + '\'' +
                 ", tehsil_to='" + tehsil_to + '\'' +

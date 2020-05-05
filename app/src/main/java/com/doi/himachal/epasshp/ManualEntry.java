@@ -26,12 +26,22 @@ import com.doi.himachal.Modal.BlockPojo;
 import com.doi.himachal.Modal.DistrictBarrierPojo;
 import com.doi.himachal.Modal.DistrictPojo;
 import com.doi.himachal.Modal.GramPanchayatPojo;
+import com.doi.himachal.Modal.OfflineDataEntry;
+import com.doi.himachal.Modal.ResponsePojo;
 import com.doi.himachal.Modal.StatePojo;
 import com.doi.himachal.Modal.TehsilPojo;
+import com.doi.himachal.Modal.UploadObject;
+import com.doi.himachal.Modal.UploadObjectManual;
 import com.doi.himachal.database.DatabaseHandler;
+import com.doi.himachal.enums.TaskType;
+import com.doi.himachal.generic.GenericAsyncPostObject;
+import com.doi.himachal.generic.GenericAsyncPostObjectForm;
+import com.doi.himachal.interfaces.AsyncTaskListenerObjectForm;
 import com.doi.himachal.presentation.CustomDialog;
+import com.doi.himachal.utilities.AppStatus;
 import com.doi.himachal.utilities.CommonUtils;
 import com.doi.himachal.utilities.DateTime;
+import com.doi.himachal.utilities.Preferences;
 import com.doi.himachal.utilities.SamplePresenter;
 import com.doi.spinnersearchable.SearchableSpinner;
 import com.kushkumardhawan.locationmanager.base.LocationBaseActivity;
@@ -40,12 +50,14 @@ import com.kushkumardhawan.locationmanager.configuration.LocationConfiguration;
 import com.kushkumardhawan.locationmanager.constants.FailType;
 import com.kushkumardhawan.locationmanager.constants.ProcessType;
 
+import org.json.JSONException;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ManualEntry extends LocationBaseActivity implements SamplePresenter.SampleView {
+public class ManualEntry extends LocationBaseActivity implements SamplePresenter.SampleView, AsyncTaskListenerObjectForm {
 
     TextView date, time;
     EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose;
@@ -63,12 +75,12 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     List<GramPanchayatPojo> grampanchayats = null;
 
     GenericAdapterStates adapter_states = null;
-    GenericAdapter adapter,fromAdapter = null;
+    GenericAdapter adapter, fromAdapter = null;
     GenericAdapterTehsil adapter_tehsil = null;
     GenericAdapterBlocks adapterBlocks = null;
     GenericAdapterGP adaptergp = null;
 
-    LinearLayout grampanchayat ;
+    LinearLayout grampanchayat;
 
     String Global_fromstate, Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat;
 
@@ -79,7 +91,6 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manual_entry);
-
 
 
         init();
@@ -96,16 +107,17 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 StatePojo item = adapter_states.getItem(position);
 
-              //  Global_district_id = item.getDistrict_id();
-                Log.e("Stateid",item.getState_id());
-                fromdistricts =DB.getDistrictsViaState(item.getState_id());
+                //  Global_district_id = item.getDistrict_id();
+                Log.e("Stateid", item.getState_id());
+                fromdistricts = DB.getDistrictsViaState(item.getState_id());
+                Global_fromstate = item.getState_id();
 
-                if(!fromdistricts.isEmpty()){
+                if (!fromdistricts.isEmpty()) {
                     fromAdapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, fromdistricts);
                     fromdistrict.setAdapter(fromAdapter);
 
-                }else{
-                    CD.showDialog(ManualEntry.this,"No District found for the specific State");
+                } else {
+                    CD.showDialog(ManualEntry.this, "No District found for the specific State");
                     fromAdapter = null;
                     fromdistrict.setAdapter(fromAdapter);
                 }
@@ -119,12 +131,30 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
             }
         });
 
+        fromdistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                DistrictPojo item = fromAdapter.getItem(position);
+
+                //  Global_district_id = item.getDistrict_id();
+                Log.e("District", item.getDistrict_id());
+
+                Global_fromdistrict = item.getDistrict_id();
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         //Get Districts
         districts = DB.getDistrictsViaState("9");
-        Log.e("@@@District",districts.toString());
+        Log.e("@@@District", districts.toString());
         adapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, districts);
         district.setAdapter(adapter);
-
 
 
         district.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -133,26 +163,28 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 DistrictPojo item = adapter.getItem(position);
 
                 //  Global_district_id = item.getDistrict_id();
-                Log.e("District Id-===",item.getDistrict_name());
-                tehsils =DB.getTehsilViaDistrict(item.getDistrict_id());
+                Log.e("District Id-===", item.getDistrict_name());
+
+                Global_todistrict = item.getDistrict_id();
+                tehsils = DB.getTehsilViaDistrict(item.getDistrict_id());
                 blocks = DB.getBlocksViaDistrict(item.getDistrict_id());
 
-                if(!tehsils.isEmpty()){
+                if (!tehsils.isEmpty()) {
                     adapter_tehsil = new GenericAdapterTehsil(ManualEntry.this, android.R.layout.simple_spinner_item, tehsils);
                     tehsil.setAdapter(adapter_tehsil);
 
-                }else{
-                    CD.showDialog(ManualEntry.this,"No Tehsils found for the specific District");
+                } else {
+                    CD.showDialog(ManualEntry.this, "No Tehsils found for the specific District");
                     adapter_tehsil = null;
                     tehsil.setAdapter(adapter_tehsil);
                 }
-                if(!blocks.isEmpty()){
+                if (!blocks.isEmpty()) {
 
                     adapterBlocks = new GenericAdapterBlocks(ManualEntry.this, android.R.layout.simple_spinner_item, convertSetToList(blocks));
                     block.setAdapter(adapterBlocks);
 
-                }else{
-                    CD.showDialog(ManualEntry.this,"No Blocks found for the specific District");
+                } else {
+                    CD.showDialog(ManualEntry.this, "No Blocks found for the specific District");
                     adapterBlocks = null;
                     block.setAdapter(adapterBlocks);
                 }
@@ -166,22 +198,42 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
             }
         });
 
+        tehsil.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TehsilPojo item = adapter_tehsil.getItem(position);
+
+                //  Global_district_id = item.getDistrict_id();
+                Log.e("Block Id-===", item.getTehsil_id());
+                Global_totehsil = item.getTehsil_id();
+
+
+            }
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         block.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 BlockPojo item = adapterBlocks.getItem(position);
 
                 //  Global_district_id = item.getDistrict_id();
-                Log.e("Block Id-===",item.getBlock_code());
-                grampanchayats =DB.getGPViaDistrict(item.getBlock_code());
-                Log.e("Size",Integer.toString(grampanchayats.size()));
+                Log.e("Block Id-===", item.getBlock_code());
+                Global_toblock = item.getBlock_code();
+                grampanchayats = DB.getGPViaDistrict(item.getBlock_code());
+                Log.e("Size", Integer.toString(grampanchayats.size()));
 
-                if(grampanchayats.size()!=0){
+                if (grampanchayats.size() != 0) {
                     adaptergp = new GenericAdapterGP(ManualEntry.this, android.R.layout.simple_spinner_item, grampanchayats);
                     gp.setAdapter(adaptergp);
 
-                }else{
-                    CD.showDialog(ManualEntry.this,"No Panchayats found for the specific blocks");
+                } else {
+                    CD.showDialog(ManualEntry.this, "No Panchayats found for the specific blocks");
                     adaptergp = null;
                     gp.setAdapter(adaptergp);
                     grampanchayat.setVisibility(View.GONE);
@@ -190,11 +242,33 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
 
             }
 
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
+
+
+        gp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                GramPanchayatPojo item = adaptergp.getItem(position);
+
+                //  Global_district_id = item.getDistrict_id();
+                Log.e("Block Id-===", item.getGp_id());
+                Global_togramPanchayat = item.getGp_id();
+
+
+            }
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,12 +282,145 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
             @Override
             public void onClick(View v) {
 
-                //CREATE Object
+                OfflineDataEntry offlineDataEntry = new OfflineDataEntry();
+
+
+                if (!userLocation.isEmpty()) {
+                    try {
+                        String[] locations = userLocation.split(",");
+                        offlineDataEntry.setLatitude(locations[0]);
+                        offlineDataEntry.setLongitude(locations[1]);
+                    } catch (Exception ex) {
+                        CD.showDialog(ManualEntry.this, "Unable to get the Location.");
+                    }
+                } else {
+                    offlineDataEntry.setLatitude("0");
+                    offlineDataEntry.setLongitude("0");
+                }
+
+                offlineDataEntry.setState_from(Global_fromstate);
+                offlineDataEntry.setDistrict_from(Global_fromdistrict);
+                offlineDataEntry.setDistrict_to(Global_todistrict);
+                offlineDataEntry.setTehsil_to(Global_totehsil);
+                offlineDataEntry.setBlock_to(Global_toblock);
+
+                offlineDataEntry.setTimeStamp(CommonUtils.getCurrentDate());
+                offlineDataEntry.setAaroyga_app_download(appdownloaded.getSelectedItem().toString());
+                offlineDataEntry.setBarrier_id(Preferences.getInstance().barrier_id);
+                offlineDataEntry.setDistict_barrer_id(Preferences.getInstance().district_id);
+                offlineDataEntry.setUser_mobile(Preferences.getInstance().phone_number);
+
+
+                if(address.getText().toString()==null && address.getText().toString().isEmpty()){
+                    offlineDataEntry.setAddress("");
+                }else{
+                    offlineDataEntry.setAddress(address.getText().toString().trim());
+                }
+
+                if(fromplace.getText().toString()==null && fromplace.getText().toString().isEmpty()){
+                    offlineDataEntry.setPlace_form("");
+                }else{
+                    offlineDataEntry.setPlace_form(fromplace.getText().toString().trim());
+                }
+
+                if(placenameto.getText().toString()==null && placenameto.getText().toString().isEmpty()){
+                    offlineDataEntry.setPlace_to("");
+                }else{
+                    offlineDataEntry.setPlace_to(placenameto.getText().toString().trim());
+                }
+
+                if(purpose.getText().toString()==null && purpose.getText().toString().isEmpty()){
+                    offlineDataEntry.setPurpose("");
+                }else{
+                    offlineDataEntry.setPurpose(purpose.getText().toString().trim());
+                }
+
+                if(Global_togramPanchayat==null || Global_togramPanchayat.isEmpty()){
+                    offlineDataEntry.setGram_panchayat("0");
+                    Log.e("Global_togramPanchayat",Global_togramPanchayat);
+                }else{
+                    Log.e("Global_togramPanchayat",Global_togramPanchayat);
+                    offlineDataEntry.setGram_panchayat(Global_togramPanchayat);
+                }
+
+
+
+
+
+
+                //Edit Text get data
+                if (names.getText().toString() != null && !names.getText().toString().isEmpty()) {
+                    offlineDataEntry.setNames(names.getText().toString().trim());
+                    if (numberpersons.getText().toString() != null && !numberpersons.getText().toString().isEmpty()) {
+                        offlineDataEntry.setNo_of_persons(numberpersons.getText().toString().trim());
+
+                        if (vehiclenumber.getText().toString() != null && !vehiclenumber.getText().toString().isEmpty()) {
+                            offlineDataEntry.setVehicle_number(vehiclenumber.getText().toString().trim());
+
+                            if (mobilenumber.getText().toString() != null && !mobilenumber.getText().toString().isEmpty() && mobilenumber.getText().toString().length()==10) {
+                                offlineDataEntry.setMobile(Long.parseLong(mobilenumber.getText().toString().trim()));
+
+                                if (passno.getText().toString() != null && !passno.getText().toString().isEmpty()) {
+                                    offlineDataEntry.setPass_no(passno.getText().toString().trim());
+
+                                    if (authority.getText().toString() != null && !authority.getText().toString().isEmpty()) {
+                                        offlineDataEntry.setPass_issue_authority(authority.getText().toString().trim());
+
+
+                                        UploadObjectManual object = new UploadObjectManual();
+                                        object.setUrl("http://covid19epass.hp.gov.in/api/v1/saveofflinebarrierdata");
+                                        object.setTasktype(TaskType.MANUAL_FORM_UPLOAD);
+                                        object.setMethordName("saveofflinebarrierdata");
+                                        object.setOfflineDataEntry(offlineDataEntry);
+
+
+                                        //TODO SEND OBECT TO SERVER
+                                        System.out.println(offlineDataEntry.toString());
+
+                                        if(AppStatus.getInstance(ManualEntry.this).isOnline()){
+                                            new GenericAsyncPostObjectForm(
+                                                    ManualEntry.this,
+                                                    ManualEntry.this,
+                                                    TaskType.MANUAL_FORM_UPLOAD).
+                                                    execute(object);
+                                        }else{
+                                            CD.showDialog(ManualEntry.this, "Please connect to Internet and try again.");
+                                        }
+
+
+
+
+                                    } else {
+                                        CD.showDialog(ManualEntry.this, "Please enter Pass Issuing Authority .");
+                                    }
+
+
+                                } else {
+                                    CD.showDialog(ManualEntry.this, "Please enter valid Pass number .");
+                                }
+
+
+                            } else {
+                                CD.showDialog(ManualEntry.this, "Please enter valid mobile phone number of the driver .");
+                            }
+
+                        } else {
+                            CD.showDialog(ManualEntry.this, "Please enter Vehicle Number .");
+                        }
+
+
+                    } else {
+                        CD.showDialog(ManualEntry.this, "Please enter number of persons travelling .");
+                    }
+
+
+                } else {
+                    CD.showDialog(ManualEntry.this, "Please enter name .");
+                }
 
 
             }
         });
-
 
 
 //CommonUtils.getCurrentDate()
@@ -228,8 +435,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
 
     }
 
-    public static <T> List<T> convertSetToList(Set<T> set)
-    {
+    public static <T> List<T> convertSetToList(Set<T> set) {
         // create a list from Set
         List<T> list = new ArrayList<>(set);
 
@@ -361,5 +567,14 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTaskCompleted(ResponsePojo result, TaskType taskType) throws JSONException {
+
+        if(taskType== TaskType.MANUAL_FORM_UPLOAD){
+            CD.showDialog(ManualEntry.this,result.getResponse());
+        }
+
     }
 }

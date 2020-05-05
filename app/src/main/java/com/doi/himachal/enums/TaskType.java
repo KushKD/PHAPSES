@@ -7,7 +7,8 @@ package com.doi.himachal.enums;
  */
 public enum TaskType {
     UPLOAD_SCANNED_PASS(1),
-    VERIFY_DETAILS(2);
+    VERIFY_DETAILS(2),
+    MANUAL_FORM_UPLOAD(3);
 
     int value; private TaskType(int value) { this.value = value; }
 }

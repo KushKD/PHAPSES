@@ -61,6 +61,19 @@ public class Econstants {
         return pojo;
     }
 
+    public static ResponsePojo createOfflineObject(String url, String requestParams, String response) {
+        ResponsePojo pojo = new ResponsePojo();
+        pojo.setUrl(url);
+        pojo.setRequestParams(requestParams);
+        pojo.setResponse(response);
+
+
+
+
+
+        return pojo;
+    }
+
     public static ResponsePojo createOfflinePaam(String url, String requestParams, String response, String params) {
         ResponsePojo pojo = new ResponsePojo();
         pojo.setUrl(url);
