@@ -65,7 +65,7 @@ public class Registration extends AppCompatActivity {
     GenericAdapterBarrier adapter_barrier = null;
 
     com.doi.spinnersearchable.SearchableSpinner sp_district, sp_barrier;
-    EditText phone;
+    EditText phone,depat_name,name;
     Button register;
 
     private static final int REQUEST_CODE = 1234;
@@ -83,6 +83,8 @@ public class Registration extends AppCompatActivity {
         sp_barrier.setPrompt("Please Select Barrier");
 
         phone = findViewById(R.id.phone);
+        depat_name= findViewById(R.id.depat_name);
+        name= findViewById(R.id.name);
         register = findViewById(R.id.register);
 
 
@@ -192,19 +194,33 @@ try {
 
                 if(!phone.getText().toString().trim().isEmpty() && phone.getText().toString().trim().length()==10){
 
-                    //Clicked
-                    Preferences.getInstance().loadPreferences(Registration.this);
-                    Preferences.getInstance().district_id = Global_district_id;
-                    Preferences.getInstance().barrier_id = Global_barrier_id;
-                    Preferences.getInstance().phone_number = phone.getText().toString().trim();
+                    if(!name.getText().toString().isEmpty() && name.getText().toString()!=null){
 
-                    Preferences.getInstance().isLoggedIn = true;
-                   // Preferences.getInstance().showtutorial = true;
-                    Preferences.getInstance().savePreferences(Registration.this);
+                        if(!depat_name.getText().toString().isEmpty() && depat_name.getText().toString()!=null){
+                            //Clicked
+                            Preferences.getInstance().loadPreferences(Registration.this);
+                            Preferences.getInstance().district_id = Global_district_id;
+                            Preferences.getInstance().barrier_id = Global_barrier_id;
+                            Preferences.getInstance().name = name.getText().toString().trim();
+                            Preferences.getInstance().dept_name = depat_name.getText().toString().trim();
+                            Preferences.getInstance().phone_number = phone.getText().toString().trim();
 
-                    Intent mainIntent = new Intent(Registration.this, MainActivity.class);
-                    Registration.this.startActivity(mainIntent);
-                    Registration.this.finish();
+                            Preferences.getInstance().isLoggedIn = true;
+                            // Preferences.getInstance().showtutorial = true;
+                            Preferences.getInstance().savePreferences(Registration.this);
+
+                            Intent mainIntent = new Intent(Registration.this, MainActivity.class);
+                            Registration.this.startActivity(mainIntent);
+                            Registration.this.finish();
+                        }else{
+                            CD.showDialog(Registration.this,"Please enter Department name");
+                        }
+
+                    }else{
+                        CD.showDialog(Registration.this,"Please enter name");
+                    }
+
+
                 }else{
                     CD.showDialog(Registration.this,"Please enter a valid 10 digit Mobile number");
                 }

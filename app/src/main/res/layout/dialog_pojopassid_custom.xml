@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:background="#fff"
-            android:id="@+id/names"
+            android:id="@+id/brief"
             android:elevation="4dp"
             android:orientation="horizontal">
 
@@ -82,7 +82,8 @@
                 android:layout_height="fill_parent"
                 android:gravity="center|center_vertical|center_horizontal"
                 android:textStyle="bold"
-
+                android:maxLines="1"
+                android:inputType="number"
                 android:background="@drawable/customborder_dialog"
                 android:layout_weight="1"
                 android:padding="5dp"/>
@@ -94,7 +95,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:id="@+id/nameofpersons"
+            android:id="@+id/hindi"
             android:background="#fff"
             android:visibility="gone"
             android:elevation="4dp"
@@ -115,7 +116,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:gravity="center|center_vertical|center_horizontal"
-               
+
                 android:layout_weight="1"
                 android:padding="5dp"
                 android:text="View" />
@@ -129,7 +130,7 @@
             android:layout_marginTop="2dp"
             android:visibility="gone"
             android:background="#fff"
-            android:id="@+id/vechiclenumber"
+            android:id="@+id/english"
             android:elevation="4dp"
             android:orientation="horizontal">
 
@@ -143,7 +144,7 @@
                 android:textColor="@color/darkblue" />
 
             <TextView
-                android:id="@+id/mobilel"
+                android:id="@+id/mobile"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:gravity="center|center_vertical|center_horizontal"
@@ -161,28 +162,28 @@
             android:layout_marginTop="2dp"
             android:background="#fff"
             android:visibility="gone"
-            android:id="@+id/mobilel"
+            android:id="@+id/nothing"
             android:elevation="4dp"
             android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center|center_vertical|center_horizontal"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:text="Pass Valid Date"
-            android:textColor="@color/darkblue" />
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="Pass Valid Date"
+                android:textColor="@color/darkblue" />
 
-        <TextView
-            android:id="@+id/dateissue"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center|center_vertical|center_horizontal"
-            android:textStyle="bold"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:text="View" />
+            <TextView
+                android:id="@+id/dateissue"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="View" />
         </LinearLayout>
 
         <!-- Nothing -->

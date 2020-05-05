@@ -115,6 +115,43 @@ public class CustomDialog {
 
     }
 
+    public void showDialogHTMLGeneric(final Activity activity, String msg) {
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_custom_web_generic);
+
+        int width = (int)(activity.getResources().getDisplayMetrics().widthPixels);
+        int height = (int)(activity.getResources().getDisplayMetrics().heightPixels);
+        dialog.getWindow().setLayout(width, height);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WebView webView = (WebView) dialog.findViewById(R.id.dialog_result);
+        webView.setVerticalScrollBarEnabled(true);
+        webView.requestFocus();
+        webView.getSettings().setDefaultTextEncodingName("utf-8");
+        webView.getSettings().setJavaScriptEnabled(true);
+        final String mimeType = "text/html";
+        final String encoding = "UTF-8";
+
+
+        webView.loadDataWithBaseURL("", msg, mimeType, encoding, "");
+
+        Button dialog_ok = (Button) dialog.findViewById(R.id.dialog_ok);
+
+        dialog_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // activity.finish();
+                dialog.dismiss();
+            }
+        });
+
+
+        dialog.show();
+
+    }
+
 
 
 

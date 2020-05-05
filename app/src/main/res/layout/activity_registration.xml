@@ -12,7 +12,7 @@
         android:id="@+id/ll1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="1.9"
         android:gravity="center_vertical|center_horizontal">
 
         <RelativeLayout
@@ -132,6 +132,33 @@
                         android:layout_weight="1" />
 
 
+                    <EditText
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:hint="Enter Name"
+                        android:imeActionLabel="Phone Number"
+                        android:imeOptions="actionUnspecified"
+                        android:maxLines="1"
+                        android:textSize="15sp"
+                        android:singleLine="true"
+                        android:textColor="@color/darkblue"
+                        android:textColorHint="@color/darkblue" />
+
+                    <EditText
+                        android:id="@+id/depat_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:hint="Enter  Departmet"
+                        android:imeActionLabel="Phone Number"
+                        android:imeOptions="actionUnspecified"
+                        android:maxLines="1"
+                        android:textSize="15sp"
+                        android:singleLine="true"
+                        android:textColor="@color/darkblue"
+                        android:textColorHint="@color/darkblue" />
 
 
                     <EditText
@@ -151,6 +178,8 @@
                         android:textColorHint="@color/darkblue" />
 
 
+
+
                     <Button
                         android:id="@+id/register"
                         style="?android:textAppearanceSmall"
@@ -167,22 +196,4 @@
         </ScrollView>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ll3"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1.2"
-        android:gravity="bottom|center_horizontal">
-
-        <TextView
-            android:id="@+id/signUpTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:autoLink="web"
-            android:visibility="gone"
-            android:gravity="center|center_horizontal|center_vertical"
-            android:layout_weight="1.1"
-            android:text="Register Yourself"
-            android:textColor="#ffffffff" />
-    </LinearLayout>
 </LinearLayout>

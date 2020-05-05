@@ -7,6 +7,7 @@ import com.doi.himachal.Modal.ScanDataPojo;
 import com.doi.himachal.Modal.UploadObject;
 import com.doi.himachal.Modal.UploadObjectManual;
 import com.doi.himachal.utilities.Econstants;
+import com.doi.himachal.utilities.Preferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +37,7 @@ public class HttpManager {
 
         String URL = null;
         ResponsePojo response = null;
+        JSONObject object =  new JSONObject();
 
 
         try {
@@ -58,6 +60,11 @@ public class HttpManager {
             // "mobile_information": "optional",
             // "other_information": "optional"
 
+            object.put("logged_in_name", Preferences.getInstance().name);
+            object.put("department_name", Preferences.getInstance().dept_name);
+            object.put("scanned_by", data.getScanDataPojo().getScannedByPhoneNumber());
+
+
             userJson = new JSONStringer()
                     .object()
                     .key("barrier_district").value(data.getScanDataPojo().getDistict())
@@ -66,7 +73,7 @@ public class HttpManager {
                     .key("longititute").value(data.getScanDataPojo().getLongitude())
                     .key("pass_id").value(data.getScanDataPojo().getPassNo())
                     .key("scanned_date_time").value(data.getScanDataPojo().getScanDate())
-                    .key("mobile_information").value(data.getScanDataPojo().getScannedByPhoneNumber())
+                    .key("mobile_information").value(object.toString())
                     .key("other_information").value(data.getScanDataPojo().getNumber_of_passengers_manual())
 
 
@@ -203,10 +210,17 @@ public class HttpManager {
             try {
                 int HttpResult = conn_.getResponseCode();
                 if (HttpResult != HttpURLConnection.HTTP_OK) {
-                    Log.e("Error==", conn_.getResponseMessage());
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn_.getErrorStream(), "utf-8"));
+                    String line = null;
+                    sb = new StringBuilder();
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                    }
+                    br.close();
+                    System.out.println(sb.toString());
+                    Log.e("Data from Service", sb.toString());
                     response = new ResponsePojo();
-                    response = Econstants.createOfflineObject(URL, userJson.toString(), conn_.getResponseMessage() + conn_.getResponseCode());
-                    return response;
+                    response = Econstants.createOfflineObject(URL, userJson.toString(), sb.toString());
 
 
                 } else {

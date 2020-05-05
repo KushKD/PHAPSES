@@ -29,6 +29,7 @@ import com.doi.himachal.Modal.GramPanchayatPojo;
 import com.doi.himachal.Modal.OfflineDataEntry;
 import com.doi.himachal.Modal.ResponsePojo;
 import com.doi.himachal.Modal.StatePojo;
+import com.doi.himachal.Modal.SuccessResponse;
 import com.doi.himachal.Modal.TehsilPojo;
 import com.doi.himachal.Modal.UploadObject;
 import com.doi.himachal.Modal.UploadObjectManual;
@@ -37,6 +38,7 @@ import com.doi.himachal.enums.TaskType;
 import com.doi.himachal.generic.GenericAsyncPostObject;
 import com.doi.himachal.generic.GenericAsyncPostObjectForm;
 import com.doi.himachal.interfaces.AsyncTaskListenerObjectForm;
+import com.doi.himachal.json.JsonParse;
 import com.doi.himachal.presentation.CustomDialog;
 import com.doi.himachal.utilities.AppStatus;
 import com.doi.himachal.utilities.CommonUtils;
@@ -573,7 +575,13 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     public void onTaskCompleted(ResponsePojo result, TaskType taskType) throws JSONException {
 
         if(taskType== TaskType.MANUAL_FORM_UPLOAD){
-            CD.showDialog(ManualEntry.this,result.getResponse());
+           // CD.showDialog(ManualEntry.this,result.getResponse());
+            SuccessResponse response = JsonParse.getSuccessResponse(result.getResponse());
+            if (response.getStatus().equalsIgnoreCase("200")) {
+                CD.showDialogHTMLGeneric(ManualEntry.this, response.getResponse());
+            } else {
+                CD.showDialogHTMLGeneric(ManualEntry.this, response.getResponse());
+            }
         }
 
     }
