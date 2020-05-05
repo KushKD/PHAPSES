@@ -102,7 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:gravity="center|center_vertical|center_horizontal"
-               
+
                 android:layout_weight="1"
                 android:padding="5dp"
                 android:text="View" />
@@ -150,24 +150,24 @@
             android:elevation="4dp"
             android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center|center_vertical|center_horizontal"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:text="Pass Valid Date"
-            android:textColor="@color/darkblue" />
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="Pass Valid Date"
+                android:textColor="@color/darkblue" />
 
-        <TextView
-            android:id="@+id/dateissue"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center|center_vertical|center_horizontal"
-            android:textStyle="bold"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:text="View" />
+            <TextView
+                android:id="@+id/dateissue"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="View" />
         </LinearLayout>
 
         <!-- Nothing -->

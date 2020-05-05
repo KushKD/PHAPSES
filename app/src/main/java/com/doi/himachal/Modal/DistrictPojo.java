@@ -9,10 +9,26 @@ import java.io.Serializable;
  */
 public class DistrictPojo implements Serializable {
 
+    private String state_id;
     private String district_id;
     private String district_name;
+    private String alertZone;
 
+    public String getAlertZone() {
+        return alertZone;
+    }
 
+    public void setAlertZone(String alertZone) {
+        this.alertZone = alertZone;
+    }
+
+    public String getState_id() {
+        return state_id;
+    }
+
+    public void setState_id(String state_id) {
+        this.state_id = state_id;
+    }
 
     public String getDistrict_id() {
         return district_id;

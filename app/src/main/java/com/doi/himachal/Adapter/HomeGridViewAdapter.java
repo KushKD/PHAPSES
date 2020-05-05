@@ -15,6 +15,7 @@ import com.blikoon.qrcodescanner.QrCodeActivity;
 import com.doi.himachal.Modal.ModulesPojo;
 import com.doi.himachal.database.DatabaseHandler;
 import com.doi.himachal.epasshp.History;
+import com.doi.himachal.epasshp.ManualEntry;
 import com.doi.himachal.epasshp.R;
 import com.doi.himachal.lazyloader.ImageLoader;
 import com.doi.himachal.presentation.CustomDialog;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 public class HomeGridViewAdapter extends BaseAdapter {
     Context c;
     ArrayList<ModulesPojo> gridHome;
+
 
 
     ImageLoader il = new ImageLoader(c);
@@ -110,10 +112,14 @@ public class HomeGridViewAdapter extends BaseAdapter {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    //TODO
+                }
+                if (s.getName().equalsIgnoreCase("Manual Entry")) {
+
+                    Intent i = new Intent(c.getApplicationContext(), ManualEntry.class);
+
+                    (c).startActivity(i);
 
                 }
-
 
 
             }

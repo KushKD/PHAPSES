@@ -1,26 +1,20 @@
 package com.doi.himachal.epasshp;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.GridView;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.doi.himachal.Adapter.HomeGridViewAdapter;
@@ -30,7 +24,6 @@ import com.doi.himachal.Modal.ResponsePojo;
 import com.doi.himachal.Modal.ScanDataPojo;
 import com.doi.himachal.Modal.SuccessResponse;
 import com.doi.himachal.Modal.UploadObject;
-import com.doi.himachal.database.DatabaseHandler;
 import com.doi.himachal.enums.TaskType;
 import com.doi.himachal.generic.GenericAsyncPostObject;
 import com.doi.himachal.interfaces.AsyncTaskListenerObject;
@@ -72,8 +65,6 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
     private BroadcastReceiver mReceiver;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,8 +74,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
         final SwipeRefreshLayout pullToRefresh = findViewById(R.id.pullToRefresh);
 
 
-        if (android.os.Build.VERSION.SDK_INT > 9)
-        {
+        if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new
                     StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -107,17 +97,25 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
         mp2.setLogo("searchpass");
 
         ModulesPojo mp3 = new ModulesPojo();
-        mp3.setId("2");
-        mp3.setName("Total Scanned Passes");
-        mp3.setLogo("history");
+        mp3.setId("3");
+        mp3.setName("Manual Entry");
+        mp3.setLogo("manualentry");
 
+        ModulesPojo mp4 = new ModulesPojo();
+        mp4.setId("4");
+        mp4.setName("Total Scanned Passes");
+        mp4.setLogo("history");
 
 
         modules.add(mp);
         modules.add(mp2);
         modules.add(mp3);
+        modules.add(mp4);
 
-        adapter_modules = new HomeGridViewAdapter(this, (ArrayList<ModulesPojo>) modules);
+       // Log.e("userLocation",userLocation);
+
+
+     adapter_modules = new HomeGridViewAdapter(this, (ArrayList<ModulesPojo>) modules);
         home_gv.setAdapter(adapter_modules);
 
         adapters = new SliderAdapter(MainActivity.this);
@@ -149,15 +147,15 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.e("We are Here",intent.getAction());
+                Log.e("We are Here", intent.getAction());
                 if (intent.getAction() == "UploadServer") {
                     //SCAN_DATA
-                    Log.e("We are Here 2",intent.getAction());
+                    Log.e("We are Here 2", intent.getAction());
 
-                    if(AppStatus.getInstance(MainActivity.this).isOnline()){
+                    if (AppStatus.getInstance(MainActivity.this).isOnline()) {
                         Bundle extras = intent.getExtras();
                         ScanDataPojo data = (ScanDataPojo) extras.getSerializable("SCAN_DATA");
-                        Log.e("Data From Dialog",data.toString());
+                        Log.e("Data From Dialog", data.toString());
 
                         //TODO Internet Check
 
@@ -172,23 +170,22 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
                                 MainActivity.this,
                                 TaskType.UPLOAD_SCANNED_PASS).
                                 execute(object);
-                    }else{
-                        CD.showDialog(MainActivity.this,"Please Connect to Internet and try again.");
+                    } else {
+                        CD.showDialog(MainActivity.this, "Please Connect to Internet and try again.");
                     }
 
-                }
-                else if (intent.getAction() == "UploadServerManual") {
+                } else if (intent.getAction() == "UploadServerManual") {
                     //SCAN_DATA
-                    Log.e("We are Here 2",intent.getAction());
+                    Log.e("We are Here 2", intent.getAction());
 
-                    if(AppStatus.getInstance(MainActivity.this).isOnline()){
+                    if (AppStatus.getInstance(MainActivity.this).isOnline()) {
                         Bundle extras = intent.getExtras();
                         ScanDataPojo data = (ScanDataPojo) extras.getSerializable("SCAN_DATA");
 
 
                         //TODO Update LAT LONG
                         data = updateLocation(data);
-                        Log.e("UploadServerManual",data.toString());
+                        Log.e("UploadServerManual", data.toString());
                         UploadObject object = new UploadObject();
                         object.setUrl("http://covid19epass.hp.gov.in/api/v1/savebarrierdata");
                         object.setTasktype(TaskType.UPLOAD_SCANNED_PASS);
@@ -200,37 +197,36 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
                                 MainActivity.this,
                                 TaskType.UPLOAD_SCANNED_PASS).
                                 execute(object);
-                    }else{
-                        CD.showDialog(MainActivity.this,"Please Connect to Internet and try again.");
+                    } else {
+                        CD.showDialog(MainActivity.this, "Please Connect to Internet and try again.");
                     }
 
-                }
-                else if(intent.getAction() == "verifyData"){
+                } else if (intent.getAction() == "verifyData") {
 
-                        //SCAN_DATA
-                        Log.e("We are Here 2sd ",intent.getAction());
+                    //SCAN_DATA
+                    Log.e("We are Here 2sd ", intent.getAction());
 
-                        if(AppStatus.getInstance(MainActivity.this).isOnline()){
-                            Bundle extras = intent.getExtras();
-                            String data = extras.getString("VERIFY_DATA");
-                            Log.e("Data From Dialog",data.toString());
+                    if (AppStatus.getInstance(MainActivity.this).isOnline()) {
+                        Bundle extras = intent.getExtras();
+                        String data = extras.getString("VERIFY_DATA");
+                        Log.e("Data From Dialog", data.toString());
 
-                            UploadObject object = new UploadObject();
-                            object.setUrl("http://covid19epass.hp.gov.in/api/v1/verifydetails");
-                            object.setTasktype(TaskType.VERIFY_DETAILS);
-                            object.setMethordName("verifydetails");
-                            object.setParam(data);
+                        UploadObject object = new UploadObject();
+                        object.setUrl("http://covid19epass.hp.gov.in/api/v1/verifydetails");
+                        object.setTasktype(TaskType.VERIFY_DETAILS);
+                        object.setMethordName("verifydetails");
+                        object.setParam(data);
 
 
-                            new GenericAsyncPostObject(
-                                    MainActivity.this,
-                                    MainActivity.this,
-                                    TaskType.VERIFY_DETAILS).
-                                    execute(object);
+                        new GenericAsyncPostObject(
+                                MainActivity.this,
+                                MainActivity.this,
+                                TaskType.VERIFY_DETAILS).
+                                execute(object);
 
-                        }else{
-                            CD.showDialog(MainActivity.this,"Please Connect to Internet and try again.");
-                        }
+                    } else {
+                        CD.showDialog(MainActivity.this, "Please Connect to Internet and try again.");
+                    }
 
 
                 }
@@ -241,15 +237,15 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
     }
 
     private ScanDataPojo updateLocation(ScanDataPojo scanData) {
-        if(!userLocation.isEmpty()){
-            try{
-                String [] locations = userLocation.split(",");
+        if (!userLocation.isEmpty()) {
+            try {
+                String[] locations = userLocation.split(",");
                 scanData.setLatitude(locations[0]);
                 scanData.setLongitude(locations[1]);
-            }catch (Exception ex){
-                CD.showDialog(MainActivity.this,"Unable to get the Location.");
+            } catch (Exception ex) {
+                CD.showDialog(MainActivity.this, "Unable to get the Location.");
             }
-        }else{
+        } else {
             scanData.setLatitude("0");
             scanData.setLongitude("0");
         }
@@ -285,13 +281,13 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
                 try {
                     ScanDataPojo scanData = JsonParse.getObjectSave(result);
                     scanData = updateScanData(scanData);
-                    Log.e("UserLocation",userLocation);
-                    Log.e("scanDate",scanData.toString());
-                    CD.showDialogScanData(MainActivity.this,scanData);
-                   // uploadDataToServer(scanData);
+                    Log.e("UserLocation", userLocation);
+                    Log.e("scanDate", scanData.toString());
+                    CD.showDialogScanData(MainActivity.this, scanData);
+                    // uploadDataToServer(scanData);
 
                 } catch (JSONException | ParseException e) {
-                    CD.showDialog(MainActivity.this,result);
+                    CD.showDialog(MainActivity.this, result);
                     e.printStackTrace();
                 }
 
@@ -302,7 +298,6 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
     }
 
 
-
     private ScanDataPojo updateScanData(ScanDataPojo scanData) {
 
 
@@ -310,15 +305,15 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
         scanData.setDistict(Preferences.getInstance().district_id);
         scanData.setBarrrier(Preferences.getInstance().barrier_id);
 
-        if(!userLocation.isEmpty()){
-            try{
-                String [] locations = userLocation.split(",");
-                 scanData.setLatitude(locations[0]);
+        if (!userLocation.isEmpty()) {
+            try {
+                String[] locations = userLocation.split(",");
+                scanData.setLatitude(locations[0]);
                 scanData.setLongitude(locations[1]);
-            }catch (Exception ex){
-                CD.showDialog(MainActivity.this,"Unable to get the Location.");
+            } catch (Exception ex) {
+                CD.showDialog(MainActivity.this, "Unable to get the Location.");
             }
-        }else{
+        } else {
             scanData.setLatitude("0");
             scanData.setLongitude("0");
         }
@@ -327,11 +322,9 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
     }
 
 
-
-
-
     /**
      * Location Interface Methords
+     *
      * @return
      */
     @Override
@@ -389,7 +382,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
     @Override
     public void setText(String text) {
         //locationText.setText(text);
-        Log.e("Location GPS",text);
+        Log.e("Location GPS", text);
         userLocation = text;
     }
 
@@ -431,44 +424,43 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
 
     @Override
     public void onTaskCompleted(ResponsePojo result, TaskType taskType) throws JSONException {
-        if(taskType == TaskType.UPLOAD_SCANNED_PASS){
+        if (taskType == TaskType.UPLOAD_SCANNED_PASS) {
 
-             Log.e("We are Heter", "Result"+ result.toString());
-             if(result.getResponse().isEmpty()){
-                 //Toast.makeText(MainActivity.this, "Data Stored Locally", Toast.LENGTH_SHORT).show();
-                 CD.showDialog(MainActivity.this,"Please Connect to Internet and try again.");
-             }else{
-                 //TODO PArse Json Response
-                // Toast.makeText(MainActivity.this, "Data Stored Locally", Toast.LENGTH_SHORT).show();
-                try{
-                    SuccessResponse response =  JsonParse.getSuccessResponse(result.getResponse());
-                    if(response.getStatus().equalsIgnoreCase("200")){
-                        CD.showDialogHTML(MainActivity.this,response.getResponse(), response.getMessage());
-                    }else{
-                        CD.showDialog(MainActivity.this,response.getResponse());
-                    }
-                }catch (Exception ex){
-                    CD.showDialog(MainActivity.this,result.getResponse());
-                }
-
-             }
-
-
-        }
-        else if(taskType == TaskType.VERIFY_DETAILS){
-
-            Log.e("We are Heter", "Result"+ result.toString());
-            if(result.getResponse().isEmpty()){
+            Log.e("We are Heter", "Result" + result.toString());
+            if (result.getResponse().isEmpty()) {
                 //Toast.makeText(MainActivity.this, "Data Stored Locally", Toast.LENGTH_SHORT).show();
-                CD.showDialog(MainActivity.this,"Please Connect to Internet and try again.");
-            }else{
+                CD.showDialog(MainActivity.this, "Please Connect to Internet and try again.");
+            } else {
                 //TODO PArse Json Response
                 // Toast.makeText(MainActivity.this, "Data Stored Locally", Toast.LENGTH_SHORT).show();
-                SuccessResponse response =  JsonParse.getSuccessResponse(result.getResponse());
-                if(response.getStatus().equalsIgnoreCase("200")){
-                    CD.showDialog(MainActivity.this,response.getResponse());
-                }else{
-                    CD.showDialog(MainActivity.this,response.getResponse());
+                try {
+                    SuccessResponse response = JsonParse.getSuccessResponse(result.getResponse());
+                    if (response.getStatus().equalsIgnoreCase("200")) {
+                        CD.showDialogHTML(MainActivity.this, response.getResponse(), response.getMessage());
+                    } else {
+                        CD.showDialog(MainActivity.this, response.getResponse());
+                    }
+                } catch (Exception ex) {
+                    CD.showDialog(MainActivity.this, result.getResponse());
+                }
+
+            }
+
+
+        } else if (taskType == TaskType.VERIFY_DETAILS) {
+
+            Log.e("We are Heter", "Result" + result.toString());
+            if (result.getResponse().isEmpty()) {
+                //Toast.makeText(MainActivity.this, "Data Stored Locally", Toast.LENGTH_SHORT).show();
+                CD.showDialog(MainActivity.this, "Please Connect to Internet and try again.");
+            } else {
+                //TODO PArse Json Response
+                // Toast.makeText(MainActivity.this, "Data Stored Locally", Toast.LENGTH_SHORT).show();
+                SuccessResponse response = JsonParse.getSuccessResponse(result.getResponse());
+                if (response.getStatus().equalsIgnoreCase("200")) {
+                    CD.showDialog(MainActivity.this, response.getResponse());
+                } else {
+                    CD.showDialog(MainActivity.this, response.getResponse());
                 }
 
             }

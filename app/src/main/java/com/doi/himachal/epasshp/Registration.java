@@ -22,8 +22,12 @@ import android.widget.Toast;
 
 import com.doi.himachal.Adapter.GenericAdapter;
 import com.doi.himachal.Adapter.GenericAdapterBarrier;
+import com.doi.himachal.Modal.BlockPojo;
 import com.doi.himachal.Modal.DistrictBarrierPojo;
 import com.doi.himachal.Modal.DistrictPojo;
+import com.doi.himachal.Modal.GramPanchayatPojo;
+import com.doi.himachal.Modal.StatePojo;
+import com.doi.himachal.Modal.TehsilPojo;
 import com.doi.himachal.database.DatabaseHandler;
 import com.doi.himachal.presentation.CustomDialog;
 import com.doi.himachal.utilities.Econstants;
@@ -46,7 +50,13 @@ public class Registration extends AppCompatActivity {
     private String Global_district_id;
     private String Global_barrier_id;
 
+    public List<StatePojo> states = null;
     public List<DistrictPojo> districts = null;
+    public List<TehsilPojo> tehsils = null;
+    public List<BlockPojo> blocks = null;
+    public List<GramPanchayatPojo> gp = null;
+
+
     public List<DistrictPojo> districts_sp = null;
     public List<DistrictBarrierPojo> barrirs = null;
     CustomDialog CD = new CustomDialog();
@@ -75,7 +85,7 @@ public class Registration extends AppCompatActivity {
         phone = findViewById(R.id.phone);
         register = findViewById(R.id.register);
 
-        requestPermissions();
+
 //        Preferences.getInstance().loadPreferences(Registration.this);
 //        if(!Preferences.getInstance().showtutorial){
 //            loadTutorial();
@@ -83,24 +93,55 @@ public class Registration extends AppCompatActivity {
 
 
         final DatabaseHandler DB = new DatabaseHandler(Registration.this);
-        if (DB.getNoOfRowsCountDistrict() == 0 && DB.getNoOfRowsCountBarrir() ==0) {
+        if (DB.getNoOfRowsCountDistrict() == 0 &&
+                DB.getNoOfRowsCountBarrir() ==0 &&
+                DB.getNoOfRowsState() == 0 &&
+                DB.getNoOfRowsBlocks() == 0 &&
+                DB.getNoOfRowsGP() == 0 &&
+                DB.getNoOfRowsTehsil() == 0) {
+
+            Registration.create_db_states states = new Registration.create_db_states();
+            states.execute();
+
+
+
             Registration.create_db_districts mouDetails_task = new Registration.create_db_districts();
             mouDetails_task.execute();
 
             Registration.create_db_districtsBarriers bariers = new Registration.create_db_districtsBarriers();
             bariers.execute();
+
+            Registration.create_db_tehsils tehsils = new Registration.create_db_tehsils();
+            tehsils.execute();
+
+            Registration.create_db_blocks blocks = new Registration.create_db_blocks();
+            blocks.execute();
+
+            Registration.create_db_gp gp = new Registration.create_db_gp();
+            gp.execute();
+
+
+
+
         }else{
-           // CD.showDialog(Registration.this, "Something bad happened. Please restart th application.");
+
+try {
+    districts = DB.getDistrictsViaState("9");
+    adapter_district = new GenericAdapter(this, android.R.layout.simple_spinner_item, districts);
+    sp_district.setAdapter(adapter_district);
+}catch(Exception ex){
+    CD.showDialog(Registration.this,"Something Bad happened . Please reinstall the application and try again.");
+}
+
         }
 
-        List<DistrictPojo> districts = DB.getDistricts();
 
 
 
 
 
-         adapter_district = new GenericAdapter(this, android.R.layout.simple_spinner_item, districts);
-        sp_district.setAdapter(adapter_district);
+
+
 
         sp_district.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -224,6 +265,69 @@ public class Registration extends AppCompatActivity {
 
     }
 
+    class create_db_states extends AsyncTask<String, String, String> {
+
+        ProgressDialog dialog;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = ProgressDialog.show(Registration.this, "Loading", "Loading.. Please Wait", true);
+            dialog.setCancelable(false);
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            //Read file From Assets
+
+            JSONArray m_jArry = null;
+            try {
+                m_jArry = new JSONArray(Econstants.loadJSONFromAsset(Registration.this, "states.json"));
+
+                states = new ArrayList<>();
+
+                for (int i = 0; i < m_jArry.length(); i++) {
+
+                    StatePojo statePojo = new StatePojo();
+                    JSONObject jo_inside = m_jArry.getJSONObject(i);
+                    statePojo.setState_id(jo_inside.getString("state_id"));
+                    statePojo.setState_name(jo_inside.getString("state_name"));
+
+                    states.add(statePojo);
+
+
+                }
+                if (states.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "No Record Found", Toast.LENGTH_LONG).show();
+                } else {
+                    //Store Data to Database  //mou_details
+                    DatabaseHandler DB = new DatabaseHandler(Registration.this);
+                    DB.addStates(states);
+
+
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return m_jArry.toString();
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+
+            dialog.dismiss();
+        }
+    }
 
      class create_db_districts extends AsyncTask<String, String, String> {
 
@@ -255,6 +359,8 @@ public class Registration extends AppCompatActivity {
                     JSONObject jo_inside = m_jArry.getJSONObject(i);
                     districtPojo.setDistrict_id(jo_inside.getString("district_id"));
                     districtPojo.setDistrict_name(jo_inside.getString("district_name"));
+                    districtPojo.setState_id(jo_inside.getString("state_id"));
+                    districtPojo.setAlertZone(jo_inside.getString("alert_zone"));
 
                     districts.add(districtPojo);
 
@@ -283,8 +389,207 @@ public class Registration extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+            DatabaseHandler DB = new DatabaseHandler(Registration.this);
+            districts = DB.getDistrictsViaState("9");
+
+            adapter_district = new GenericAdapter(Registration.this, android.R.layout.simple_spinner_item, districts);
+            sp_district.setAdapter(adapter_district);
+
+            dialog.dismiss();
+        }
+    }
+
+    class create_db_tehsils extends AsyncTask<String, String, String> {
+
+        ProgressDialog dialog;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = ProgressDialog.show(Registration.this, "Loading", "Loading.. Please Wait", true);
+            dialog.setCancelable(false);
 
 
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            //Read file From Assets
+
+            JSONArray m_jArry = null;
+            try {
+                m_jArry = new JSONArray(Econstants.loadJSONFromAsset(Registration.this, "tehsils.json"));
+
+                tehsils = new ArrayList<>();
+
+                for (int i = 0; i < m_jArry.length(); i++) {
+
+                    TehsilPojo tehsil = new TehsilPojo();
+                    JSONObject jo_inside = m_jArry.getJSONObject(i);
+                    tehsil.setTehsil_id(jo_inside.getString("tehsil_id"));
+                    tehsil.setTehsil_name(jo_inside.getString("tehsil_name"));
+                    tehsil.setDistrict_id(jo_inside.getString("district_id"));
+
+                    tehsils.add(tehsil);
+
+
+                }
+                if (tehsils.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "No Record Found", Toast.LENGTH_LONG).show();
+                } else {
+                    //Store Data to Database  //mou_details
+                    DatabaseHandler DB = new DatabaseHandler(Registration.this);
+                    DB.addTehsil(tehsils);
+
+
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return m_jArry.toString();
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+
+            dialog.dismiss();
+        }
+    }
+
+    class create_db_blocks extends AsyncTask<String, String, String> {
+
+        ProgressDialog dialog;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = ProgressDialog.show(Registration.this, "Loading", "Loading.. Please Wait", true);
+            dialog.setCancelable(false);
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            //Read file From Assets
+
+            JSONArray m_jArry = null;
+            try {
+                m_jArry = new JSONArray(Econstants.loadJSONFromAsset(Registration.this, "blocks.json"));
+
+                blocks = new ArrayList<>();
+
+                for (int i = 0; i < m_jArry.length(); i++) {
+
+                    BlockPojo block = new BlockPojo();
+                    JSONObject jo_inside = m_jArry.getJSONObject(i);
+                    block.setBlock_code(jo_inside.optString("block_id"));
+                    block.setBlock_name(jo_inside.optString("block_name"));
+                    block.setDistrict_id(jo_inside.optString("district_id"));
+
+                    blocks.add(block);
+
+
+                }
+                if (blocks.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "No Record Found", Toast.LENGTH_LONG).show();
+                } else {
+                    //Store Data to Database  //mou_details
+                    DatabaseHandler DB = new DatabaseHandler(Registration.this);
+                    DB.addBlocks(blocks);
+
+
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return m_jArry.toString();
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+
+            dialog.dismiss();
+        }
+    }
+
+    class create_db_gp extends AsyncTask<String, String, String> {
+
+        ProgressDialog dialog;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = ProgressDialog.show(Registration.this, "Loading", "Loading.. Please Wait", true);
+            dialog.setCancelable(false);
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            //Read file From Assets
+
+            JSONArray m_jArry = null;
+            try {
+                m_jArry = new JSONArray(Econstants.loadJSONFromAsset(Registration.this, "gram_panchayat.json"));
+
+                gp = new ArrayList<>();
+
+                for (int i = 0; i < m_jArry.length(); i++) {
+
+                    GramPanchayatPojo gp_ = new GramPanchayatPojo();
+                    JSONObject jo_inside = m_jArry.getJSONObject(i);
+                    gp_.setGp_id(jo_inside.optString("gp_id"));
+                    gp_.setGp_name(jo_inside.optString("gp_name"));
+                    gp_.setBlock_id(jo_inside.optString("block_id"));
+
+                    gp.add(gp_);
+
+
+                }
+                if (gp.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "No Record Found", Toast.LENGTH_LONG).show();
+                } else {
+                    //Store Data to Database  //mou_details
+                    DatabaseHandler DB = new DatabaseHandler(Registration.this);
+                    DB.addGp(gp);
+
+
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return m_jArry.toString();
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            requestPermissions();
             dialog.dismiss();
         }
     }
@@ -351,6 +656,7 @@ public class Registration extends AppCompatActivity {
 
 
             dialog.dismiss();
+
         }
     }
 }

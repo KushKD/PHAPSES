@@ -7,12 +7,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.doi.himachal.Modal.BlockPojo;
 import com.doi.himachal.Modal.DistrictBarrierPojo;
 import com.doi.himachal.Modal.DistrictPojo;
+import com.doi.himachal.Modal.GramPanchayatPojo;
 import com.doi.himachal.Modal.ResponsePojo;
+import com.doi.himachal.Modal.StatePojo;
+import com.doi.himachal.Modal.TehsilPojo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Kush.Dhawan
@@ -24,13 +30,47 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "idV3.db";
+    private static final String DATABASE_NAME = "idV5.db";
 
     // District Tables
     private static final String TABLE_DISTRICT = "district";
     private static final String KEY_ID = "id";
+    private static final String STATE_ID = "state_id";
     private static final String DISTRICT_ID = "district_id";
     private static final String DISTRICT_NAME = "district_name";
+    private static final String ALERT_ZONE = "alert_zone";
+
+
+
+    //State Table
+    private static final String TABLE_State = "state";
+    private static final String KEY_ID_S = "id";
+    private static final String STATE_M_ID = "state_id";
+    private static final String STATE_NAME = "state_name";
+
+    //State Tehsil
+    private static final String TABLE_Tehsil = "tehsil";
+    private static final String KEY_ID_T = "id";
+    private static final String TEHSIL_M_ID = "tehsil_id";
+    private static final String TEHSIL_NAME = "tehsil_name";
+    private static final String T_DISTRICT_ID = "district_id";
+
+    //Block
+    private static final String TABLE_BLOCK = "block";
+    private static final String KEY_ID_BLOCK = "id";
+    private static final String BLOCK_M_ID = "block_id";
+    private static final String BLOCK_NAME = "block_name";
+    private static final String B_DISTRICT_ID = "district_id";
+
+    //GP
+    private static final String TABLE_GRAMPANCHAYAT = "gram_panchayat";
+    private static final String KEY_ID_GP = "id";
+    private static final String GP_M_ID = "gp_id";
+    private static final String GP_NAME = "gp_name";
+    private static final String GP_BLOCK_ID = "block_id";
+
+
+
     // Barrier Tables
     private static final String TABLE_BARRIER = "barrier";
     private static final String KEY_ID_B = "id";
@@ -67,10 +107,37 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
+
+        String CREATE_STATE_TABLE = "CREATE TABLE " + TABLE_State + "("
+                + KEY_ID_S + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + STATE_M_ID + " TEXT,"
+                + STATE_NAME + " TEXT" + ")";
+
         String CREATE_DISTRICT_TABLE = "CREATE TABLE " + TABLE_DISTRICT + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + STATE_ID + " TEXT,"
                 + DISTRICT_ID + " TEXT,"
+                + ALERT_ZONE + " TEXT,"
                 + DISTRICT_NAME + " TEXT" + ")";
+
+
+        String CREATE_TEHSIL_TABLE = "CREATE TABLE " + TABLE_Tehsil + "("
+                + KEY_ID_T + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + TEHSIL_M_ID + " TEXT,"
+                + TEHSIL_NAME + " TEXT,"
+                + T_DISTRICT_ID + " TEXT" + ")";
+
+        String CREATE_TABLE_BLOACK = "CREATE TABLE " + TABLE_BLOCK + "("
+                + KEY_ID_BLOCK + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + BLOCK_M_ID + " TEXT,"
+                + BLOCK_NAME + " TEXT,"
+                + B_DISTRICT_ID + " TEXT" + ")";
+
+        String CREATE_TABLE_GP = "CREATE TABLE " + TABLE_GRAMPANCHAYAT + "("
+                + KEY_ID_GP + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + GP_M_ID + " TEXT,"
+                + GP_NAME + " TEXT,"
+                + GP_BLOCK_ID + " TEXT" + ")";
 
         String CREATE_BARRIER_TABLE = "CREATE TABLE " + TABLE_BARRIER + "("
                 + KEY_ID_B + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -97,9 +164,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
               //  + OFFLINE_PASS_VERIFIED_TAG + " TEXT ,"
                 + OFFLINE_DATA_UPLOADEDTOSERVER + " TEXT " + ")";
 
+        db.execSQL(CREATE_STATE_TABLE);
         db.execSQL(CREATE_DISTRICT_TABLE);
         db.execSQL(CREATE_BARRIER_TABLE);
         db.execSQL(CREATE_OFFLINE_DATA_TABLE);
+        db.execSQL(CREATE_TEHSIL_TABLE);
+        db.execSQL(CREATE_TABLE_BLOACK);
+        db.execSQL(CREATE_TABLE_GP);
+
 
     }
 
@@ -107,9 +179,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DISTRICT);
-        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_NEWS_AND_ARTICLES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BARRIER);
-
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_State);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_OFFLINE_STORAGE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_Tehsil);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BLOCK);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GRAMPANCHAYAT);
         // Create tables again
         onCreate(db);
     }
@@ -123,6 +198,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put(DISTRICT_ID, districts.get(i).getDistrict_id());
             values.put(DISTRICT_NAME, districts.get(i).getDistrict_name());
+            values.put(STATE_ID, districts.get(i).getState_id());
+            values.put(ALERT_ZONE, districts.get(i).getAlertZone());
 
             db.insert(TABLE_DISTRICT, null, values);
 
@@ -139,6 +216,111 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
 
     }
+
+    public Boolean addStates(List<StatePojo> states) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+
+        try {
+            for (int i = 0; i < states.size(); i++) {
+                //mou_Details
+                ContentValues values = new ContentValues();
+                values.put(STATE_M_ID, states.get(i).getState_id());
+                values.put(STATE_NAME, states.get(i).getState_name());
+
+                db.insert(TABLE_State, null, values);
+
+            }
+
+            db.close();
+
+            return true;
+        } catch (Exception e) {
+            Log.d("Got State Table", e.getLocalizedMessage());
+            return false;
+        }
+
+    }
+
+    public Boolean addTehsil(List<TehsilPojo> tehsils) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+
+        try {
+            for (int i = 0; i < tehsils.size(); i++) {
+                //mou_Details
+                ContentValues values = new ContentValues();
+                values.put(TEHSIL_M_ID, tehsils.get(i).getTehsil_id());
+                values.put(TEHSIL_NAME, tehsils.get(i).getTehsil_name());
+                values.put(T_DISTRICT_ID, tehsils.get(i).getDistrict_id());
+
+                db.insert(TABLE_Tehsil, null, values);
+
+            }
+
+            db.close();
+
+            return true;
+        } catch (Exception e) {
+            Log.d("Got State Table", e.getLocalizedMessage());
+            return false;
+        }
+
+    }
+
+    public Boolean addBlocks(List<BlockPojo> blocks) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+
+        try {
+            for (int i = 0; i < blocks.size(); i++) {
+                //mou_Details
+                ContentValues values = new ContentValues();
+                values.put(BLOCK_M_ID, blocks.get(i).getBlock_code());
+                values.put(BLOCK_NAME, blocks.get(i).getBlock_name());
+                values.put(B_DISTRICT_ID, blocks.get(i).getDistrict_id());
+
+                db.insert(TABLE_BLOCK, null, values);
+
+            }
+
+            db.close();
+
+            return true;
+        } catch (Exception e) {
+            Log.d("Got State Table", e.getLocalizedMessage());
+            return false;
+        }
+
+    }
+
+    public Boolean addGp(List<GramPanchayatPojo> gp) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+
+        try {
+            for (int i = 0; i < gp.size(); i++) {
+                //mou_Details
+                ContentValues values = new ContentValues();
+                values.put(GP_M_ID, gp.get(i).getGp_id());
+                values.put(GP_NAME, gp.get(i).getGp_name());
+                values.put(GP_BLOCK_ID, gp.get(i).getBlock_id());
+
+                db.insert(TABLE_GRAMPANCHAYAT, null, values);
+
+            }
+
+            db.close();
+
+            return true;
+        } catch (Exception e) {
+            Log.d("Got State Table", e.getLocalizedMessage());
+            return false;
+        }
+
+    }
+
+
 
     public Boolean addDistrictBarriers(List<DistrictBarrierPojo> districtsBarriers) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -177,6 +359,46 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return count;
     }
 
+    public int getNoOfRowsBlocks() {
+        String countQuery = "SELECT  * FROM " + TABLE_BLOCK;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        return count;
+    }
+
+    public int getNoOfRowsGP() {
+        String countQuery = "SELECT  * FROM " + TABLE_GRAMPANCHAYAT;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        return count;
+    }
+
+    public int getNoOfRowsTehsil() {
+        String countQuery = "SELECT  * FROM " + TABLE_Tehsil;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        return count;
+    }
+
+    public int getNoOfRowsState() {
+        String countQuery = "SELECT  * FROM " + TABLE_State;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        return count;
+    }
+
     public int getNoOfRowsCountBarrir() {
         String countQuery = "SELECT  * FROM " + TABLE_BARRIER;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -198,11 +420,121 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             DistrictPojo md = new DistrictPojo();
             //Log.d(KEY_ID_DB, cursor.getString(0));
-            md.setDistrict_id(cursor.getString(1));
-            md.setDistrict_name(cursor.getString(2));
+            md.setDistrict_id(cursor.getString(2));
+            md.setDistrict_name(cursor.getString(4));
 
 
             news_list_db.add(md);
+        }
+        db.close(); // Closing database connection
+        return news_list_db;
+
+    }
+
+    public List<StatePojo> getStates() {
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_State;  //+ " ORDER BY " + DATE_TIME + " DESC"
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        List<StatePojo> news_list_db = new ArrayList<>();
+        // looping through all rows and adding to list
+        while (cursor.moveToNext()) {
+            StatePojo md = new StatePojo();
+            //Log.d(KEY_ID_DB, cursor.getString(0));
+            md.setState_id(cursor.getString(1));
+            md.setState_name(cursor.getString(2));
+
+
+            news_list_db.add(md);
+        }
+        db.close(); // Closing database connection
+        return news_list_db;
+
+    }
+
+    public List<DistrictPojo> getDistrictsViaState(String state_id) {
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_DISTRICT + " where  state_id ='" + state_id + "'";  //+ " ORDER BY " + DATE_TIME + " DESC"
+        Log.e("Query",selectQuery);
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        List<DistrictPojo> news_list_db = new ArrayList<>();
+        // looping through all rows and adding to list
+        while (cursor.moveToNext()) {
+            DistrictPojo md = new DistrictPojo();
+            Log.e("ID", cursor.getString(2));
+            Log.e("name", cursor.getString(4));
+            md.setDistrict_id(cursor.getString(2));
+            md.setDistrict_name(cursor.getString(4));
+
+
+            news_list_db.add(md);
+        }
+        db.close(); // Closing database connection
+        return news_list_db;
+
+    }
+
+    public List<TehsilPojo> getTehsilViaDistrict(String district_id) {
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_Tehsil + " where  district_id ='" +district_id+ "'";  //+ " ORDER BY " + DATE_TIME + " DESC"
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        List<TehsilPojo> news_list_db = new ArrayList<>();
+        // looping through all rows and adding to list
+        while (cursor.moveToNext()) {
+            TehsilPojo md = new TehsilPojo();
+            Log.e("Tehsil ID", cursor.getString(1));
+            Log.e("Tehil name", cursor.getString(2));
+            md.setTehsil_id(cursor.getString(1));
+            md.setTehsil_name(cursor.getString(2));
+
+
+            news_list_db.add(md);
+        }
+        db.close(); // Closing database connection
+        return news_list_db;
+
+    }
+
+    public List<GramPanchayatPojo> getGPViaDistrict(String block_id) {
+        // Select All Query
+        String selectQuery = "SELECT  DISTINCT gp_id, gp_name FROM " + TABLE_GRAMPANCHAYAT + " where  block_id ='" +block_id+ "'";  //+ " ORDER BY " + DATE_TIME + " DESC"
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        List<GramPanchayatPojo> news_list_db = new ArrayList<>();
+        // looping through all rows and adding to list
+        while (cursor.moveToNext()) {
+            GramPanchayatPojo md = new GramPanchayatPojo();
+            Log.e("GP ID", cursor.getString(0));
+            Log.e("GP name", cursor.getString(1));
+            md.setGp_id(cursor.getString(0));
+            md.setGp_name(cursor.getString(1));
+
+
+            news_list_db.add(md);
+        }
+        db.close(); // Closing database connection
+        return news_list_db;
+
+    }
+
+    public Set<BlockPojo> getBlocksViaDistrict(String district_id) {
+        // Select All Query
+        String selectQuery = "SELECT  DISTINCT  block_id, block_name FROM " + TABLE_BLOCK + " where  district_id ='" +district_id+ "'";  //+ " ORDER BY " + DATE_TIME + " DESC"
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Set<BlockPojo> news_list_db = new HashSet<>();
+        // looping through all rows and adding to list
+        while (cursor.moveToNext()) {
+            BlockPojo block = new BlockPojo();
+            Log.e("Block Id ID", cursor.getString(0));
+            Log.e("Block name", cursor.getString(1));
+            block.setBlock_code(cursor.getString(0));
+            block.setBlock_name(cursor.getString(1));
+
+
+            news_list_db.add(block);
         }
         db.close(); // Closing database connection
         return news_list_db;
@@ -362,6 +694,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return count;
+    }
+
+    public void dropTables(){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DISTRICT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BARRIER);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_State);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_OFFLINE_STORAGE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_Tehsil);
     }
 
 
