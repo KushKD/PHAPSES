@@ -16,6 +16,7 @@ android {
         debug {
             debuggable true
             minifyEnabled true
+
         }
         release {
             minifyEnabled true

@@ -62,7 +62,7 @@ import java.util.Set;
 public class ManualEntry extends LocationBaseActivity implements SamplePresenter.SampleView, AsyncTaskListenerObjectForm {
 
     TextView date, time;
-    EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose;
+    EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose , remarks;
     SearchableSpinner fromstate, fromdistrict, district, tehsil, block, gp, appdownloaded;
     DatabaseHandler DB = new DatabaseHandler(ManualEntry.this);
     CustomDialog CD = new CustomDialog();
@@ -348,6 +348,14 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                     offlineDataEntry.setGram_panchayat(Global_togramPanchayat);
                 }
 
+                if(remarks.getText().toString()==null || remarks.getText().toString().isEmpty()){
+                    offlineDataEntry.setRemarks("");
+
+                }else{
+
+                    offlineDataEntry.setRemarks(remarks.getText().toString().trim());
+                }
+
 
 
 
@@ -472,6 +480,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
         appdownloaded = findViewById(R.id.appdownloaded);
         back = findViewById(R.id.back);
         proceed = findViewById(R.id.proceed);
+        remarks = findViewById(R.id.remarks);
 
         grampanchayat = findViewById(R.id.gml);
 
@@ -581,7 +590,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
            // CD.showDialog(ManualEntry.this,result.getResponse());
             SuccessResponse response = JsonParse.getSuccessResponse(result.getResponse());
             if (response.getStatus().equalsIgnoreCase("200")) {
-                CD.showDialogHTMLGeneric(ManualEntry.this, response.getResponse());
+                CD.showDialogCloseActivity(ManualEntry.this, "Data Saved Successfully. "+ response.getMessage());
             } else {
                 CD.showDialogHTMLGeneric(ManualEntry.this, response.getResponse());
             }

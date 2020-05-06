@@ -32,6 +32,15 @@ public class OfflineDataEntry implements Serializable {
     private String latitude;
     private String longitude;
     private String timeStamp;
+    private String remarks;
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
 
     public String getDistrict_from() {
         return district_from;
@@ -243,6 +252,7 @@ public class OfflineDataEntry implements Serializable {
                 ", latitude='" + latitude + '\'' +
                 ", longitude='" + longitude + '\'' +
                 ", timeStamp='" + timeStamp + '\'' +
+                ", remarks='" + remarks + '\'' +
                 '}';
     }
 }

@@ -23,6 +23,34 @@ public class ScanDataPojo implements Serializable {
     private String barrrier;
     private boolean uploaddToServeer;
 
+    private String remarks;
+    private String phones;
+    private String names;
+
+    public String getPhones() {
+        return phones;
+    }
+
+    public void setPhones(String phones) {
+        this.phones = phones;
+    }
+
+    public String getNames() {
+        return names;
+    }
+
+    public void setNames(String names) {
+        this.names = names;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
     private String number_of_passengers_manual;
 
     public String getNumber_of_passengers_manual() {
@@ -135,6 +163,9 @@ public class ScanDataPojo implements Serializable {
                 ", distict='" + distict + '\'' +
                 ", barrrier='" + barrrier + '\'' +
                 ", uploaddToServeer=" + uploaddToServeer +
+                ", remarks='" + remarks + '\'' +
+                ", phones='" + phones + '\'' +
+                ", names='" + names + '\'' +
                 ", number_of_passengers_manual='" + number_of_passengers_manual + '\'' +
                 '}';
     }

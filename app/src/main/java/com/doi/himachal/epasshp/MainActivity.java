@@ -75,6 +75,8 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         home_gv = findViewById(R.id.gv);
         sliderView = findViewById(R.id.imageSlider);
         final SwipeRefreshLayout pullToRefresh = findViewById(R.id.pullToRefresh);
@@ -443,11 +445,13 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
                 //Toast.makeText(MainActivity.this, "Data Stored Locally", Toast.LENGTH_SHORT).show();
                 CD.showDialog(MainActivity.this, "Please Connect to Internet and try again.");
             } else {
-                //TODO PArse Json Response
-                // Toast.makeText(MainActivity.this, "Data Stored Locally", Toast.LENGTH_SHORT).show();
+
                 try {
                     SuccessResponse response = JsonParse.getSuccessResponse(result.getResponse());
+
                     if (response.getStatus().equalsIgnoreCase("200")) {
+                        Log.e("verify",response.toString());
+                        //TODO
                         CD.showDialogHTML(MainActivity.this, response.getResponse(), response.getMessage());
                     } else {
                         CD.showDialog(MainActivity.this, response.getResponse());

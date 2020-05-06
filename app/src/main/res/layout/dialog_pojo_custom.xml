@@ -6,7 +6,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:id="@+id/a"
         android:gravity="center"
         android:src="@drawable/id"
@@ -22,11 +22,11 @@
         android:text="Pass Details"
         android:id="@+id/name"
         android:layout_below="@+id/a"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:layout_marginBottom="20dp"
-        android:textSize="22sp"
+        android:layout_marginBottom="5dp"
+        android:textSize="18sp"
         android:textColor="@color/blue"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal" />
@@ -283,6 +283,8 @@
                 android:padding="5dp" />
         </LinearLayout>
 
+
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -338,7 +340,7 @@
             android:layout_centerHorizontal="true"
             android:background="@color/darkblue"
             android:gravity="center_vertical|center_horizontal"
-            android:text="Cancel"
+            android:text="Back"
             android:layout_marginRight="2dp"
             android:textColor="#ffffffff"
             android:layout_weight="1"/>
@@ -356,6 +358,8 @@
             android:layout_weight="1"/>
 
     </LinearLayout>
+
+
 
     <!--android:background="@drawable/btn_flat_red_selector"-->
 

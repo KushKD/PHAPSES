@@ -2,10 +2,12 @@ package com.doi.himachal.network;
 
 import android.util.Log;
 
+import com.doi.himachal.Modal.PhoneDetailsPojo;
 import com.doi.himachal.Modal.ResponsePojo;
 import com.doi.himachal.Modal.ScanDataPojo;
 import com.doi.himachal.Modal.UploadObject;
 import com.doi.himachal.Modal.UploadObjectManual;
+import com.doi.himachal.utilities.CommonUtils;
 import com.doi.himachal.utilities.Econstants;
 import com.doi.himachal.utilities.Preferences;
 
@@ -37,7 +39,10 @@ public class HttpManager {
 
         String URL = null;
         ResponsePojo response = null;
-        JSONObject object =  new JSONObject();
+        JSONObject object = new JSONObject();
+        JSONObject otherInformation = new JSONObject();
+
+        PhoneDetailsPojo phoneDetails;
 
 
         try {
@@ -56,13 +61,32 @@ public class HttpManager {
             conn_.setRequestProperty("Authorization", "Basic " + Econstants.generateAuthenticationPasswrd("COVID@908#HeM@nT", "JovpQy2Cez6545sKDRvhX3p"));
             conn_.connect();
 
+            try {
+                 phoneDetails = CommonUtils.getDeviceInfo();
+            }catch (Exception ex){
+                phoneDetails = null;
+            }
 
-            // "mobile_information": "optional",
-            // "other_information": "optional"
+            if(phoneDetails!=null){
+                object.put("phone_brand", phoneDetails.getBrand());
+                object.put("phone_id", phoneDetails.getId());
+                object.put("phone_manufacturer",phoneDetails.getManufacturer());
+                object.put("phone_model",phoneDetails.getModel());
+                object.put("phone_serial",phoneDetails.getSreial());
+                object.put("phone_version",phoneDetails.getVersion_code());
+            }
 
             object.put("logged_in_name", Preferences.getInstance().name);
             object.put("department_name", Preferences.getInstance().dept_name);
             object.put("scanned_by", data.getScanDataPojo().getScannedByPhoneNumber());
+
+            otherInformation.put("no_of_persons",data.getScanDataPojo().getNumber_of_passengers_manual());
+//            otherInformation.put("person_names",data.getScanDataPojo().getNames());
+//            otherInformation.put("person_phones",data.getScanDataPojo().getPhones());
+//            otherInformation.put("remarks",data.getScanDataPojo().getRemarks());
+
+
+
 
 
             userJson = new JSONStringer()
@@ -74,7 +98,7 @@ public class HttpManager {
                     .key("pass_id").value(data.getScanDataPojo().getPassNo())
                     .key("scanned_date_time").value(data.getScanDataPojo().getScanDate())
                     .key("mobile_information").value(object.toString())
-                    .key("other_information").value(data.getScanDataPojo().getNumber_of_passengers_manual())
+                    .key("other_information").value(otherInformation.toString())
 
 
                     .endObject();
@@ -134,7 +158,7 @@ public class HttpManager {
 
 
     public ResponsePojo PostData(UploadObjectManual data) {
-        Log.e("Here","We Are 2");
+        Log.e("Here", "We Are 2");
         URL url_ = null;
         HttpURLConnection conn_ = null;
         StringBuilder sb = null;
@@ -159,7 +183,7 @@ public class HttpManager {
             conn_.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn_.setRequestProperty("Authorization", "Basic " + Econstants.generateAuthenticationPasswrd("COVID@908#HeM@nT", "JovpQy2Cez6545sKDRvhX3p"));
             conn_.connect();
-            Log.e("Here","We Are3");
+            Log.e("Here", "We Are3");
 
             if (data.getOfflineDataEntry().getAaroyga_app_download().equalsIgnoreCase("Yes")) {
                 data.getOfflineDataEntry().setAaroyga_app_download("Y");
@@ -167,42 +191,46 @@ public class HttpManager {
                 data.getOfflineDataEntry().setAaroyga_app_download("N");
             }
 
-            Log.e("Here","We Are4");
+            Log.e("Here", "We Are4");
 
-            try{
+            try {
                 userJson = new JSONObject();
-                Log.e("Here","We Are5");
-                userJson.put("pass_id",Integer.parseInt(data.getOfflineDataEntry().getPass_no()));
-                userJson.put("no_of_person",Integer.parseInt(data.getOfflineDataEntry().getNo_of_persons()));
-                userJson.put("persons_name",data.getOfflineDataEntry().getNames());
-                userJson.put("vehicle_no",data.getOfflineDataEntry().getVehicle_number());
-                Log.e("Here","We Are6");
-               userJson.put("mobile_number",data.getOfflineDataEntry().getMobile().toString());
-                userJson.put("address",data.getOfflineDataEntry().getAddress());
-                Log.e("Here","We Are7");
-               userJson.put("state_from",Integer.parseInt(data.getOfflineDataEntry().getState_from()));
-               //district_from ,  place_to
-                userJson.put("place_to",data.getOfflineDataEntry().getPlace_to());
-                userJson.put("place_from",data.getOfflineDataEntry().getPlace_form());
-                userJson.put("district_from",Integer.parseInt(data.getOfflineDataEntry().getDistrict_from()));
-               userJson.put("district_to",Integer.parseInt(data.getOfflineDataEntry().getDistrict_to()));
-                userJson.put("tehsil_to",Integer.parseInt(data.getOfflineDataEntry().getTehsil_to()));
-                userJson.put("block_to",Integer.parseInt(data.getOfflineDataEntry().getBlock_to()));
-                userJson.put("panchyat_to",Integer.parseInt(data.getOfflineDataEntry().getGram_panchayat()));
-                userJson.put("pass_issuing_authority",data.getOfflineDataEntry().getPass_issue_authority());
-                userJson.put("purpose",data.getOfflineDataEntry().getPurpose());
-                userJson.put("aarogya_setu_app",data.getOfflineDataEntry().getAaroyga_app_download());
-               userJson.put("barrier_district",Integer.parseInt(data.getOfflineDataEntry().getDistict_barrer_id()));
-                userJson.put("barrier_id",Integer.parseInt(data.getOfflineDataEntry().getBarrier_id()));
-                userJson.put("longititute",data.getOfflineDataEntry().getLongitude());
-                userJson.put("latitude",data.getOfflineDataEntry().getLatitude());
-                userJson.put("mobile_information",data.getOfflineDataEntry().getUser_mobile());
-                userJson.put("scanned_date_time",data.getOfflineDataEntry().getTimeStamp());
-                Log.e("Here","We Are8");
+                Log.e("Here", "We Are5");
+                userJson.put("pass_id", data.getOfflineDataEntry().getPass_no());
+                userJson.put("no_of_person", Integer.parseInt(data.getOfflineDataEntry().getNo_of_persons()));
+                userJson.put("persons_name", data.getOfflineDataEntry().getNames());
+                userJson.put("vehicle_no", data.getOfflineDataEntry().getVehicle_number());
+                Log.e("Here", "We Are6");
+                userJson.put("mobile_number", data.getOfflineDataEntry().getMobile().toString());
+                userJson.put("address", data.getOfflineDataEntry().getAddress());
+                Log.e("Here", "We Are7");
+                userJson.put("state_from", Integer.parseInt(data.getOfflineDataEntry().getState_from()));
+                //district_from ,  place_to
+                userJson.put("place_to", data.getOfflineDataEntry().getPlace_to());
+                userJson.put("place_from", data.getOfflineDataEntry().getPlace_form());
+                userJson.put("district_from", Integer.parseInt(data.getOfflineDataEntry().getDistrict_from()));
+                userJson.put("district_to", Integer.parseInt(data.getOfflineDataEntry().getDistrict_to()));
+                userJson.put("tehsil_to", Integer.parseInt(data.getOfflineDataEntry().getTehsil_to()));
+                userJson.put("block_to", Integer.parseInt(data.getOfflineDataEntry().getBlock_to()));
+                userJson.put("panchyat_to", data.getOfflineDataEntry().getGram_panchayat());
+                userJson.put("pass_issuing_authority", data.getOfflineDataEntry().getPass_issue_authority());
+                userJson.put("purpose", data.getOfflineDataEntry().getPurpose());
+                userJson.put("aarogya_setu_app", data.getOfflineDataEntry().getAaroyga_app_download());
+                userJson.put("barrier_district", Integer.parseInt(data.getOfflineDataEntry().getDistict_barrer_id()));
+                userJson.put("barrier_id", Integer.parseInt(data.getOfflineDataEntry().getBarrier_id()));
+                userJson.put("longititute", data.getOfflineDataEntry().getLongitude());
+                userJson.put("latitude", data.getOfflineDataEntry().getLatitude());
+                userJson.put("mobile_information", data.getOfflineDataEntry().getUser_mobile());
+                userJson.put("scanned_date_time", data.getOfflineDataEntry().getTimeStamp());
+                userJson.put("remarks", data.getOfflineDataEntry().getRemarks());
 
-                Log.e("Here","We Are 5");
-            }catch (JSONException ex){
-                Log.e("Error",ex.getLocalizedMessage());
+
+
+                Log.e("Here", "We Are8");
+
+                Log.e("Here", "We Are 5");
+            } catch (JSONException ex) {
+                Log.e("Error", ex.getLocalizedMessage());
             }
 
             System.out.println(userJson.toString());
@@ -250,11 +278,11 @@ public class HttpManager {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            Log.e("Error",e.getLocalizedMessage());
+            Log.e("Error", e.getLocalizedMessage());
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("Error",e.getLocalizedMessage());
-        }  finally {
+            Log.e("Error", e.getLocalizedMessage());
+        } finally {
             if (conn_ != null)
                 conn_.disconnect();
         }

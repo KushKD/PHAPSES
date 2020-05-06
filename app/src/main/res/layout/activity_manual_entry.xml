@@ -113,9 +113,18 @@
                                 android:gravity="left|center_vertical|center_horizontal"
                                 android:inputType="textMultiLine"
                                 android:padding="5dp"
-                                android:textStyle="bold" />
+                                 />
 
                         </LinearLayout>
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:gravity="left|center_vertical|center_horizontal"
+                            android:padding="5dp"
+                            android:text="Use ' , '(comma) to enter multiple phone numbers"
+
+                            android:textColor="@color/red" />
 
                         <!-- Hindi -->
                         <LinearLayout
@@ -202,7 +211,7 @@
                                 android:layout_weight="1"
                                 android:gravity="left|center_vertical|center_horizontal"
                                 android:padding="5dp"
-                                android:text="Mobile "
+                                android:text="Enter Mobile Numbers "
                                 android:textColor="@color/darkblue" />
 
                             <EditText
@@ -215,6 +224,15 @@
                                 android:inputType="phone"
                                 android:padding="5dp"/>
                         </LinearLayout>
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:gravity="left|center_vertical|center_horizontal"
+                            android:padding="5dp"
+                            android:text="Use ' , '(comma) to enter multiple mobile numbers"
+
+                            android:textColor="@color/red" />
 
                         <LinearLayout
                             android:id="@+id/addressl"
@@ -345,7 +363,7 @@
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
                                 android:padding="5dp"
-                                android:textStyle="bold" />
+                                 />
                         </LinearLayout>
 
 
@@ -510,7 +528,7 @@
                                 android:background="@drawable/customborder_dialog"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:padding="5dp"
-                                android:textStyle="bold" />
+                                 />
                         </LinearLayout>
 
 
@@ -552,10 +570,10 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/customborder_dialog"
                                 android:gravity="center|center_vertical|center_horizontal"
-                                android:inputType="number"
+
                                 android:maxLines="1"
                                 android:padding="5dp"
-                                android:textStyle="bold" />
+                                 />
                         </LinearLayout>
 
                         <LinearLayout
@@ -586,7 +604,7 @@
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:maxLines="1"
                                 android:padding="5dp"
-                                android:textStyle="bold" />
+                                 />
                         </LinearLayout>
 
                         <LinearLayout
@@ -618,7 +636,7 @@
                                 android:gravity="left|center_vertical|center_horizontal"
                                 android:inputType="textMultiLine"
                                 android:padding="5dp"
-                                android:textStyle="bold" />
+                                 />
                         </LinearLayout>
 
 
@@ -691,7 +709,7 @@ android:id="@+id/date"
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:padding="5dp"
-                                android:textStyle="bold" />
+                                 />
                         </LinearLayout>
 
                         <LinearLayout
@@ -720,7 +738,37 @@ android:id="@+id/date"
                                 android:layout_weight="1"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:padding="5dp"
-                                android:textStyle="bold" />
+                                 />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/remarksl"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_margin="3dp"
+                            android:layout_marginTop="2dp"
+                            android:background="#fff"
+                            android:elevation="4dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:gravity="left|center_vertical|center_horizontal"
+                                android:padding="5dp"
+                                android:text="Remarks"
+                                android:textColor="@color/darkblue" />
+
+                            <EditText
+                                android:id="@+id/remarks"
+                                android:layout_width="match_parent"
+                                android:layout_height="60sp"
+                                android:layout_weight="1"
+                                android:background="@drawable/customborder_dialog"
+                                android:gravity="left|center_vertical|center_horizontal"
+                                android:padding="5dp"
+                                 />
                         </LinearLayout>
 
 

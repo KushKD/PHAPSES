@@ -15,11 +15,14 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Patterns;
 import android.view.Display;
 import android.view.WindowManager;
+
+import com.doi.himachal.Modal.PhoneDetailsPojo;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -274,6 +277,19 @@ public class CommonUtils {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = sdf.format(new Date());
         return date;
+    }
+
+    public static PhoneDetailsPojo getDeviceInfo(){
+        PhoneDetailsPojo phoneDetails = new PhoneDetailsPojo();
+
+            phoneDetails.setBrand(Build.BRAND);
+            phoneDetails.setId(Build.ID);
+            phoneDetails.setManufacturer(Build.MANUFACTURER);
+            phoneDetails.setModel(Build.MODEL);
+            phoneDetails.setSreial(Build.SERIAL);
+            phoneDetails.setVersion_code(Build.VERSION.RELEASE);
+            return phoneDetails;
+
     }
 
 

@@ -2,6 +2,7 @@ package com.doi.himachal.json;
 
 import com.doi.himachal.Modal.ScanDataPojo;
 import com.doi.himachal.Modal.SuccessResponse;
+import com.doi.himachal.Modal.VerifyObject;
 import com.doi.himachal.utilities.CommonUtils;
 
 import org.json.JSONException;
@@ -37,4 +38,28 @@ public class JsonParse {
 
         return sr;
     }
+
+    public static VerifyObject createVerifyMessage(String data) throws JSONException {
+
+        JSONObject responseObject = new JSONObject(data);
+        VerifyObject sr = new VerifyObject();
+        sr.setId(responseObject.getString("id"));
+        sr.setPass_id(responseObject.getString("pass_id"));
+
+        return sr;
+    }
+
+    //createJson
+    public static String createJson(VerifyObject data) throws JSONException {
+
+        JSONObject object = new JSONObject();
+        object.put("id",data.getId());
+        object.put("pass_id",data.getPass_id());
+        object.put("remarks",data.getRemarks());
+
+
+
+        return object.toString();
+    }
+
 }
