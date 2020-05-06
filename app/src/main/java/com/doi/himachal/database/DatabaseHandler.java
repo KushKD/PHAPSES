@@ -30,7 +30,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "idV5.db";
+    private static final String DATABASE_NAME = "idV6.db";
 
     // District Tables
     private static final String TABLE_DISTRICT = "district";
@@ -57,16 +57,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //Block
     private static final String TABLE_BLOCK = "block";
-    private static final String KEY_ID_BLOCK = "id";
-    private static final String BLOCK_M_ID = "block_id";
+    private static final String KEY_ID_BLOCK = "block_id";
+    private static final String BLOCK_CODE = "block_code";
     private static final String BLOCK_NAME = "block_name";
     private static final String B_DISTRICT_ID = "district_id";
+    private static final String IS_ACTIVE = "is_active";
+    private static final String IS_DELETED = "is_deleted";
 
     //GP
     private static final String TABLE_GRAMPANCHAYAT = "gram_panchayat";
-    private static final String KEY_ID_GP = "id";
-    private static final String GP_M_ID = "gp_id";
-    private static final String GP_NAME = "gp_name";
+    private static final String KEY_ID_GP = "panchayat_id";
+    private static final String GP_M_ID = "pachayat_code";
+    private static final String GP_NAME = "panchayat_name";
     private static final String GP_BLOCK_ID = "block_id";
 
 
@@ -127,16 +129,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + TEHSIL_NAME + " TEXT,"
                 + T_DISTRICT_ID + " TEXT" + ")";
 
-        String CREATE_TABLE_BLOACK = "CREATE TABLE " + TABLE_BLOCK + "("
+        String CREATE_TABLE_BLOCK = "CREATE TABLE " + TABLE_BLOCK + "("
                 + KEY_ID_BLOCK + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + BLOCK_M_ID + " TEXT,"
+                + BLOCK_CODE + " TEXT,"
                 + BLOCK_NAME + " TEXT,"
+                + IS_ACTIVE + " TEXT,"
+                + IS_DELETED + " TEXT,"
                 + B_DISTRICT_ID + " TEXT" + ")";
 
         String CREATE_TABLE_GP = "CREATE TABLE " + TABLE_GRAMPANCHAYAT + "("
                 + KEY_ID_GP + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + GP_M_ID + " TEXT,"
                 + GP_NAME + " TEXT,"
+                + IS_ACTIVE + " TEXT,"
+                + IS_DELETED + " TEXT,"
                 + GP_BLOCK_ID + " TEXT" + ")";
 
         String CREATE_BARRIER_TABLE = "CREATE TABLE " + TABLE_BARRIER + "("
@@ -169,7 +175,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_BARRIER_TABLE);
         db.execSQL(CREATE_OFFLINE_DATA_TABLE);
         db.execSQL(CREATE_TEHSIL_TABLE);
-        db.execSQL(CREATE_TABLE_BLOACK);
+        db.execSQL(CREATE_TABLE_BLOCK);
         db.execSQL(CREATE_TABLE_GP);
 
 
@@ -276,9 +282,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             for (int i = 0; i < blocks.size(); i++) {
                 //mou_Details
                 ContentValues values = new ContentValues();
-                values.put(BLOCK_M_ID, blocks.get(i).getBlock_code());
+                values.put(BLOCK_CODE, blocks.get(i).getBlock_code());
                 values.put(BLOCK_NAME, blocks.get(i).getBlock_name());
                 values.put(B_DISTRICT_ID, blocks.get(i).getDistrict_id());
+                values.put(IS_ACTIVE, blocks.get(i).getIs_active());
+                values.put(IS_DELETED, blocks.get(i).getIs_deleted());
 
                 db.insert(TABLE_BLOCK, null, values);
 
@@ -305,6 +313,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 values.put(GP_M_ID, gp.get(i).getGp_id());
                 values.put(GP_NAME, gp.get(i).getGp_name());
                 values.put(GP_BLOCK_ID, gp.get(i).getBlock_id());
+                values.put(IS_ACTIVE, gp.get(i).getIs_active());
+                values.put(IS_DELETED, gp.get(i).getIs_deleted());
 
                 db.insert(TABLE_GRAMPANCHAYAT, null, values);
 
@@ -477,6 +487,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public List<TehsilPojo> getTehsilViaDistrict(String district_id) {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_Tehsil + " where  district_id ='" +district_id+ "'";  //+ " ORDER BY " + DATE_TIME + " DESC"
+        Log.e("Qery",selectQuery);
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         List<TehsilPojo> news_list_db = new ArrayList<>();
@@ -484,6 +495,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             TehsilPojo md = new TehsilPojo();
 
+            Log.e("Tehsil1",cursor.getString(0));
+            Log.e("2",cursor.getString(1));
             md.setTehsil_id(cursor.getString(1));
             md.setTehsil_name(cursor.getString(2));
 
@@ -497,7 +510,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public List<GramPanchayatPojo> getGPViaDistrict(String block_id) {
         // Select All Query
-        String selectQuery = "SELECT  DISTINCT gp_id, gp_name FROM " + TABLE_GRAMPANCHAYAT + " where  block_id ='" +block_id+ "'";  //+ " ORDER BY " + DATE_TIME + " DESC"
+        String selectQuery = "SELECT  DISTINCT panchayat_id , panchayat_name FROM " + TABLE_GRAMPANCHAYAT + " where  block_id ='" +block_id+ "'";  //+ " ORDER BY " + DATE_TIME + " DESC"
+        Log.e("Qery",selectQuery);
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         List<GramPanchayatPojo> news_list_db = new ArrayList<>();
@@ -505,6 +519,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             GramPanchayatPojo md = new GramPanchayatPojo();
 
+            Log.e("1",cursor.getString(0));
+            Log.e("2",cursor.getString(1));
             md.setGp_id(cursor.getString(0));
             md.setGp_name(cursor.getString(1));
 
@@ -519,6 +535,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public Set<BlockPojo> getBlocksViaDistrict(String district_id) {
         // Select All Query
         String selectQuery = "SELECT  DISTINCT  block_id, block_name FROM " + TABLE_BLOCK + " where  district_id ='" +district_id+ "'";  //+ " ORDER BY " + DATE_TIME + " DESC"
+        Log.e("Qery",selectQuery);
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         Set<BlockPojo> news_list_db = new HashSet<>();
@@ -526,6 +543,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             BlockPojo block = new BlockPojo();
 
+            Log.e("1",cursor.getString(0));
+            Log.e("2",cursor.getString(1));
             block.setBlock_code(cursor.getString(0));
             block.setBlock_name(cursor.getString(1));
 

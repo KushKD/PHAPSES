@@ -1,13 +1,16 @@
 package com.doi.himachal.epasshp;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -15,8 +18,10 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.GridView;
 
+import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.blikoon.qrcodescanner.QrCodeActivity;
 import com.doi.himachal.Adapter.HomeGridViewAdapter;
 import com.doi.himachal.Adapter.SliderAdapter;
 import com.doi.himachal.Modal.ModulesPojo;
@@ -69,6 +74,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         home_gv = findViewById(R.id.gv);
         sliderView = findViewById(R.id.imageSlider);
         final SwipeRefreshLayout pullToRefresh = findViewById(R.id.pullToRefresh);
@@ -271,6 +277,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
 
 
         if (requestCode == REQUEST_CODE_QR_SCAN) {
+
             if (data == null) {
                 return;
             } else {
@@ -295,7 +302,12 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
             }
         }
 
+
+
     }
+
+
+
 
 
     private ScanDataPojo updateScanData(ScanDataPojo scanData) {

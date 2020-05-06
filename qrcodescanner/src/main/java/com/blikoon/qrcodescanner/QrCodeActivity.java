@@ -1,6 +1,7 @@
 package com.blikoon.qrcodescanner;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +12,7 @@ import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,6 +29,8 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 
 import com.google.zxing.Result;
 import com.blikoon.qrcodescanner.camera.CameraManager;
@@ -88,6 +92,7 @@ public class QrCodeActivity extends Activity implements Callback, OnClickListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_code);
         initView();
@@ -100,9 +105,10 @@ public class QrCodeActivity extends Activity implements Callback, OnClickListene
         boolean hasHardware = checkCameraHardWare(this);
         if (hasHardware) {
             if (!hasCameraPermission()) {
-                findViewById(R.id.qr_code_view_background).setVisibility(View.VISIBLE);
-                mQrCodeFinderView.setVisibility(View.GONE);
-                mPermissionOk = false;
+                    requestPermissions();
+               //findViewById(R.id.qr_code_view_background).setVisibility(View.VISIBLE);
+               // mQrCodeFinderView.setVisibility(View.GONE);
+              //  mPermissionOk = false;
             } else {
                 mPermissionOk = true;
             }
@@ -111,6 +117,26 @@ public class QrCodeActivity extends Activity implements Callback, OnClickListene
             finish();
         }
     }
+
+    private void requestPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(QrCodeActivity.this,
+                    Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{
+
+
+                        Manifest.permission.CAMERA
+
+
+                }, 0);
+                mPermissionOk = true;
+            }
+        }
+
+
+    }
+
 
     private void initView() {
         TextView tvPic = (TextView) findViewById(R.id.qr_code_header_black_pic);
@@ -132,6 +158,7 @@ public class QrCodeActivity extends Activity implements Callback, OnClickListene
     }
 
     private boolean hasCameraPermission() {
+
         PackageManager pm = getPackageManager();
         return PackageManager.PERMISSION_GRANTED == pm.checkPermission("android.permission.CAMERA", getPackageName());
     }
@@ -141,7 +168,9 @@ public class QrCodeActivity extends Activity implements Callback, OnClickListene
         super.onResume();
         checkPermission();
         if (!mPermissionOk) {
-            mDecodeManager.showPermissionDeniedDialog(this);
+           // checkPermission();
+            Log.e("Permission", "Denied");
+           // mDecodeManager.showPermissionDeniedDialog(this);
             return;
         }
         SurfaceHolder surfaceHolder = mSurfaceView.getHolder();
@@ -152,7 +181,7 @@ public class QrCodeActivity extends Activity implements Callback, OnClickListene
             surfaceHolder.addCallback(this);
             surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         }
-
+//
         mPlayBeep = true;
         AudioManager audioService = (AudioManager) getSystemService(AUDIO_SERVICE);
         if (audioService.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
@@ -209,7 +238,8 @@ public class QrCodeActivity extends Activity implements Callback, OnClickListene
             return;
         } catch (RuntimeException re) {
             re.printStackTrace();
-            mDecodeManager.showPermissionDeniedDialog(this);
+            requestPermissions();
+           // mDecodeManager.showPermissionDeniedDialog(this);
             return;
         }
         mQrCodeFinderView.setVisibility(View.VISIBLE);
@@ -307,7 +337,8 @@ public class QrCodeActivity extends Activity implements Callback, OnClickListene
         }else if(v.getId() == R.id.qr_code_header_black_pic)
         {
             if (!hasCameraPermission()) {
-                    mDecodeManager.showPermissionDeniedDialog(this);
+                requestPermissions();
+                  //  mDecodeManager.showPermissionDeniedDialog(this);
                 } else {
                     openSystemAlbum();
                 }
@@ -374,6 +405,15 @@ public class QrCodeActivity extends Activity implements Callback, OnClickListene
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        //this is only needed if you have specific things
+        //that you want to do when the user presses the back button.
+        /* your specific things...*/
+       // super.onBackPressed();
+        QrCodeActivity.this.finish();
     }
 
     public String getPathFromUri(Uri uri) {

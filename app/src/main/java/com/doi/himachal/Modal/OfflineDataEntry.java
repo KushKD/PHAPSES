@@ -12,7 +12,7 @@ public class OfflineDataEntry implements Serializable {
     private String names;
     private String no_of_persons;
     private String vehicle_number;
-    private Long mobile;
+    private String mobile;
     private String address;
     private String state_from;
     private String district_from;
@@ -73,11 +73,11 @@ public class OfflineDataEntry implements Serializable {
         this.vehicle_number = vehicle_number;
     }
 
-    public Long getMobile() {
+    public String getMobile() {
         return mobile;
     }
 
-    public void setMobile(Long mobile) {
+    public void setMobile(String mobile) {
         this.mobile = mobile;
     }
 

@@ -206,7 +206,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 TehsilPojo item = adapter_tehsil.getItem(position);
 
                 //  Global_district_id = item.getDistrict_id();
-                Log.e("Block Id-===", item.getTehsil_id());
+                Log.e("Tehsil Id-===", item.getTehsil_id());
                 Global_totehsil = item.getTehsil_id();
 
 
@@ -223,7 +223,8 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 BlockPojo item = adapterBlocks.getItem(position);
-
+                Log.e("data", item.toString());
+                Log.e("data", item.getBlock_code());
                 //  Global_district_id = item.getDistrict_id();
                 Log.e("Block Id-===", item.getBlock_code());
                 Global_toblock = item.getBlock_code();
@@ -231,14 +232,16 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 Log.e("Size", Integer.toString(grampanchayats.size()));
 
                 if (grampanchayats.size() != 0) {
+                    grampanchayat.setVisibility(View.VISIBLE);
                     adaptergp = new GenericAdapterGP(ManualEntry.this, android.R.layout.simple_spinner_item, grampanchayats);
                     gp.setAdapter(adaptergp);
 
                 } else {
-                    CD.showDialog(ManualEntry.this, "No Panchayats found for the specific blocks");
+                   // CD.showDialog(ManualEntry.this, "No Panchayats found for the specific blocks");
                     adaptergp = null;
                     gp.setAdapter(adaptergp);
                     grampanchayat.setVisibility(View.GONE);
+                    Global_togramPanchayat = "0";
                 }
 
 
@@ -258,7 +261,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 GramPanchayatPojo item = adaptergp.getItem(position);
 
                 //  Global_district_id = item.getDistrict_id();
-                Log.e("Block Id-===", item.getGp_id());
+                Log.e("Gram Panchayat Id-===", item.getGp_id());
                 Global_togramPanchayat = item.getGp_id();
 
 
@@ -313,25 +316,25 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 offlineDataEntry.setUser_mobile(Preferences.getInstance().phone_number);
 
 
-                if(address.getText().toString()==null && address.getText().toString().isEmpty()){
+                if(address.getText().toString()==null || address.getText().toString().isEmpty()){
                     offlineDataEntry.setAddress("");
                 }else{
                     offlineDataEntry.setAddress(address.getText().toString().trim());
                 }
 
-                if(fromplace.getText().toString()==null && fromplace.getText().toString().isEmpty()){
+                if(fromplace.getText().toString()==null || fromplace.getText().toString().isEmpty()){
                     offlineDataEntry.setPlace_form("");
                 }else{
                     offlineDataEntry.setPlace_form(fromplace.getText().toString().trim());
                 }
 
-                if(placenameto.getText().toString()==null && placenameto.getText().toString().isEmpty()){
+                if(placenameto.getText().toString()==null || placenameto.getText().toString().isEmpty()){
                     offlineDataEntry.setPlace_to("");
                 }else{
                     offlineDataEntry.setPlace_to(placenameto.getText().toString().trim());
                 }
 
-                if(purpose.getText().toString()==null && purpose.getText().toString().isEmpty()){
+                if(purpose.getText().toString()==null || purpose.getText().toString().isEmpty()){
                     offlineDataEntry.setPurpose("");
                 }else{
                     offlineDataEntry.setPurpose(purpose.getText().toString().trim());
@@ -359,8 +362,8 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                         if (vehiclenumber.getText().toString() != null && !vehiclenumber.getText().toString().isEmpty()) {
                             offlineDataEntry.setVehicle_number(vehiclenumber.getText().toString().trim());
 
-                            if (mobilenumber.getText().toString() != null && !mobilenumber.getText().toString().isEmpty() && mobilenumber.getText().toString().length()==10) {
-                                offlineDataEntry.setMobile(Long.parseLong(mobilenumber.getText().toString().trim()));
+                            if (mobilenumber.getText().toString() != null && !mobilenumber.getText().toString().isEmpty() ) {
+                                offlineDataEntry.setMobile(mobilenumber.getText().toString().trim());
 
                                 if (passno.getText().toString() != null && !passno.getText().toString().isEmpty()) {
                                     offlineDataEntry.setPass_no(passno.getText().toString().trim());

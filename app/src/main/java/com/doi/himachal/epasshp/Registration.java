@@ -255,31 +255,29 @@ try {
         return tutorialItems;
     }
 
-    private void requestPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(getApplicationContext(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.INTERNET,
-                        Manifest.permission.CALL_PHONE,
-                        Manifest.permission.ACCESS_NETWORK_STATE,
-                        Manifest.permission.CHANGE_NETWORK_STATE,
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.VIBRATE
-
-
-                }, 0);
-            }
-        }
-
-
-    }
+//    private void requestPermissions() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (ContextCompat.checkSelfPermission(getApplicationContext(),
+//                    Manifest.permission.ACCESS_COARSE_LOCATION)
+//                    != PackageManager.PERMISSION_GRANTED) {
+//                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+//
+//                        Manifest.permission.INTERNET,
+//                        Manifest.permission.ACCESS_NETWORK_STATE,
+//                        Manifest.permission.CHANGE_NETWORK_STATE,
+//                        Manifest.permission.ACCESS_FINE_LOCATION,
+//                        Manifest.permission.ACCESS_COARSE_LOCATION,
+//                        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+//                        Manifest.permission.CAMERA,
+//                        Manifest.permission.VIBRATE
+//
+//
+//                }, 0);
+//            }
+//        }
+//
+//
+//    }
 
     class create_db_states extends AsyncTask<String, String, String> {
 
@@ -352,7 +350,7 @@ try {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            dialog = ProgressDialog.show(Registration.this, "Loading", "Loading.. Please Wait", true);
+            dialog = ProgressDialog.show(Registration.this, "Loading", "Preparing for the first time. This may take upto 1 minute, please be patient", true);
             dialog.setCancelable(false);
 
 
@@ -422,7 +420,7 @@ try {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            dialog = ProgressDialog.show(Registration.this, "Loading", "Loading.. Please Wait", true);
+            dialog = ProgressDialog.show(Registration.this, "Loading", "Preparing for the first time. This may take upto 1 minute, please be patient", true);
             dialog.setCancelable(false);
 
 
@@ -487,7 +485,7 @@ try {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            dialog = ProgressDialog.show(Registration.this, "Loading", "Loading.. Please Wait", true);
+            dialog = ProgressDialog.show(Registration.this, "Loading", "\"Preparing for the first time. This may take upto 1 minute, please be patient\"", true);
             dialog.setCancelable(false);
 
 
@@ -511,6 +509,9 @@ try {
                     block.setBlock_code(jo_inside.optString("block_id"));
                     block.setBlock_name(jo_inside.optString("block_name"));
                     block.setDistrict_id(jo_inside.optString("district_id"));
+                    block.setBlock_code(jo_inside.optString("block_code"));
+                    block.setIs_active(jo_inside.optString("is_active"));
+                    block.setIs_deleted(jo_inside.optString("is_deleted"));
 
                     blocks.add(block);
 
@@ -552,7 +553,7 @@ try {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            dialog = ProgressDialog.show(Registration.this, "Loading", "Loading.. Please Wait", true);
+            dialog = ProgressDialog.show(Registration.this, "Loading", "Preparing for the first time. This may take upto 1 minute, please be patient", true);
             dialog.setCancelable(false);
 
 
@@ -573,9 +574,11 @@ try {
 
                     GramPanchayatPojo gp_ = new GramPanchayatPojo();
                     JSONObject jo_inside = m_jArry.getJSONObject(i);
-                    gp_.setGp_id(jo_inside.optString("gp_id"));
-                    gp_.setGp_name(jo_inside.optString("gp_name"));
+                    gp_.setGp_id(jo_inside.optString("pachayat_code"));
+                    gp_.setGp_name(jo_inside.optString("panchayat_name"));
                     gp_.setBlock_id(jo_inside.optString("block_id"));
+                    gp_.setIs_active(jo_inside.optString("is_active"));
+                    gp_.setIs_deleted(jo_inside.optString("is_deleted"));
 
                     gp.add(gp_);
 
@@ -605,7 +608,7 @@ try {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            requestPermissions();
+
             dialog.dismiss();
         }
     }
@@ -617,7 +620,7 @@ try {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            dialog = ProgressDialog.show(Registration.this, "Loading", "Loading.. Please Wait", true);
+            dialog = ProgressDialog.show(Registration.this, "Loading", "Preparing for the first time. This may take upto 1 minute, please be patient", true);
             dialog.setCancelable(false);
 
 

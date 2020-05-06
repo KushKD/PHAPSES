@@ -177,10 +177,14 @@ public class HttpManager {
                 userJson.put("persons_name",data.getOfflineDataEntry().getNames());
                 userJson.put("vehicle_no",data.getOfflineDataEntry().getVehicle_number());
                 Log.e("Here","We Are6");
-               userJson.put("mobile_number",data.getOfflineDataEntry().getMobile());
+               userJson.put("mobile_number",data.getOfflineDataEntry().getMobile().toString());
                 userJson.put("address",data.getOfflineDataEntry().getAddress());
                 Log.e("Here","We Are7");
                userJson.put("state_from",Integer.parseInt(data.getOfflineDataEntry().getState_from()));
+               //district_from ,  place_to
+                userJson.put("place_to",data.getOfflineDataEntry().getPlace_to());
+                userJson.put("place_from",data.getOfflineDataEntry().getPlace_form());
+                userJson.put("district_from",Integer.parseInt(data.getOfflineDataEntry().getDistrict_from()));
                userJson.put("district_to",Integer.parseInt(data.getOfflineDataEntry().getDistrict_to()));
                 userJson.put("tehsil_to",Integer.parseInt(data.getOfflineDataEntry().getTehsil_to()));
                 userJson.put("block_to",Integer.parseInt(data.getOfflineDataEntry().getBlock_to()));

@@ -194,13 +194,13 @@
                             android:layout_marginTop="2dp"
                             android:background="#fff"
                             android:elevation="4dp"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
                                 android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
+                                android:gravity="left|center_vertical|center_horizontal"
                                 android:padding="5dp"
                                 android:text="Mobile "
                                 android:textColor="@color/darkblue" />
@@ -208,14 +208,12 @@
                             <EditText
                                 android:id="@+id/mobilenumber"
                                 android:layout_width="match_parent"
-                                android:layout_height="fill_parent"
+                                android:layout_height="50dp"
                                 android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
+                                android:gravity="left|center_vertical|center_horizontal"
                                 android:background="@drawable/customborder_dialog"
-                                android:inputType="number"
-                                android:maxLength="10"
-                                android:padding="5dp"
-                                android:textStyle="bold" />
+                                android:inputType="phone"
+                                android:padding="5dp"/>
                         </LinearLayout>
 
                         <LinearLayout
