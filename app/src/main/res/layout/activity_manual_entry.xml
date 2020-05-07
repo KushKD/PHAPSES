@@ -94,14 +94,32 @@
                             android:elevation="4dp"
                             android:orientation="vertical">
 
-                            <TextView
+                            <LinearLayout
+
                                 android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="3dp"
+                                android:layout_marginTop="2dp"
+                                android:background="#fff"
+                                android:elevation="4dp"
+                                android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
                                 android:layout_height="fill_parent"
-                                android:layout_weight="1"
                                 android:gravity="left|center_vertical|center_horizontal"
                                 android:padding="5dp"
                                 android:text="Enter Names"
                                 android:textColor="@color/darkblue" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:gravity="left|center_vertical|center_horizontal"
+                                android:padding="5dp"
+                                android:text="*"
+                                android:textColor="@color/red" />
+                            </LinearLayout>
 
 
                             <EditText
@@ -122,7 +140,7 @@
                             android:layout_weight="1"
                             android:gravity="left|center_vertical|center_horizontal"
                             android:padding="5dp"
-                            android:text="Use ' , '(comma) to enter multiple phone numbers"
+                            android:text="Use ' , '(comma) or ' - ' (dash) to enter multiple phone numbers"
 
                             android:textColor="@color/red" />
 
@@ -137,15 +155,36 @@
                             android:elevation="4dp"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <LinearLayout
 
                                 android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="3dp"
+                                android:layout_marginTop="2dp"
                                 android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:padding="5dp"
-                                android:text="Number of Persons"
-                                android:textColor="@color/darkblue" />
+                                android:background="#fff"
+                                android:elevation="4dp"
+                                android:orientation="horizontal">
+                                <TextView
+
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="fill_parent"
+                                    android:gravity="center|center_vertical|center_horizontal"
+                                    android:padding="5dp"
+                                    android:text="Number of Persons"
+                                    android:textColor="@color/darkblue" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="fill_parent"
+                                    android:gravity="left|center_vertical|center_horizontal"
+                                    android:padding="5dp"
+                                    android:textColor="@color/red"
+                                    android:text="*" />
+
+
+
+                            </LinearLayout>
 
                             <EditText
                                 android:id="@+id/numberpersons"
@@ -171,14 +210,34 @@
                             android:elevation="4dp"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <LinearLayout
+
                                 android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="3dp"
+                                android:layout_marginTop="2dp"
                                 android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:padding="5dp"
-                                android:text="Vehicle Number"
-                                android:textColor="@color/darkblue" />
+                                android:background="#fff"
+                                android:elevation="4dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="fill_parent"
+                                    android:gravity="center|center_vertical|center_horizontal"
+                                    android:padding="1dp"
+                                    android:text="Vehicle Number"
+                                    android:textColor="@color/darkblue" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="fill_parent"
+                                    android:gravity="left|center_vertical|center_horizontal"
+                                    android:padding="5dp"
+                                    android:textColor="@color/red"
+                                    android:text="*" />
+                            </LinearLayout>
+
+
 
                             <EditText
                                 android:id="@+id/vehiclenumber"
@@ -205,14 +264,35 @@
                             android:elevation="4dp"
                             android:orientation="vertical">
 
-                            <TextView
+                            <LinearLayout
+
                                 android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="1"
-                                android:gravity="left|center_vertical|center_horizontal"
-                                android:padding="5dp"
-                                android:text="Enter Mobile Numbers "
-                                android:textColor="@color/darkblue" />
+                                android:layout_height="wrap_content"
+                                android:layout_margin="3dp"
+                                android:layout_marginTop="2dp"
+                                android:background="#fff"
+                                android:elevation="4dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="fill_parent"
+                                    android:gravity="left|center_vertical|center_horizontal"
+
+                                    android:text="Enter Mobile Numbers "
+                                    android:textColor="@color/darkblue" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="fill_parent"
+                                    android:gravity="left|center_vertical|center_horizontal"
+                                    android:padding="5dp"
+                                    android:text="*"
+                                    android:textColor="@color/red" />
+
+                            </LinearLayout>
+
+
 
                             <EditText
                                 android:id="@+id/mobilenumber"
@@ -230,7 +310,7 @@
                             android:layout_weight="1"
                             android:gravity="left|center_vertical|center_horizontal"
                             android:padding="5dp"
-                            android:text="Use ' , '(comma) to enter multiple mobile numbers"
+                            android:text="Use ' , '(comma) or ' - ' (dash) to enter multiple mobile numbers"
 
                             android:textColor="@color/red" />
 
@@ -554,14 +634,36 @@
                             android:elevation="4dp"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <LinearLayout
+
                                 android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="3dp"
+                                android:layout_marginTop="2dp"
+                                android:background="#fff"
+                                android:elevation="4dp"
                                 android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:padding="5dp"
-                                android:text="Pass No"
-                                android:textColor="@color/darkblue" />
+                                android:orientation="horizontal">
+
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="fill_parent"
+                                    android:gravity="center|center_vertical|center_horizontal"
+                                    android:padding="5dp"
+                                    android:text="Pass No"
+                                    android:textColor="@color/darkblue" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="fill_parent"
+                                    android:gravity="left|center_vertical|center_horizontal"
+                                    android:padding="5dp"
+                                    android:text="*"
+                                    android:textColor="@color/red"/>
+
+
+
+                            </LinearLayout>
 
                             <EditText
                                 android:id="@+id/passno"
@@ -586,14 +688,36 @@
                             android:elevation="4dp"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <LinearLayout
+
                                 android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="3dp"
+                                android:layout_marginTop="2dp"
+                                android:background="#fff"
+                                android:elevation="4dp"
                                 android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
-                                android:padding="5dp"
-                                android:text="Pass Issue Authority"
-                                android:textColor="@color/darkblue" />
+                                android:orientation="horizontal">
+
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="fill_parent"
+                                    android:gravity="center|center_vertical|center_horizontal"
+                                    android:padding="5dp"
+                                    android:text="Pass Issue Authority"
+                                    android:textColor="@color/darkblue" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="fill_parent"
+                                    android:gravity="left|center_vertical|center_horizontal"
+                                    android:padding="5dp"
+                                    android:text="*"
+                                    android:textColor="@color/red"/>
+
+                            </LinearLayout>
+
+
 
                             <EditText
                                 android:id="@+id/authority"
