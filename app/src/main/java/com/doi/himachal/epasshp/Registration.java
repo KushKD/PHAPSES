@@ -57,7 +57,6 @@ public class Registration extends AppCompatActivity {
     public List<GramPanchayatPojo> gp = null;
 
 
-    public List<DistrictPojo> districts_sp = null;
     public List<DistrictBarrierPojo> barrirs = null;
     CustomDialog CD = new CustomDialog();
 
@@ -65,7 +64,7 @@ public class Registration extends AppCompatActivity {
     GenericAdapterBarrier adapter_barrier = null;
 
     com.doi.spinnersearchable.SearchableSpinner sp_district, sp_barrier;
-    EditText phone,depat_name,name;
+    EditText phone, depat_name, name;
     Button register;
 
     private static final int REQUEST_CODE = 1234;
@@ -83,8 +82,8 @@ public class Registration extends AppCompatActivity {
         sp_barrier.setPrompt("Please Select Barrier");
 
         phone = findViewById(R.id.phone);
-        depat_name= findViewById(R.id.depat_name);
-        name= findViewById(R.id.name);
+        depat_name = findViewById(R.id.depat_name);
+        name = findViewById(R.id.name);
         register = findViewById(R.id.register);
 
 
@@ -96,7 +95,7 @@ public class Registration extends AppCompatActivity {
 
         final DatabaseHandler DB = new DatabaseHandler(Registration.this);
         if (DB.getNoOfRowsCountDistrict() == 0 &&
-                DB.getNoOfRowsCountBarrir() ==0 &&
+                DB.getNoOfRowsCountBarrir() == 0 &&
                 DB.getNoOfRowsState() == 0 &&
                 DB.getNoOfRowsBlocks() == 0 &&
                 DB.getNoOfRowsGP() == 0 &&
@@ -104,7 +103,6 @@ public class Registration extends AppCompatActivity {
 
             Registration.create_db_states states = new Registration.create_db_states();
             states.execute();
-
 
 
             Registration.create_db_districts mouDetails_task = new Registration.create_db_districts();
@@ -123,26 +121,17 @@ public class Registration extends AppCompatActivity {
             gp.execute();
 
 
+        } else {
 
-
-        }else{
-
-try {
-    districts = DB.getDistrictsViaState("9");
-    adapter_district = new GenericAdapter(this, android.R.layout.simple_spinner_item, districts);
-    sp_district.setAdapter(adapter_district);
-}catch(Exception ex){
-    CD.showDialog(Registration.this,"Something Bad happened . Please reinstall the application and try again.");
-}
+            try {
+                districts = DB.getDistrictsViaState("9");
+                adapter_district = new GenericAdapter(this, android.R.layout.simple_spinner_item, districts);
+                sp_district.setAdapter(adapter_district);
+            } catch (Exception ex) {
+                CD.showDialog(Registration.this, "Something Bad happened . Please reinstall the application and try again.");
+            }
 
         }
-
-
-
-
-
-
-
 
 
         sp_district.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -151,14 +140,14 @@ try {
                 DistrictPojo item = adapter_district.getItem(position);
 
                 Global_district_id = item.getDistrict_id();
-                List<DistrictBarrierPojo> barrier =DB.getBarriers(item.getDistrict_id());
+                List<DistrictBarrierPojo> barrier = DB.getBarriers(item.getDistrict_id());
 
-                if(!barrier.isEmpty()){
+                if (!barrier.isEmpty()) {
                     adapter_barrier = new GenericAdapterBarrier(Registration.this, android.R.layout.simple_spinner_item, barrier);
                     sp_barrier.setAdapter(adapter_barrier);
 
-                }else{
-                    CD.showDialog(Registration.this,"No Barrier found for the specific District");
+                } else {
+                    CD.showDialog(Registration.this, "No Barrier found for the specific District");
                     adapter_barrier = null;
                     sp_barrier.setAdapter(adapter_barrier);
                 }
@@ -176,7 +165,7 @@ try {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 DistrictBarrierPojo item = adapter_barrier.getItem(position);
-                Log.e("We are Here",item.getBarrier_id());
+                Log.e("We are Here", item.getBarrier_id());
                 Global_barrier_id = item.getBarrier_id();
 
             }
@@ -192,11 +181,11 @@ try {
             public void onClick(View v) {
 
 
-                if(!phone.getText().toString().trim().isEmpty() && phone.getText().toString().trim().length()==10){
+                if (!phone.getText().toString().trim().isEmpty() && phone.getText().toString().trim().length() == 10) {
 
-                    if(!name.getText().toString().isEmpty() && name.getText().toString()!=null){
+                    if (!name.getText().toString().isEmpty() && name.getText().toString() != null) {
 
-                        if(!depat_name.getText().toString().isEmpty() && depat_name.getText().toString()!=null){
+                        if (!depat_name.getText().toString().isEmpty() && depat_name.getText().toString() != null) {
                             //Clicked
                             Preferences.getInstance().loadPreferences(Registration.this);
                             Preferences.getInstance().district_id = Global_district_id;
@@ -212,17 +201,17 @@ try {
                             Intent mainIntent = new Intent(Registration.this, MainActivity.class);
                             Registration.this.startActivity(mainIntent);
                             Registration.this.finish();
-                        }else{
-                            CD.showDialog(Registration.this,"Please enter Department name");
+                        } else {
+                            CD.showDialog(Registration.this, "Please enter Department name");
                         }
 
-                    }else{
-                        CD.showDialog(Registration.this,"Please enter name");
+                    } else {
+                        CD.showDialog(Registration.this, "Please enter name");
                     }
 
 
-                }else{
-                    CD.showDialog(Registration.this,"Please enter a valid 10 digit Mobile number");
+                } else {
+                    CD.showDialog(Registration.this, "Please enter a valid 10 digit Mobile number");
                 }
 
 
@@ -230,58 +219,13 @@ try {
         });
 
 
-        }
-
-    public void loadTutorial() {
-        Intent mainAct = new Intent(this, MaterialTutorialActivity.class);
-        mainAct.putParcelableArrayListExtra(MaterialTutorialActivity.MATERIAL_TUTORIAL_ARG_TUTORIAL_ITEMS, getTutorialItems(this));
-        startActivityForResult(mainAct, REQUEST_CODE);
-
     }
 
-    private ArrayList<TutorialItem> getTutorialItems(Context context) {
-        TutorialItem tutorialItem1 = new TutorialItem("Scan the QR Code to verify the ePass", "",
-                R.color.slide_4,R.drawable.qrcode);
-
-//        TutorialItem tutorialItem2 = new TutorialItem("View Information about the ePass on the fly.", "",
-//                R.color.slide_2,  R.drawable.tut_page_2_background);
-
-
-
-        ArrayList<TutorialItem> tutorialItems = new ArrayList<>();
-        tutorialItems.add(tutorialItem1);
-       // tutorialItems.add(tutorialItem2);
-
-        return tutorialItems;
-    }
-
-//    private void requestPermissions() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (ContextCompat.checkSelfPermission(getApplicationContext(),
-//                    Manifest.permission.ACCESS_COARSE_LOCATION)
-//                    != PackageManager.PERMISSION_GRANTED) {
-//                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
-//
-//                        Manifest.permission.INTERNET,
-//                        Manifest.permission.ACCESS_NETWORK_STATE,
-//                        Manifest.permission.CHANGE_NETWORK_STATE,
-//                        Manifest.permission.ACCESS_FINE_LOCATION,
-//                        Manifest.permission.ACCESS_COARSE_LOCATION,
-//                        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-//                        Manifest.permission.CAMERA,
-//                        Manifest.permission.VIBRATE
-//
-//
-//                }, 0);
-//            }
-//        }
-//
-//
-//    }
 
     class create_db_states extends AsyncTask<String, String, String> {
 
         ProgressDialog dialog;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -314,14 +258,9 @@ try {
 
 
                 }
-                if (states.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "No Record Found", Toast.LENGTH_LONG).show();
-                } else {
-                    //Store Data to Database  //mou_details
+                if (!states.isEmpty()) {
                     DatabaseHandler DB = new DatabaseHandler(Registration.this);
                     DB.addStates(states);
-
-
                 }
 
 
@@ -343,9 +282,10 @@ try {
         }
     }
 
-     class create_db_districts extends AsyncTask<String, String, String> {
+    class create_db_districts extends AsyncTask<String, String, String> {
 
         ProgressDialog dialog;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -380,14 +320,9 @@ try {
 
 
                 }
-                if (districts.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "No Record Found", Toast.LENGTH_LONG).show();
-                } else {
-                    //Store Data to Database  //mou_details
+                if (!districts.isEmpty()) {
                     DatabaseHandler DB = new DatabaseHandler(Registration.this);
                     DB.addDistrict(districts);
-
-
                 }
 
 
@@ -416,6 +351,7 @@ try {
     class create_db_tehsils extends AsyncTask<String, String, String> {
 
         ProgressDialog dialog;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -449,14 +385,9 @@ try {
 
 
                 }
-                if (tehsils.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "No Record Found", Toast.LENGTH_LONG).show();
-                } else {
-                    //Store Data to Database  //mou_details
+                if (!tehsils.isEmpty()) {
                     DatabaseHandler DB = new DatabaseHandler(Registration.this);
                     DB.addTehsil(tehsils);
-
-
                 }
 
 
@@ -481,6 +412,7 @@ try {
     class create_db_blocks extends AsyncTask<String, String, String> {
 
         ProgressDialog dialog;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -517,14 +449,9 @@ try {
 
 
                 }
-                if (blocks.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "No Record Found", Toast.LENGTH_LONG).show();
-                } else {
-                    //Store Data to Database  //mou_details
+                if (!blocks.isEmpty()) {
                     DatabaseHandler DB = new DatabaseHandler(Registration.this);
                     DB.addBlocks(blocks);
-
-
                 }
 
 
@@ -549,6 +476,7 @@ try {
     class create_db_gp extends AsyncTask<String, String, String> {
 
         ProgressDialog dialog;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -584,14 +512,9 @@ try {
 
 
                 }
-                if (gp.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "No Record Found", Toast.LENGTH_LONG).show();
-                } else {
-                    //Store Data to Database  //mou_details
+                if (!gp.isEmpty()) {
                     DatabaseHandler DB = new DatabaseHandler(Registration.this);
                     DB.addGp(gp);
-
-
                 }
 
 
@@ -616,6 +539,7 @@ try {
     class create_db_districtsBarriers extends AsyncTask<String, String, String> {
 
         ProgressDialog dialog;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -649,16 +573,10 @@ try {
 
 
                 }
-                if (barrirs.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "No Record Found", Toast.LENGTH_LONG).show();
-                } else {
-                    //Store Data to Database  //mou_details
+                if (!barrirs.isEmpty()) {
                     DatabaseHandler DB = new DatabaseHandler(Registration.this);
                     DB.addDistrictBarriers(barrirs);
-
-
                 }
-
 
             } catch (JSONException e) {
                 e.printStackTrace();

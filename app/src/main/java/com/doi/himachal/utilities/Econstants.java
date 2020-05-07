@@ -2,6 +2,8 @@ package com.doi.himachal.utilities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Base64;
 import android.util.Log;
 
@@ -99,4 +101,136 @@ public class Econstants {
         return Base64.encodeToString(SB.toString().getBytes(),Base64.DEFAULT);
       //  return Base64.getEncoder().encodeToString(SB.toString().getBytes("utf-8"));
     }
+
+
+    public static final String HTML =  "<table style=\" font-family: 'Arial Black', Gadget, sans-serif;width: 100%; text-align: center;\" >\n" +
+            "<thead style=\" background: #1C6EA4;  background: -moz-linear-gradient(top, #5592bb 0%, #327cad 66%, #1C6EA4 100%); background: -webkit-linear-gradient(top, #5592bb 0%, #327cad 66%, #1C6EA4 100%);  background: linear-gradient(to bottom, #5592bb 0%, #327cad 66%, #1C6EA4 100%);\">\n" +
+            "<tr>\n" +
+            "<th style= \"border: 1px solid #AAAAAA; padding: 3px 2px;  font-size: 14px; font-weight: bold; color: #FFFFFF; height\"></th>\n" +
+            "<th style= \"border: 1px solid #AAAAAA; padding: 3px 2px;  font-size: 14px; font-weight: bold; color: #FFFFFF;\"></th>\n" +
+            "</tr>\n" +
+            "</thead>\n" +
+            "\n" +
+            "\n" +
+            "<tbody>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \" border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "<tr>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">key</td>\n" +
+            "<td style= \"border: 1px solid #AAAAAA; padding: 3px 2px; font-size: 14px; \">value</td>\n" +
+            "</tr>\n" +
+            "</tbody>\n" +
+            "</table>\n" +
+            "\n" +
+            "\n" +
+            "\n";
+
+
+    /**
+     * @param  activity
+     * @return application version
+     * Getting the Application Version of the App for Reference
+     */
+    public static String getVersion(Activity activity) {
+        String version = "";
+        try {
+            PackageInfo pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
+            version = pInfo.versionName;
+            return version;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return version;
+        }
+    }
+
 }

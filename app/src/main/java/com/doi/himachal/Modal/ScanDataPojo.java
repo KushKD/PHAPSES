@@ -27,6 +27,16 @@ public class ScanDataPojo implements Serializable {
     private String phones;
     private String names;
 
+    private String versionApp;
+
+    public String getVersionApp() {
+        return versionApp;
+    }
+
+    public void setVersionApp(String versionApp) {
+        this.versionApp = versionApp;
+    }
+
     public String getPhones() {
         return phones;
     }
@@ -166,6 +176,7 @@ public class ScanDataPojo implements Serializable {
                 ", remarks='" + remarks + '\'' +
                 ", phones='" + phones + '\'' +
                 ", names='" + names + '\'' +
+                ", versionApp='" + versionApp + '\'' +
                 ", number_of_passengers_manual='" + number_of_passengers_manual + '\'' +
                 '}';
     }

@@ -33,6 +33,15 @@ public class OfflineDataEntry implements Serializable {
     private String longitude;
     private String timeStamp;
     private String remarks;
+    private String versionCode;
+
+    public String getVersionCode() {
+        return versionCode;
+    }
+
+    public void setVersionCode(String versionCode) {
+        this.versionCode = versionCode;
+    }
 
     public String getRemarks() {
         return remarks;
@@ -226,6 +235,7 @@ public class OfflineDataEntry implements Serializable {
         this.longitude = longitude;
     }
 
+
     @Override
     public String toString() {
         return "OfflineDataEntry{" +
@@ -253,6 +263,7 @@ public class OfflineDataEntry implements Serializable {
                 ", longitude='" + longitude + '\'' +
                 ", timeStamp='" + timeStamp + '\'' +
                 ", remarks='" + remarks + '\'' +
+                ", versionCode='" + versionCode + '\'' +
                 '}';
     }
 }

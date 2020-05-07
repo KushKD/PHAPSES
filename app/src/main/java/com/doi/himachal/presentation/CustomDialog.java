@@ -115,6 +115,7 @@ public class CustomDialog {
         final String mimeType = "text/html";
         final String encoding = "UTF-8";
 
+        //msg
 
         webView.loadDataWithBaseURL("", msg, mimeType, encoding, "");
 
@@ -271,7 +272,7 @@ public class CustomDialog {
                     System.out.println("====Manual Entry" + scanData.getNumber_of_passengers_manual());
                 }
 
-
+                scanData.setVersionApp(Econstants.getVersion(activity));
                 //Start ASYNC TASK TODO
                 // prepare your parameters that need to be sent back to activity
                 Intent intent = new Intent("UploadServer");
@@ -300,6 +301,7 @@ public class CustomDialog {
         scanData.setPrsonNo("-");
         scanData.setDateIssueDate("-");
         scanData.setScanDate(CommonUtils.getCurrentDate());
+        scanData.setVersionApp(Econstants.getVersion(activity));
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);

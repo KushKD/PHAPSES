@@ -74,11 +74,13 @@ public class HttpManager {
                 object.put("phone_model",phoneDetails.getModel());
                 object.put("phone_serial",phoneDetails.getSreial());
                 object.put("phone_version",phoneDetails.getVersion_code());
+
             }
 
             object.put("logged_in_name", Preferences.getInstance().name);
             object.put("department_name", Preferences.getInstance().dept_name);
             object.put("scanned_by", data.getScanDataPojo().getScannedByPhoneNumber());
+            object.put("app_version",data.getScanDataPojo().getVersionApp());
 
             otherInformation.put("no_of_persons",data.getScanDataPojo().getNumber_of_passengers_manual());
 //            otherInformation.put("person_names",data.getScanDataPojo().getNames());
@@ -166,6 +168,8 @@ public class HttpManager {
 
         String URL = null;
         ResponsePojo response = null;
+        JSONObject object = new JSONObject();
+        PhoneDetailsPojo phoneDetails = null;
 
 
         try {
@@ -194,6 +198,30 @@ public class HttpManager {
             Log.e("Here", "We Are4");
 
             try {
+
+                try {
+                    phoneDetails = CommonUtils.getDeviceInfo();
+                }catch (Exception ex){
+                    phoneDetails = null;
+                }
+
+
+                if(phoneDetails!=null){
+                    object.put("phone_brand", phoneDetails.getBrand());
+                    object.put("phone_id", phoneDetails.getId());
+                    object.put("phone_manufacturer",phoneDetails.getManufacturer());
+                    object.put("phone_model",phoneDetails.getModel());
+                    object.put("phone_serial",phoneDetails.getSreial());
+                    object.put("phone_version",phoneDetails.getVersion_code());
+
+                }
+
+                object.put("logged_in_name", Preferences.getInstance().name);
+                object.put("department_name", Preferences.getInstance().dept_name);
+                object.put("scanned_by",  data.getOfflineDataEntry().getUser_mobile());
+                object.put("app_version",data.getOfflineDataEntry().getVersionCode());
+
+
                 userJson = new JSONObject();
                 Log.e("Here", "We Are5");
                 userJson.put("pass_id", data.getOfflineDataEntry().getPass_no());
@@ -220,7 +248,7 @@ public class HttpManager {
                 userJson.put("barrier_id", Integer.parseInt(data.getOfflineDataEntry().getBarrier_id()));
                 userJson.put("longititute", data.getOfflineDataEntry().getLongitude());
                 userJson.put("latitude", data.getOfflineDataEntry().getLatitude());
-                userJson.put("mobile_information", data.getOfflineDataEntry().getUser_mobile());
+                userJson.put("mobile_information", object.toString());
                 userJson.put("scanned_date_time", data.getOfflineDataEntry().getTimeStamp());
                 userJson.put("remarks", data.getOfflineDataEntry().getRemarks());
 

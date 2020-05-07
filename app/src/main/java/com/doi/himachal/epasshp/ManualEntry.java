@@ -43,6 +43,7 @@ import com.doi.himachal.presentation.CustomDialog;
 import com.doi.himachal.utilities.AppStatus;
 import com.doi.himachal.utilities.CommonUtils;
 import com.doi.himachal.utilities.DateTime;
+import com.doi.himachal.utilities.Econstants;
 import com.doi.himachal.utilities.Preferences;
 import com.doi.himachal.utilities.SamplePresenter;
 import com.doi.spinnersearchable.SearchableSpinner;
@@ -288,6 +289,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
             public void onClick(View v) {
 
                 OfflineDataEntry offlineDataEntry = new OfflineDataEntry();
+                offlineDataEntry.setVersionCode(Econstants.getVersion(ManualEntry.this));
 
 
                 if (!userLocation.isEmpty()) {
