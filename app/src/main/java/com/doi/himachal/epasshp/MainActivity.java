@@ -76,7 +76,6 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
         setContentView(R.layout.activity_main);
 
 
-
         home_gv = findViewById(R.id.gv);
         sliderView = findViewById(R.id.imageSlider);
         final SwipeRefreshLayout pullToRefresh = findViewById(R.id.pullToRefresh);
@@ -120,10 +119,10 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
         modules.add(mp3);
         modules.add(mp4);
 
-       // Log.e("userLocation",userLocation);
+        // Log.e("userLocation",userLocation);
 
 
-     adapter_modules = new HomeGridViewAdapter(this, (ArrayList<ModulesPojo>) modules);
+        adapter_modules = new HomeGridViewAdapter(this, (ArrayList<ModulesPojo>) modules);
         home_gv.setAdapter(adapter_modules);
 
         adapters = new SliderAdapter(MainActivity.this);
@@ -305,11 +304,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
         }
 
 
-
     }
-
-
-
 
 
     private ScanDataPojo updateScanData(ScanDataPojo scanData) {
@@ -440,9 +435,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
     public void onTaskCompleted(ResponsePojo result, TaskType taskType) throws JSONException {
         if (taskType == TaskType.UPLOAD_SCANNED_PASS) {
 
-            Log.e("We are Heter", "Result" + result.toString());
             if (result.getResponse().isEmpty()) {
-                //Toast.makeText(MainActivity.this, "Data Stored Locally", Toast.LENGTH_SHORT).show();
                 CD.showDialog(MainActivity.this, "Please Connect to Internet and try again.");
             } else {
 
@@ -450,11 +443,11 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
                     SuccessResponse response = JsonParse.getSuccessResponse(result.getResponse());
 
                     if (response.getStatus().equalsIgnoreCase("200")) {
-                        Log.e("verify",response.toString());
+                        Log.e("verify", response.toString());
                         //TODO
                         CD.showDialogHTML(MainActivity.this, response.getResponse(), response.getMessage());
                     } else {
-                        CD.showDialog(MainActivity.this, response.getResponse());
+                        CD.showDialog(MainActivity.this, response.getMessage());
                     }
                 } catch (Exception ex) {
                     CD.showDialog(MainActivity.this, result.getResponse());
@@ -473,10 +466,11 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
                 //TODO PArse Json Response
                 // Toast.makeText(MainActivity.this, "Data Stored Locally", Toast.LENGTH_SHORT).show();
                 SuccessResponse response = JsonParse.getSuccessResponse(result.getResponse());
+                Log.e("Status", response.getStatus());
                 if (response.getStatus().equalsIgnoreCase("200")) {
                     CD.showDialog(MainActivity.this, response.getResponse());
                 } else {
-                    CD.showDialog(MainActivity.this, response.getResponse());
+                    CD.showDialog(MainActivity.this, response.getMessage());
                 }
 
             }

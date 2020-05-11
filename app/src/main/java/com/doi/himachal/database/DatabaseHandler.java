@@ -484,6 +484,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
+    public List<DistrictPojo> getDistrictsViaState() {
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_DISTRICT ;  //+ " ORDER BY " + DATE_TIME + " DESC"
+        Log.e("Query",selectQuery);
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        List<DistrictPojo> news_list_db = new ArrayList<>();
+        // looping through all rows and adding to list
+        while (cursor.moveToNext()) {
+            DistrictPojo md = new DistrictPojo();
+
+            md.setDistrict_id(cursor.getString(2));
+            md.setDistrict_name(cursor.getString(4));
+
+
+            news_list_db.add(md);
+        }
+        db.close(); // Closing database connection
+        return news_list_db;
+
+    }
+
     public List<TehsilPojo> getTehsilViaDistrict(String district_id) {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_Tehsil + " where  district_id ='" +district_id+ "'";  //+ " ORDER BY " + DATE_TIME + " DESC"

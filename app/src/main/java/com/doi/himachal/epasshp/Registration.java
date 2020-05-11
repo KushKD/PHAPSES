@@ -125,6 +125,11 @@ public class Registration extends AppCompatActivity {
 
             try {
                 districts = DB.getDistrictsViaState("9");
+                DistrictPojo otherDistrict = new DistrictPojo();
+                otherDistrict.setDistrict_id("0");
+                otherDistrict.setDistrict_name("Other");
+                districts.add(otherDistrict);
+               // districts = DB.getDistrictsViaState();
                 adapter_district = new GenericAdapter(this, android.R.layout.simple_spinner_item, districts);
                 sp_district.setAdapter(adapter_district);
             } catch (Exception ex) {
@@ -140,7 +145,14 @@ public class Registration extends AppCompatActivity {
                 DistrictPojo item = adapter_district.getItem(position);
 
                 Global_district_id = item.getDistrict_id();
+
+
                 List<DistrictBarrierPojo> barrier = DB.getBarriers(item.getDistrict_id());
+                DistrictBarrierPojo barrierPojo =  new DistrictBarrierPojo();
+                barrierPojo.setBarrir_name("Other");
+                barrierPojo.setBarrier_id("0");
+                barrier.add(barrierPojo);
+
 
                 if (!barrier.isEmpty()) {
                     adapter_barrier = new GenericAdapterBarrier(Registration.this, android.R.layout.simple_spinner_item, barrier);
@@ -320,6 +332,10 @@ public class Registration extends AppCompatActivity {
 
 
                 }
+                DistrictPojo otherDistrict = new DistrictPojo();
+                otherDistrict.setDistrict_id("0");
+                otherDistrict.setDistrict_name("Other");
+                districts.add(otherDistrict);
                 if (!districts.isEmpty()) {
                     DatabaseHandler DB = new DatabaseHandler(Registration.this);
                     DB.addDistrict(districts);
@@ -340,6 +356,10 @@ public class Registration extends AppCompatActivity {
             super.onPostExecute(result);
             DatabaseHandler DB = new DatabaseHandler(Registration.this);
             districts = DB.getDistrictsViaState("9");
+            DistrictPojo otherDistrict = new DistrictPojo();
+            otherDistrict.setDistrict_id("0");
+            otherDistrict.setDistrict_name("Other");
+            districts.add(otherDistrict);
 
             adapter_district = new GenericAdapter(Registration.this, android.R.layout.simple_spinner_item, districts);
             sp_district.setAdapter(adapter_district);

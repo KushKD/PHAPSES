@@ -151,7 +151,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:hint="Enter  Departmet"
+                        android:hint="Enter  Departmet name / Place name"
                         android:imeActionLabel="Phone Number"
                         android:imeOptions="actionUnspecified"
                         android:maxLines="1"

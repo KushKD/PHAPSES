@@ -29,9 +29,7 @@
         android:layout_height="match_parent"
         android:layout_weight="0.3" >
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+
 
 
         <LinearLayout
@@ -42,11 +40,12 @@
             >
             <WebView
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:id="@+id/dialog_result"
                 android:layout_below="@+id/a"
                 android:background="@color/white"
+                android:hardwareAccelerated="true"
                 android:layout_centerHorizontal="true"
                 android:gravity="center_horizontal" />
 
@@ -56,38 +55,38 @@
                 android:layout_height="fill_parent"
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="0dp"
-                android:background="@color/white"
                 android:layout_weight="1.5"
-                android:orientation="vertical">
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:visibility="visible">
+
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Remarks"
-                    android:padding="2dp"
-                    android:textSize="16dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
                     android:layout_weight="1"
                     android:gravity="center_vertical|center_horizontal|left"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="@color/dark_grey" />
+                    android:padding="2dp"
+                    android:text="Remarks"
+                    android:textColor="@color/dark_grey"
+                    android:textSize="16dp" />
 
                 <EditText
+                    android:id="@+id/remarks"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/remarks"
-                    android:inputType="textMultiLine|textNoSuggestions"
+                    android:layout_below="@+id/dialog_result"
                     android:layout_weight="1"
                     android:gravity="left"
+                    android:inputType="textMultiLine|textNoSuggestions"
                     android:overScrollMode="always"
                     android:scrollbarStyle="insideInset"
                     android:scrollbars="vertical"
-                    android:layout_below="@+id/dialog_result"
                     android:textColor="@color/dark_grey" />
             </LinearLayout>
 
 
         </LinearLayout>
-
-        </ScrollView>
 
 
     </LinearLayout>

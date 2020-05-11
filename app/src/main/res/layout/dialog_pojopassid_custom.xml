@@ -43,6 +43,9 @@
 
 
 
+
+
+
         <!-- Brief -->
         <LinearLayout
             android:id="@+id/brief"
@@ -63,14 +66,14 @@
                 android:textColor="@color/darkblue" />
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center|center_vertical|center_horizontal"
-                android:padding="5dp"
-                android:text="HP- "
-                android:textColor="@color/darkblue"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center|center_vertical|center_horizontal"-->
+                <!--android:padding="5dp"-->
+                <!--android:text="HP- "-->
+                <!--android:textColor="@color/darkblue"-->
+                <!--android:textStyle="bold" />-->
 
             <EditText
                 android:id="@+id/passnumber"
@@ -79,12 +82,20 @@
                 android:layout_weight="1"
                 android:background="@drawable/customborder_dialog"
                 android:gravity="center|center_vertical|center_horizontal"
-                android:inputType="number"
-                android:maxLines="1"
                 android:padding="5dp"
+                android:inputType="textCapCharacters"
                 android:textStyle="bold" />
 
         </LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left|center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="** Please enter the complete pass number. e.g. HP-1234 or REG-1234"
+            android:textColor="@color/red" />
 
         <!-- Hindi -->
         <LinearLayout
