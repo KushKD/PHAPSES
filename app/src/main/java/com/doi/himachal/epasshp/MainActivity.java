@@ -35,6 +35,7 @@ import com.doi.himachal.interfaces.AsyncTaskListenerObject;
 import com.doi.himachal.json.JsonParse;
 import com.doi.himachal.presentation.CustomDialog;
 import com.doi.himachal.utilities.AppStatus;
+import com.doi.himachal.utilities.Econstants;
 import com.doi.himachal.utilities.Preferences;
 import com.doi.himachal.utilities.SamplePresenter;
 import com.kushkumardhawan.locationmanager.base.LocationBaseActivity;
@@ -167,7 +168,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
                         //TODO Internet Check
 
                         UploadObject object = new UploadObject();
-                        object.setUrl("http://covid19epass.hp.gov.in/api/v1/savebarrierdata");
+                        object.setUrl(Econstants.URL_HTTPS+"savebarrierdata");
                         object.setTasktype(TaskType.UPLOAD_SCANNED_PASS);
                         object.setMethordName("savebarrierdata");
                         object.setScanDataPojo(data);
@@ -194,7 +195,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
                         data = updateLocation(data);
                         Log.e("UploadServerManual", data.toString());
                         UploadObject object = new UploadObject();
-                        object.setUrl("http://covid19epass.hp.gov.in/api/v1/savebarrierdata");
+                        object.setUrl(Econstants.URL_HTTPS+"savebarrierdata");
                         object.setTasktype(TaskType.UPLOAD_SCANNED_PASS);
                         object.setMethordName("savebarrierdata");
                         object.setScanDataPojo(data);
@@ -219,7 +220,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
                         Log.e("Data From Dialog", data.toString());
 
                         UploadObject object = new UploadObject();
-                        object.setUrl("http://covid19epass.hp.gov.in/api/v1/verifydetails");
+                        object.setUrl(Econstants.URL_HTTPS+"verifydetails");
                         object.setTasktype(TaskType.VERIFY_DETAILS);
                         object.setMethordName("verifydetails");
                         object.setParam(data);
