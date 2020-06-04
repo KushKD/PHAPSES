@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.doi.himachal.Adapter.GenericAdapter;
 import com.doi.himachal.Adapter.GenericAdapterBarrier;
@@ -63,7 +66,7 @@ import java.util.Set;
 public class ManualEntry extends LocationBaseActivity implements SamplePresenter.SampleView, AsyncTaskListenerObjectForm {
 
     TextView date, time;
-    EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose , remarks;
+    EditText names, numberpersons, vehiclenumber, mobilenumber, address,address_two,address_three,address_other,address_four, fromplace, placenameto, passno, authority, purpose , remarks;
     SearchableSpinner fromstate, fromdistrict, district, tehsil, block, gp, appdownloaded;
     DatabaseHandler DB = new DatabaseHandler(ManualEntry.this);
     CustomDialog CD = new CustomDialog();
@@ -83,7 +86,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     GenericAdapterBlocks adapterBlocks = null;
     GenericAdapterGP adaptergp = null;
 
-    LinearLayout grampanchayat;
+    LinearLayout grampanchayat, address2,address3,address4, addressother;
 
     String Global_fromstate, Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat;
 
@@ -99,6 +102,67 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
         init();
         samplePresenter = new SamplePresenter(this);
         getLocation();
+
+
+
+        //second, we create the TextWatcher
+        TextWatcher textWatcher = new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                //here, after we introduced something in the EditText we get the string from it
+                String answerString = numberpersons.getText().toString();
+
+                if(answerString.equalsIgnoreCase("1")){
+                    address2.setVisibility(View.GONE);
+                    address3.setVisibility(View.GONE);
+                    address4.setVisibility(View.GONE);
+                    addressother.setVisibility(View.GONE);
+                }
+               else if(answerString.equalsIgnoreCase("2")){
+                    address2.setVisibility(View.VISIBLE);
+                    address3.setVisibility(View.GONE);
+                    address4.setVisibility(View.GONE);
+                    addressother.setVisibility(View.GONE);
+                }
+                else if(answerString.equalsIgnoreCase("3")){
+                    address2.setVisibility(View.VISIBLE);
+                    address3.setVisibility(View.VISIBLE);
+                    address4.setVisibility(View.GONE);
+                    addressother.setVisibility(View.GONE);
+                }
+                else if(answerString.equalsIgnoreCase("4")){
+                    address2.setVisibility(View.VISIBLE);
+                    address3.setVisibility(View.VISIBLE);
+                    address4.setVisibility(View.VISIBLE);
+                    addressother.setVisibility(View.GONE);
+
+                }
+                else{
+                    address2.setVisibility(View.VISIBLE);
+                    address3.setVisibility(View.VISIBLE);
+                    address4.setVisibility(View.VISIBLE);
+                    addressother.setVisibility(View.VISIBLE);
+                }
+
+                //and now we make a Toast
+                //modify "yourActivity.this" with your activity name .this
+                //Toast.makeText(ManualEntry.this,"The string from EditText is: "+answerString,Toast.LENGTH_SHORT).show();
+
+            }
+        };
+        numberpersons.addTextChangedListener(textWatcher);
+
 
         //GET States
         states = DB.getStates();
@@ -323,6 +387,26 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 }else{
                     offlineDataEntry.setAddress(address.getText().toString().trim());
                 }
+                if(address_two.getText().toString()==null || address_two.getText().toString().isEmpty()){
+                    offlineDataEntry.setAddress_two_("");
+                }else{
+                    offlineDataEntry.setAddress_two_(address_two.getText().toString().trim());
+                }
+                if(address_three.getText().toString()==null || address_three.getText().toString().isEmpty()){
+                    offlineDataEntry.setAddress_three_("");
+                }else{
+                    offlineDataEntry.setAddress_three_(address_three.getText().toString().trim());
+                }
+                if(address_four.getText().toString()==null || address_four.getText().toString().isEmpty()){
+                    offlineDataEntry.setAddress_four_("");
+                }else{
+                    offlineDataEntry.setAddress_four_(address_four.getText().toString().trim());
+                }
+                if(address_other.getText().toString()==null || address_other.getText().toString().isEmpty()){
+                    offlineDataEntry.setAddress_other_("");
+                }else{
+                    offlineDataEntry.setAddress_other_(address_other.getText().toString().trim());
+                }
 
                 if(fromplace.getText().toString()==null || fromplace.getText().toString().isEmpty()){
                     offlineDataEntry.setPlace_form("");
@@ -483,6 +567,15 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
         back = findViewById(R.id.back);
         proceed = findViewById(R.id.proceed);
         remarks = findViewById(R.id.remarks);
+        address2 = findViewById(R.id.address2);
+        address3 = findViewById(R.id.address3);
+        address4 = findViewById(R.id.address4);
+        addressother = findViewById(R.id.addressother);
+
+        address_two = findViewById(R.id.address_two);
+        address_three = findViewById(R.id.address_three);
+        address_four = findViewById(R.id.address_four);
+        address_other =findViewById(R.id.address_other);
 
         grampanchayat = findViewById(R.id.gml);
 

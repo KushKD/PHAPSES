@@ -34,6 +34,10 @@ public class OfflineDataEntry implements Serializable {
     private String timeStamp;
     private String remarks;
     private String versionCode;
+    private String address_two_;
+    private String address_three_;
+    private String address_four_;
+    private String address_other_;
 
     public String getVersionCode() {
         return versionCode;
@@ -236,6 +240,38 @@ public class OfflineDataEntry implements Serializable {
     }
 
 
+    public String getAddress_two_() {
+        return address_two_;
+    }
+
+    public void setAddress_two_(String address_two_) {
+        this.address_two_ = address_two_;
+    }
+
+    public String getAddress_three_() {
+        return address_three_;
+    }
+
+    public void setAddress_three_(String address_three_) {
+        this.address_three_ = address_three_;
+    }
+
+    public String getAddress_four_() {
+        return address_four_;
+    }
+
+    public void setAddress_four_(String address_four_) {
+        this.address_four_ = address_four_;
+    }
+
+    public String getAddress_other_() {
+        return address_other_;
+    }
+
+    public void setAddress_other_(String address_other_) {
+        this.address_other_ = address_other_;
+    }
+
     @Override
     public String toString() {
         return "OfflineDataEntry{" +
@@ -264,6 +300,10 @@ public class OfflineDataEntry implements Serializable {
                 ", timeStamp='" + timeStamp + '\'' +
                 ", remarks='" + remarks + '\'' +
                 ", versionCode='" + versionCode + '\'' +
+                ", address_two_='" + address_two_ + '\'' +
+                ", address_three_='" + address_three_ + '\'' +
+                ", address_four_='" + address_four_ + '\'' +
+                ", address_other_='" + address_other_ + '\'' +
                 '}';
     }
 }
