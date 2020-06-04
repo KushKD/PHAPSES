@@ -527,6 +527,7 @@ public class Registration extends AppCompatActivity {
                     gp_.setBlock_id(jo_inside.optString("block_id"));
                     gp_.setIs_active(jo_inside.optString("is_active"));
                     gp_.setIs_deleted(jo_inside.optString("is_deleted"));
+                    gp_.setPanchayat_pradhan_number(jo_inside.optString("panchayat_pradhan_number"));
 
                     gp.add(gp_);
 

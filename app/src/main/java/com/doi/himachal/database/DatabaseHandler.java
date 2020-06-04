@@ -27,10 +27,10 @@ import java.util.Set;
  */
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database Name
-    private static final String DATABASE_NAME = "idV6.db";
+    private static final String DATABASE_NAME = "idV7.db";
 
     // District Tables
     private static final String TABLE_DISTRICT = "district";
@@ -70,6 +70,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String GP_M_ID = "pachayat_code";
     private static final String GP_NAME = "panchayat_name";
     private static final String GP_BLOCK_ID = "block_id";
+    private static final String GP_PARDHAN_PHONE = "pardhan_phone";
 
 
 
@@ -143,7 +144,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + GP_NAME + " TEXT,"
                 + IS_ACTIVE + " TEXT,"
                 + IS_DELETED + " TEXT,"
-                + GP_BLOCK_ID + " TEXT" + ")";
+                + GP_BLOCK_ID + " TEXT,"
+                + GP_PARDHAN_PHONE + " TEXT" + ")";
 
         String CREATE_BARRIER_TABLE = "CREATE TABLE " + TABLE_BARRIER + "("
                 + KEY_ID_B + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -315,6 +317,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 values.put(GP_BLOCK_ID, gp.get(i).getBlock_id());
                 values.put(IS_ACTIVE, gp.get(i).getIs_active());
                 values.put(IS_DELETED, gp.get(i).getIs_deleted());
+                values.put(GP_PARDHAN_PHONE,gp.get(i).getIs_deleted());
 
                 db.insert(TABLE_GRAMPANCHAYAT, null, values);
 

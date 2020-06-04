@@ -220,10 +220,7 @@ public class HttpManager {
                 object.put("department_name", Preferences.getInstance().dept_name);
                 object.put("scanned_by",  data.getOfflineDataEntry().getUser_mobile());
                 object.put("app_version",data.getOfflineDataEntry().getVersionCode());
-                object.put("address_two",data.getOfflineDataEntry().getAddress_two_());
-                object.put("address_three",data.getOfflineDataEntry().getAddress_three_());
-                object.put("address_four",data.getOfflineDataEntry().getAddress_four_());
-                object.put("address_other",data.getOfflineDataEntry().getAddress_other_());
+
 
 
 

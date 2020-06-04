@@ -14,6 +14,8 @@ public class GramPanchayatPojo implements Serializable {
     private String block_id;
     private String is_active;
     private String is_deleted;
+    private String panchayat_pradhan_number;
+
 
     public String getGp_id() {
         return gp_id;
@@ -53,6 +55,14 @@ public class GramPanchayatPojo implements Serializable {
 
     public void setIs_deleted(String is_deleted) {
         this.is_deleted = is_deleted;
+    }
+
+    public String getPanchayat_pradhan_number() {
+        return panchayat_pradhan_number;
+    }
+
+    public void setPanchayat_pradhan_number(String panchayat_pradhan_number) {
+        this.panchayat_pradhan_number = panchayat_pradhan_number;
     }
 
     @Override
