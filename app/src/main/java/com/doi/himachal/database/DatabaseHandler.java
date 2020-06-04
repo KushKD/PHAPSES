@@ -27,10 +27,10 @@ import java.util.Set;
  */
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // Database Name
-    private static final String DATABASE_NAME = "idV7.db";
+    private static final String DATABASE_NAME = "idV8.db";
 
     // District Tables
     private static final String TABLE_DISTRICT = "district";
