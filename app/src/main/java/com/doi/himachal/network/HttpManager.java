@@ -11,6 +11,7 @@ import com.doi.himachal.utilities.CommonUtils;
 import com.doi.himachal.utilities.Econstants;
 import com.doi.himachal.utilities.Preferences;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -41,6 +42,7 @@ public class HttpManager {
         ResponsePojo response = null;
         JSONObject object = new JSONObject();
         JSONObject otherInformation = new JSONObject();
+        JSONArray array =  new JSONArray();
 
         PhoneDetailsPojo phoneDetails;
 
@@ -169,6 +171,8 @@ public class HttpManager {
         String URL = null;
         ResponsePojo response = null;
         JSONObject object = new JSONObject();
+        JSONObject otherPersons = null;
+        JSONArray array = new JSONArray();
         PhoneDetailsPojo phoneDetails = null;
 
 
@@ -220,6 +224,38 @@ public class HttpManager {
                 object.put("department_name", Preferences.getInstance().dept_name);
                 object.put("scanned_by",  data.getOfflineDataEntry().getUser_mobile());
                 object.put("app_version",data.getOfflineDataEntry().getVersionCode());
+
+                try{
+                    if(!data.getOfflineDataEntry().getOtherPersons().isEmpty()){
+                        for(int i=0; i<Integer.parseInt(data.getOfflineDataEntry().getNo_of_persons())-1;i++){
+                            otherPersons = new JSONObject();
+                            otherPersons.put("name",data.getOfflineDataEntry().getOtherPersons().get(i).getEnter_name());
+                            otherPersons.put("mobile",data.getOfflineDataEntry().getOtherPersons().get(i).getMobile_number());
+                            otherPersons.put("fromstate",data.getOfflineDataEntry().getOtherPersons().get(i).getFrom_state());
+                            otherPersons.put("fromDistrict",data.getOfflineDataEntry().getOtherPersons().get(i).getFrom_district());
+                            otherPersons.put("fromPlace",data.getOfflineDataEntry().getOtherPersons().get(i).getFrom_place());
+                            otherPersons.put("toDistrict",data.getOfflineDataEntry().getOtherPersons().get(i).getDistrict());
+                            otherPersons.put("toTehsil",data.getOfflineDataEntry().getOtherPersons().get(i).getTehsil());
+                            otherPersons.put("toBlocktown",data.getOfflineDataEntry().getOtherPersons().get(i).getBlock_town());
+                            otherPersons.put("towardPanchayat",data.getOfflineDataEntry().getOtherPersons().get(i).getGp_ward());
+                            otherPersons.put("toplace",data.getOfflineDataEntry().getOtherPersons().get(i).getPlace());
+                            otherPersons.put("passNo",data.getOfflineDataEntry().getOtherPersons().get(i).getPass_number());
+                            otherPersons.put("passAuthority",data.getOfflineDataEntry().getOtherPersons().get(i).getAutority());
+                            otherPersons.put("purpose",data.getOfflineDataEntry().getOtherPersons().get(i).getPurpose());
+                            otherPersons.put("isAppDownloaded",data.getOfflineDataEntry().getOtherPersons().get(i).getApp_downloaded());
+                            otherPersons.put("remrks",data.getOfflineDataEntry().getOtherPersons().get(i).getRemarks());
+                            array.put(otherPersons);
+                        }
+                        object.put("other_persons",array);
+
+                    }else{
+                        object.put("other_persons",array);
+                    }
+                }catch (Exception ex){
+                    Log.e("Exception",ex.toString());
+                }
+
+
 
 
 

@@ -1,6 +1,7 @@
 package com.doi.himachal.Modal;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Kush.Dhawan
@@ -38,6 +39,40 @@ public class OfflineDataEntry implements Serializable {
     private String address_three_;
     private String address_four_;
     private String address_other_;
+
+    private int position_from_state;
+    private int position_from_district;
+
+    private int position_to_district;
+    private int position_to_block;
+    private int position_to_panchayat;
+    private int position_to_tehsil;
+
+    private List<AddMorePeoplePojo> otherPersons;
+
+    public List<AddMorePeoplePojo> getOtherPersons() {
+        return otherPersons;
+    }
+
+    public void setOtherPersons(List<AddMorePeoplePojo> otherPersons) {
+        this.otherPersons = otherPersons;
+    }
+
+    public int getPosition_from_state() {
+        return position_from_state;
+    }
+
+    public void setPosition_from_state(int position_from_state) {
+        this.position_from_state = position_from_state;
+    }
+
+    public int getPosition_from_district() {
+        return position_from_district;
+    }
+
+    public void setPosition_from_district(int position_from_district) {
+        this.position_from_district = position_from_district;
+    }
 
     public String getVersionCode() {
         return versionCode;
@@ -272,6 +307,38 @@ public class OfflineDataEntry implements Serializable {
         this.address_other_ = address_other_;
     }
 
+    public int getPosition_to_district() {
+        return position_to_district;
+    }
+
+    public void setPosition_to_district(int position_to_district) {
+        this.position_to_district = position_to_district;
+    }
+
+    public int getPosition_to_block() {
+        return position_to_block;
+    }
+
+    public void setPosition_to_block(int position_to_block) {
+        this.position_to_block = position_to_block;
+    }
+
+    public int getPosition_to_panchayat() {
+        return position_to_panchayat;
+    }
+
+    public void setPosition_to_panchayat(int position_to_panchayat) {
+        this.position_to_panchayat = position_to_panchayat;
+    }
+
+    public int getPosition_to_tehsil() {
+        return position_to_tehsil;
+    }
+
+    public void setPosition_to_tehsil(int position_to_tehsil) {
+        this.position_to_tehsil = position_to_tehsil;
+    }
+
     @Override
     public String toString() {
         return "OfflineDataEntry{" +
@@ -304,6 +371,13 @@ public class OfflineDataEntry implements Serializable {
                 ", address_three_='" + address_three_ + '\'' +
                 ", address_four_='" + address_four_ + '\'' +
                 ", address_other_='" + address_other_ + '\'' +
+                ", position_from_state=" + position_from_state +
+                ", position_from_district=" + position_from_district +
+                ", position_to_district=" + position_to_district +
+                ", position_to_block=" + position_to_block +
+                ", position_to_panchayat=" + position_to_panchayat +
+                ", position_to_tehsil=" + position_to_tehsil +
+                ", otherPersons=" + otherPersons +
                 '}';
     }
 }

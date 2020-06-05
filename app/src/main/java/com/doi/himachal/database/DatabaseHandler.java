@@ -557,13 +557,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
-    public Set<BlockPojo> getBlocksViaDistrict(String district_id) {
+    public List<BlockPojo> getBlocksViaDistrict(String district_id) {
         // Select All Query
         String selectQuery = "SELECT  DISTINCT  block_id, block_name FROM " + TABLE_BLOCK + " where  district_id ='" +district_id+ "'";  //+ " ORDER BY " + DATE_TIME + " DESC"
         Log.e("Qery",selectQuery);
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-        Set<BlockPojo> news_list_db = new HashSet<>();
+        List<BlockPojo> news_list_db = new ArrayList<>();
         // looping through all rows and adding to list
         while (cursor.moveToNext()) {
             BlockPojo block = new BlockPojo();
