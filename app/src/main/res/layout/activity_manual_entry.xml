@@ -217,7 +217,7 @@
                                     android:layout_height="fill_parent"
                                     android:gravity="center|center_vertical|center_horizontal"
                                     android:padding="5dp"
-                                    android:text="Total Number of Persons Entered"
+                                    android:text="Person Number"
                                     android:textColor="@color/darkblue" />
 
                                 <TextView
@@ -238,7 +238,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="fill_parent"
                                 android:layout_weight="1"
-                                android:text="0"
+                                android:text="1"
                                 android:background="@drawable/customborder_dialog"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:inputType="number"
