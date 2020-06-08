@@ -225,35 +225,35 @@ public class HttpManager {
                 object.put("scanned_by",  data.getOfflineDataEntry().getUser_mobile());
                 object.put("app_version",data.getOfflineDataEntry().getVersionCode());
 
-                try{
-                    if(!data.getOfflineDataEntry().getOtherPersons().isEmpty()){
-                        for(int i=0; i<Integer.parseInt(data.getOfflineDataEntry().getNo_of_persons())-1;i++){
-                            otherPersons = new JSONObject();
-                            otherPersons.put("name",data.getOfflineDataEntry().getOtherPersons().get(i).getEnter_name());
-                            otherPersons.put("mobile",data.getOfflineDataEntry().getOtherPersons().get(i).getMobile_number());
-                            otherPersons.put("fromstate",data.getOfflineDataEntry().getOtherPersons().get(i).getFrom_state());
-                            otherPersons.put("fromDistrict",data.getOfflineDataEntry().getOtherPersons().get(i).getFrom_district());
-                            otherPersons.put("fromPlace",data.getOfflineDataEntry().getOtherPersons().get(i).getFrom_place());
-                            otherPersons.put("toDistrict",data.getOfflineDataEntry().getOtherPersons().get(i).getDistrict());
-                            otherPersons.put("toTehsil",data.getOfflineDataEntry().getOtherPersons().get(i).getTehsil());
-                            otherPersons.put("toBlocktown",data.getOfflineDataEntry().getOtherPersons().get(i).getBlock_town());
-                            otherPersons.put("towardPanchayat",data.getOfflineDataEntry().getOtherPersons().get(i).getGp_ward());
-                            otherPersons.put("toplace",data.getOfflineDataEntry().getOtherPersons().get(i).getPlace());
-                            otherPersons.put("passNo",data.getOfflineDataEntry().getOtherPersons().get(i).getPass_number());
-                            otherPersons.put("passAuthority",data.getOfflineDataEntry().getOtherPersons().get(i).getAutority());
-                            otherPersons.put("purpose",data.getOfflineDataEntry().getOtherPersons().get(i).getPurpose());
-                            otherPersons.put("isAppDownloaded",data.getOfflineDataEntry().getOtherPersons().get(i).getApp_downloaded());
-                            otherPersons.put("remrks",data.getOfflineDataEntry().getOtherPersons().get(i).getRemarks());
-                            array.put(otherPersons);
-                        }
-                        object.put("other_persons",array);
-
-                    }else{
-                        object.put("other_persons",array);
-                    }
-                }catch (Exception ex){
-                    Log.e("Exception",ex.toString());
-                }
+//                try{
+//                    if(!data.getOfflineDataEntry().getOtherPersons().isEmpty()){
+//                        for(int i=0; i<Integer.parseInt(data.getOfflineDataEntry().getNo_of_persons())-1;i++){
+//                            otherPersons = new JSONObject();
+//                            otherPersons.put("name",data.getOfflineDataEntry().getOtherPersons().get(i).getEnter_name());
+//                            otherPersons.put("mobile",data.getOfflineDataEntry().getOtherPersons().get(i).getMobile_number());
+//                            otherPersons.put("fromstate",data.getOfflineDataEntry().getOtherPersons().get(i).getFrom_state());
+//                            otherPersons.put("fromDistrict",data.getOfflineDataEntry().getOtherPersons().get(i).getFrom_district());
+//                            otherPersons.put("fromPlace",data.getOfflineDataEntry().getOtherPersons().get(i).getFrom_place());
+//                            otherPersons.put("toDistrict",data.getOfflineDataEntry().getOtherPersons().get(i).getDistrict());
+//                            otherPersons.put("toTehsil",data.getOfflineDataEntry().getOtherPersons().get(i).getTehsil());
+//                            otherPersons.put("toBlocktown",data.getOfflineDataEntry().getOtherPersons().get(i).getBlock_town());
+//                            otherPersons.put("towardPanchayat",data.getOfflineDataEntry().getOtherPersons().get(i).getGp_ward());
+//                            otherPersons.put("toplace",data.getOfflineDataEntry().getOtherPersons().get(i).getPlace());
+//                            otherPersons.put("passNo",data.getOfflineDataEntry().getOtherPersons().get(i).getPass_number());
+//                            otherPersons.put("passAuthority",data.getOfflineDataEntry().getOtherPersons().get(i).getAutority());
+//                            otherPersons.put("purpose",data.getOfflineDataEntry().getOtherPersons().get(i).getPurpose());
+//                            otherPersons.put("isAppDownloaded",data.getOfflineDataEntry().getOtherPersons().get(i).getApp_downloaded());
+//                            otherPersons.put("remrks",data.getOfflineDataEntry().getOtherPersons().get(i).getRemarks());
+//                            array.put(otherPersons);
+//                        }
+//                        object.put("other_persons",array);
+//
+//                    }else{
+//                        object.put("other_persons",array);
+//                    }
+//                }catch (Exception ex){
+//                    Log.e("Exception",ex.toString());
+//                }
 
 
 
@@ -270,7 +270,11 @@ public class HttpManager {
                 userJson.put("mobile_number", data.getOfflineDataEntry().getMobile().toString());
                 userJson.put("address", data.getOfflineDataEntry().getAddress());
                 Log.e("Here", "We Are7");
-                userJson.put("state_from", Integer.parseInt(data.getOfflineDataEntry().getState_from()));
+                try {
+                    userJson.put("state_from", Integer.parseInt(data.getOfflineDataEntry().getState_from()));
+                }catch(Exception ex){
+                    Log.e(ex.getLocalizedMessage(),data.getOfflineDataEntry().getState_from());
+                }
                 //district_from ,  place_to
                 userJson.put("place_to", data.getOfflineDataEntry().getPlace_to());
                 userJson.put("place_from", data.getOfflineDataEntry().getPlace_form());

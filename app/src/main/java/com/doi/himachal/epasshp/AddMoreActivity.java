@@ -25,24 +25,34 @@ import com.doi.himachal.Modal.BlockPojo;
 import com.doi.himachal.Modal.DistrictPojo;
 import com.doi.himachal.Modal.GramPanchayatPojo;
 import com.doi.himachal.Modal.OfflineDataEntry;
+import com.doi.himachal.Modal.ResponsePojo;
 import com.doi.himachal.Modal.StatePojo;
+import com.doi.himachal.Modal.SuccessResponse;
 import com.doi.himachal.Modal.TehsilPojo;
+import com.doi.himachal.Modal.UploadObjectManual;
 import com.doi.himachal.database.DatabaseHandler;
+import com.doi.himachal.enums.TaskType;
+import com.doi.himachal.generic.GenericAsyncPostObjectForm;
+import com.doi.himachal.interfaces.AsyncTaskListenerObjectForm;
+import com.doi.himachal.json.JsonParse;
 import com.doi.himachal.presentation.CustomDialog;
+import com.doi.himachal.utilities.AppStatus;
 import com.doi.himachal.utilities.CommonUtils;
 import com.doi.himachal.utilities.Econstants;
 import com.doi.himachal.utilities.Preferences;
 import com.doi.spinnersearchable.SearchableSpinner;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class AddMoreActivity extends AppCompatActivity {
-    private OfflineDataEntry parent_details= null;
+public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListenerObjectForm {
+    private OfflineDataEntry parent_details = null;
 
     TextView date, time;
-    EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose , remarks;
+    EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose, remarks;
     SearchableSpinner fromstate, fromdistrict, district, tehsil, block, gp, appdownloaded;
     DatabaseHandler DB = new DatabaseHandler(AddMoreActivity.this);
     CustomDialog CD = new CustomDialog();
@@ -75,7 +85,7 @@ public class AddMoreActivity extends AppCompatActivity {
         Intent getParent = getIntent();
         parent_details = (OfflineDataEntry) getParent.getSerializableExtra("PARENT");
         Log.e("PARENT", parent_details.toString());
-        
+
         init();
 
 
@@ -94,6 +104,7 @@ public class AddMoreActivity extends AppCompatActivity {
                 Log.e("Stateid", item.getState_id());
                 fromdistricts = DB.getDistrictsViaState(item.getState_id());
                 Global_fromstate = item.getState_id();
+
 
                 if (!fromdistricts.isEmpty()) {
                     fromAdapter = new GenericAdapter(AddMoreActivity.this, android.R.layout.simple_spinner_item, fromdistricts);
@@ -139,7 +150,7 @@ public class AddMoreActivity extends AppCompatActivity {
         Log.e("@@@District", districts.toString());
         adapter = new GenericAdapter(AddMoreActivity.this, android.R.layout.simple_spinner_item, districts);
         district.setAdapter(adapter);
-        district.setSelection((int)adapter.getItemId(parent_details.getPosition_to_district()));
+        district.setSelection((int) adapter.getItemId(parent_details.getPosition_to_district()));
 
 
         district.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -157,7 +168,7 @@ public class AddMoreActivity extends AppCompatActivity {
                 if (!tehsils.isEmpty()) {
                     adapter_tehsil = new GenericAdapterTehsil(AddMoreActivity.this, android.R.layout.simple_spinner_item, tehsils);
                     tehsil.setAdapter(adapter_tehsil);
-                    tehsil.setSelection((int)adapter_tehsil.getItemId(parent_details.getPosition_to_tehsil()));
+                    tehsil.setSelection((int) adapter_tehsil.getItemId(parent_details.getPosition_to_tehsil()));
 
                 } else {
                     CD.showDialog(AddMoreActivity.this, "No Tehsils found for the specific District");
@@ -168,7 +179,7 @@ public class AddMoreActivity extends AppCompatActivity {
 
                     adapterBlocks = new GenericAdapterBlocks(AddMoreActivity.this, android.R.layout.simple_spinner_item, blocks);
                     block.setAdapter(adapterBlocks);
-                    block.setSelection((int)adapterBlocks.getItemId(parent_details.getPosition_to_block()));
+                    block.setSelection((int) adapterBlocks.getItemId(parent_details.getPosition_to_block()));
 
                 } else {
                     CD.showDialog(AddMoreActivity.this, "No Blocks found for the specific District");
@@ -225,14 +236,18 @@ public class AddMoreActivity extends AppCompatActivity {
                 Log.e("Size", Integer.toString(grampanchayats.size()));
 
                 if (grampanchayats.size() != 0) {
-                    GramPanchayatPojo pojo = new GramPanchayatPojo();
-                    pojo.setGp_id("0");
-                    pojo.setGp_name("Please Select");
-                    grampanchayats.add(0,pojo);
+
+                    if(item.getBlock_name().contains("Town")){
+                        GramPanchayatPojo pojo = new GramPanchayatPojo();
+                        pojo.setGp_id("0");
+                        pojo.setGp_name("Please Select");
+                        grampanchayats.add(0, pojo);
+                    }
+
                     grampanchayat.setVisibility(View.VISIBLE);
                     adaptergp = new GenericAdapterGP(AddMoreActivity.this, android.R.layout.simple_spinner_item, grampanchayats);
                     gp.setAdapter(adaptergp);
-                    gp.setSelection((int)adaptergp.getItemId(parent_details.getPosition_to_panchayat()));
+                    gp.setSelection((int) adaptergp.getItemId(parent_details.getPosition_to_panchayat()));
 
                 } else {
                     // CD.showDialog(AddMoreActivity.this, "No Panchayats found for the specific blocks");
@@ -281,103 +296,146 @@ public class AddMoreActivity extends AppCompatActivity {
 
 
                     addMorePeople.setFrom_state(Global_fromstate);
+                    parent_details.setState_from(Global_fromstate);
                     addMorePeople.setFrom_district(Global_fromdistrict);
+                    parent_details.setDistrict_from(Global_fromdistrict);
 
                     addMorePeople.setDistrict(Global_todistrict);
+                    parent_details.setDistrict_to(Global_todistrict);
                     addMorePeople.setTehsil(Global_totehsil);
+                    parent_details.setTehsil_to(Global_totehsil);
                     addMorePeople.setBlock_town(Global_toblock);
-
+                    parent_details.setBlock_to(Global_toblock);
 
 
                     addMorePeople.setApp_downloaded(appdownloaded.getSelectedItem().toString());
-
-
-
+                    parent_details.setAaroyga_app_download(appdownloaded.getSelectedItem().toString());
 
 
                     if (passno.getText().toString() == null || passno.getText().toString().isEmpty()) {
                         addMorePeople.setPass_number("NA");
+                        parent_details.setPass_no("NA");
                     } else {
                         addMorePeople.setPass_number(passno.getText().toString().trim());
+                        parent_details.setPass_no(passno.getText().toString().trim());
                     }
 
                     if (authority.getText().toString() == null || authority.getText().toString().isEmpty()) {
                         addMorePeople.setAutority("NA");
+                        parent_details.setPass_issue_authority("NA");
                     } else {
                         addMorePeople.setAutority(authority.getText().toString().trim());
+                        parent_details.setPass_issue_authority(authority.getText().toString().trim());
                     }
 
 
                     if (fromplace.getText().toString() == null || fromplace.getText().toString().isEmpty()) {
                         addMorePeople.setFrom_place("");
+                        parent_details.setState_from("");
                     } else {
                         addMorePeople.setFrom_place(fromplace.getText().toString().trim());
+                        parent_details.setState_from(Global_fromstate);
                     }
 
                     if (placenameto.getText().toString() == null || placenameto.getText().toString().isEmpty()) {
                         addMorePeople.setPlace("");
+                        parent_details.setPlace_to("");
                     } else {
                         addMorePeople.setPlace(placenameto.getText().toString().trim());
+                        parent_details.setPlace_to(placenameto.getText().toString().trim());
                     }
 
                     if (purpose.getText().toString() == null || purpose.getText().toString().isEmpty()) {
                         addMorePeople.setPurpose("");
+                        parent_details.setPurpose("");
                     } else {
                         addMorePeople.setPurpose(purpose.getText().toString().trim());
+                        parent_details.setPurpose(purpose.getText().toString().trim());
                     }
 
                     if (Global_togramPanchayat == null || Global_togramPanchayat.isEmpty()) {
                         addMorePeople.setGp_ward("0");
+                        parent_details.setGram_panchayat("0");
                         Log.e("Global_togramPanchayat", Global_togramPanchayat);
                     } else {
                         Log.e("Global_togramPanchayat", Global_togramPanchayat);
                         addMorePeople.setGp_ward(Global_togramPanchayat);
+                        parent_details.setGram_panchayat(Global_togramPanchayat);
                     }
 
                     if (remarks.getText().toString() == null || remarks.getText().toString().isEmpty()) {
                         addMorePeople.setRemarks("");
+                        parent_details.setRemarks("");
 
                     } else {
 
                         addMorePeople.setRemarks(remarks.getText().toString().trim());
+                        parent_details.setRemarks(remarks.getText().toString().trim());
                     }
 
 
                     //Edit Text get data
                     if (names.getText().toString() != null && !names.getText().toString().isEmpty()) {
                         addMorePeople.setEnter_name(names.getText().toString().trim());
+                        parent_details.setNames(names.getText().toString().trim());
                         //if (numberpersons.getText().toString() != null && !numberpersons.getText().toString().isEmpty()) {
-                           // addMorePeople.setNumber_of_persons(numberpersons.getText().toString().trim());
+                        // addMorePeople.setNumber_of_persons(numberpersons.getText().toString().trim());
 
-                            if (vehiclenumber.getText().toString() != null && !vehiclenumber.getText().toString().isEmpty()) {
-                                addMorePeople.setVehical_number(vehiclenumber.getText().toString().trim());
+                        if (vehiclenumber.getText().toString() != null && !vehiclenumber.getText().toString().isEmpty()) {
+                            addMorePeople.setVehical_number(vehiclenumber.getText().toString().trim());
+                            parent_details.setVehicle_number(vehiclenumber.getText().toString().trim());
 
-                                if (mobilenumber.getText().toString() != null && mobilenumber.getText().toString().length()==10 && !mobilenumber.getText().toString().isEmpty()) {
-                                    addMorePeople.setMobile_number(mobilenumber.getText().toString().trim());
+                            if (mobilenumber.getText().toString() != null && mobilenumber.getText().toString().length() == 10 && !mobilenumber.getText().toString().isEmpty()) {
+                                addMorePeople.setMobile_number(mobilenumber.getText().toString().trim());
+                                parent_details.setMobile(mobilenumber.getText().toString().trim());
 
-
-
-                                    //TODO SEND OBECT TO SERVER
-                                   // System.out.println("add Person:-  "+addMorePeople.toString());
-                                    Intent intent = new Intent();
-                                    intent.putExtra("AddMore", addMorePeople);
-                                   setResult(Activity.RESULT_OK, intent);
-
-                                    finish();
+                               // parent_details.setNo_of_persons("1");
 
 
+
+                                UploadObjectManual object = new UploadObjectManual();
+                                object.setUrl("http://covid19epass.hp.gov.in/api/v1/saveofflinebarrierdata");
+                                object.setTasktype(TaskType.MANUAL_FORM_UPLOAD);
+                                object.setMethordName("saveofflinebarrierdata");
+                                object.setOfflineDataEntry(parent_details);
+
+
+                                //TODO SEND OBECT TO SERVER
+                                System.out.println(addMorePeople.toString());
+                                Log.e("From State", Global_fromstate);
+                                System.out.println(parent_details.toString());
+//TODO
+                                if (AppStatus.getInstance(AddMoreActivity.this).isOnline()) {
+                                    new GenericAsyncPostObjectForm(
+                                            AddMoreActivity.this,
+                                            AddMoreActivity.this,
+                                            TaskType.MANUAL_FORM_UPLOAD).
+                                            execute(object);
                                 } else {
-                                    CD.showDialog(AddMoreActivity.this, "Please enter valid 10 digit mobile phone number.");
+                                    CD.showDialog(AddMoreActivity.this, "Please connect to Internet and try again.");
                                 }
 
+                                //TODO SEND OBECT TO SERVER
+
+//                                    Intent intent = new Intent();
+//                                    intent.putExtra("AddMore", addMorePeople);
+//                                   setResult(Activity.RESULT_OK, intent);
+//
+//                                    finish();
+
+
                             } else {
-                                CD.showDialog(AddMoreActivity.this, "Please enter Vehicle Number .");
+                                CD.showDialog(AddMoreActivity.this, "Please enter valid 10 digit mobile phone number.");
                             }
 
+                        } else {
+                            CD.showDialog(AddMoreActivity.this, "Please enter Vehicle Number .");
+                        }
 
-                      //  } //else {
-                         //   CD.showDialog(AddMoreActivity.this, "Please enter number of persons travelling .");
-                       // }
+
+                        //  } //else {
+                        //   CD.showDialog(AddMoreActivity.this, "Please enter number of persons travelling .");
+                        // }
 
 
                     } else {
@@ -404,15 +462,7 @@ public class AddMoreActivity extends AppCompatActivity {
         remarks.setText(parent_details.getRemarks());
 
 
-        Log.e("getState_from",parent_details.getState_from());
-
-       // fromstate.setSelection((int)adapter_states.getItemId(Integer.parseInt(parent_details.getState_from()))-1);
-
-
-  //      tehsil.setSelection((int)adapter_tehsil.getItemId(Integer.parseInt(parent_details.getTehsil_to())));
-   //     block.setSelection((int)adapterBlocks.getItemId(Integer.parseInt(parent_details.getBlock_to())));
-    //    gp.setSelection((int)adaptergp.getItemId(Integer.parseInt(parent_details.getGram_panchayat())));
-
+        Log.e("getState_from", parent_details.getState_from());
 
     }
 
@@ -459,4 +509,22 @@ public class AddMoreActivity extends AppCompatActivity {
         return list;
     }
 
+    @Override
+    public void onTaskCompleted(ResponsePojo result, TaskType taskType) throws JSONException {
+
+        if (taskType == TaskType.MANUAL_FORM_UPLOAD) {
+            // CD.showDialog(ManualEntry.this,result.getResponse());
+            SuccessResponse response = JsonParse.getSuccessResponse(result.getResponse());
+            if (response.getStatus().equalsIgnoreCase("200")) {
+                // CD.showDialogCloseActivity(AddMoreActivity.this, "Data Saved Successfully. " + response.getMessage());
+                Intent intent = new Intent();
+                intent.putExtra("AddMore", addMorePeople);
+                setResult(Activity.RESULT_OK, intent);
+                finish();
+            } else {
+                CD.showDialogHTMLGeneric(AddMoreActivity.this, response.getResponse());
+            }
+        }
+
+    }
 }

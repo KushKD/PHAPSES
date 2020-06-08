@@ -449,10 +449,12 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 Log.e("Size", Integer.toString(grampanchayats.size()));
 
                 if (grampanchayats.size() != 0) {
-                    GramPanchayatPojo pojo = new GramPanchayatPojo();
-                    pojo.setGp_id("0");
-                    pojo.setGp_name("Please Select");
-                    grampanchayats.add(0, pojo);
+                    if(item.getBlock_name().contains("Town")){
+                        GramPanchayatPojo pojo = new GramPanchayatPojo();
+                        pojo.setGp_id("0");
+                        pojo.setGp_name("Please Select");
+                        grampanchayats.add(0, pojo);
+                    }
                     grampanchayat.setVisibility(View.VISIBLE);
                     adaptergp = new GenericAdapterGP(ManualEntry.this, android.R.layout.simple_spinner_item, grampanchayats);
                     gp.setAdapter(adaptergp);
