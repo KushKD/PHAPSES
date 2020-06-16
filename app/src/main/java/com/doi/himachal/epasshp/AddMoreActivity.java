@@ -32,7 +32,9 @@ import com.doi.himachal.Modal.TehsilPojo;
 import com.doi.himachal.Modal.UploadObjectManual;
 import com.doi.himachal.database.DatabaseHandler;
 import com.doi.himachal.enums.TaskType;
+import com.doi.himachal.generic.GenericAsyncDatabaseObject;
 import com.doi.himachal.generic.GenericAsyncPostObjectForm;
+import com.doi.himachal.interfaces.AsyncTaskListenerDatabase;
 import com.doi.himachal.interfaces.AsyncTaskListenerObjectForm;
 import com.doi.himachal.json.JsonParse;
 import com.doi.himachal.presentation.CustomDialog;
@@ -48,10 +50,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListenerObjectForm {
+public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListenerObjectForm, AsyncTaskListenerDatabase {
     private OfflineDataEntry parent_details = null;
 
-    TextView date, time;
+    TextView date, time, totalpersons;
     EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose, remarks;
     SearchableSpinner fromstate, fromdistrict, district, tehsil, block, gp, appdownloaded;
     DatabaseHandler DB = new DatabaseHandler(AddMoreActivity.this);
@@ -75,7 +77,7 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
     LinearLayout grampanchayat;
     AddMorePeoplePojo addMorePeople = new AddMorePeoplePojo();
 
-    String Global_fromstate, Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat;
+    String Global_fromstate, Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat,Global_toBlockName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,16 +108,25 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
                 Global_fromstate = item.getState_id();
 
 
-                if (!fromdistricts.isEmpty()) {
-                    fromAdapter = new GenericAdapter(AddMoreActivity.this, android.R.layout.simple_spinner_item, fromdistricts);
-                    fromdistrict.setAdapter(fromAdapter);
-                    fromdistrict.setSelection(parent_details.getPosition_from_district());
+                /**
+                 * TODO HERE TODAY
+                 */
+                new GenericAsyncDatabaseObject(
+                        AddMoreActivity.this,
+                        AddMoreActivity.this,
+                        TaskType.GET_DISTRICT_VIA_STATE).
+                        execute(TaskType.GET_DISTRICT_VIA_STATE.toString(),item.getState_id());
 
-                } else {
-                    CD.showDialog(AddMoreActivity.this, "No District found for the specific State");
-                    fromAdapter = null;
-                    fromdistrict.setAdapter(fromAdapter);
-                }
+//                if (!fromdistricts.isEmpty()) {
+//                    fromAdapter = new GenericAdapter(AddMoreActivity.this, android.R.layout.simple_spinner_item, fromdistricts);
+//                    fromdistrict.setAdapter(fromAdapter);
+//                    fromdistrict.setSelection(parent_details.getPosition_from_district());
+//
+//                } else {
+//                    CD.showDialog(AddMoreActivity.this, "No District found for the specific State");
+//                    fromAdapter = null;
+//                    fromdistrict.setAdapter(fromAdapter);
+//                }
 
 
             }
@@ -162,30 +173,46 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
                 Log.e("District Id-===", item.getDistrict_name());
 
                 Global_todistrict = item.getDistrict_id();
-                tehsils = DB.getTehsilViaDistrict(item.getDistrict_id());
-                blocks = DB.getBlocksViaDistrict(item.getDistrict_id());
+                //TODO TODAY TWO
+                /**
+                 * TODO HERE TODAY
+                 */
+                new GenericAsyncDatabaseObject(
+                        AddMoreActivity.this,
+                        AddMoreActivity.this,
+                        TaskType.GET_TEHSIL_VIA_DISTRICT).
+                        execute(TaskType.GET_TEHSIL_VIA_DISTRICT.toString(),item.getDistrict_id());
 
-                if (!tehsils.isEmpty()) {
-                    adapter_tehsil = new GenericAdapterTehsil(AddMoreActivity.this, android.R.layout.simple_spinner_item, tehsils);
-                    tehsil.setAdapter(adapter_tehsil);
-                    tehsil.setSelection((int) adapter_tehsil.getItemId(parent_details.getPosition_to_tehsil()));
 
-                } else {
-                    CD.showDialog(AddMoreActivity.this, "No Tehsils found for the specific District");
-                    adapter_tehsil = null;
-                    tehsil.setAdapter(adapter_tehsil);
-                }
-                if (!blocks.isEmpty()) {
+                new GenericAsyncDatabaseObject(
+                        AddMoreActivity.this,
+                        AddMoreActivity.this,
+                        TaskType.GET_BLOCK_VIA_DISTRICT).
+                        execute(TaskType.GET_BLOCK_VIA_DISTRICT.toString(),item.getDistrict_id());
+              //  tehsils = DB.getTehsilViaDistrict(item.getDistrict_id());
+               // blocks = DB.getBlocksViaDistrict(item.getDistrict_id());
 
-                    adapterBlocks = new GenericAdapterBlocks(AddMoreActivity.this, android.R.layout.simple_spinner_item, blocks);
-                    block.setAdapter(adapterBlocks);
-                    block.setSelection((int) adapterBlocks.getItemId(parent_details.getPosition_to_block()));
-
-                } else {
-                    CD.showDialog(AddMoreActivity.this, "No Blocks found for the specific District");
-                    adapterBlocks = null;
-                    block.setAdapter(adapterBlocks);
-                }
+//                if (!tehsils.isEmpty()) {
+//                    adapter_tehsil = new GenericAdapterTehsil(AddMoreActivity.this, android.R.layout.simple_spinner_item, tehsils);
+//                    tehsil.setAdapter(adapter_tehsil);
+//                    tehsil.setSelection((int) adapter_tehsil.getItemId(parent_details.getPosition_to_tehsil()));
+//
+//                } else {
+//                    CD.showDialog(AddMoreActivity.this, "No Tehsils found for the specific District");
+//                    adapter_tehsil = null;
+//                    tehsil.setAdapter(adapter_tehsil);
+//                }
+//                if (!blocks.isEmpty()) {
+//
+//                    adapterBlocks = new GenericAdapterBlocks(AddMoreActivity.this, android.R.layout.simple_spinner_item, blocks);
+//                    block.setAdapter(adapterBlocks);
+//                    block.setSelection((int) adapterBlocks.getItemId(parent_details.getPosition_to_block()));
+//
+//                } else {
+//                    CD.showDialog(AddMoreActivity.this, "No Blocks found for the specific District");
+//                    adapterBlocks = null;
+//                    block.setAdapter(adapterBlocks);
+//                }
 
 
             }
@@ -231,31 +258,38 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
                 //  Global_district_id = item.getDistrict_id();
                 Log.e("Block Id-===", item.getBlock_code());
                 Global_toblock = item.getBlock_code();
-                grampanchayats = DB.getGPViaDistrict(item.getBlock_code());
-
-                Log.e("Size", Integer.toString(grampanchayats.size()));
-
-                if (grampanchayats.size() != 0) {
-
-                    if(item.getBlock_name().contains("Town")){
-                        GramPanchayatPojo pojo = new GramPanchayatPojo();
-                        pojo.setGp_id("0");
-                        pojo.setGp_name("Please Select");
-                        grampanchayats.add(0, pojo);
-                    }
-
-                    grampanchayat.setVisibility(View.VISIBLE);
-                    adaptergp = new GenericAdapterGP(AddMoreActivity.this, android.R.layout.simple_spinner_item, grampanchayats);
-                    gp.setAdapter(adaptergp);
-                    gp.setSelection((int) adaptergp.getItemId(parent_details.getPosition_to_panchayat()));
-
-                } else {
-                    // CD.showDialog(AddMoreActivity.this, "No Panchayats found for the specific blocks");
-                    adaptergp = null;
-                    gp.setAdapter(adaptergp);
-                    grampanchayat.setVisibility(View.GONE);
-                    Global_togramPanchayat = "0";
-                }
+                Global_toBlockName = item.getBlock_name();
+                //TODO TODAY THIRD
+                new GenericAsyncDatabaseObject(
+                        AddMoreActivity.this,
+                        AddMoreActivity.this,
+                        TaskType.GET_GP_VIA_DISTRICT).
+                        execute(TaskType.GET_GP_VIA_DISTRICT.toString(),item.getBlock_code());
+//                grampanchayats = DB.getGPViaDistrict(item.getBlock_code());
+//
+//                Log.e("Size", Integer.toString(grampanchayats.size()));
+//
+//                if (grampanchayats.size() != 0) {
+//
+//                    if(item.getBlock_name().contains("Town")){
+//                        GramPanchayatPojo pojo = new GramPanchayatPojo();
+//                        pojo.setGp_id("0");
+//                        pojo.setGp_name("Please Select");
+//                        grampanchayats.add(0, pojo);
+//                    }
+//
+//                    grampanchayat.setVisibility(View.VISIBLE);
+//                    adaptergp = new GenericAdapterGP(AddMoreActivity.this, android.R.layout.simple_spinner_item, grampanchayats);
+//                    gp.setAdapter(adaptergp);
+//                    gp.setSelection((int) adaptergp.getItemId(parent_details.getPosition_to_panchayat()));
+//
+//                } else {
+//                    // CD.showDialog(AddMoreActivity.this, "No Panchayats found for the specific blocks");
+//                    adaptergp = null;
+//                    gp.setAdapter(adaptergp);
+//                    grampanchayat.setVisibility(View.GONE);
+//                    Global_togramPanchayat = "0";
+//                }
 
 
             }
@@ -276,6 +310,7 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
                 //  Global_district_id = item.getDistrict_id();
                 Log.e("Gram Panchayat Id-===", item.getGp_id());
                 Global_togramPanchayat = item.getGp_id();
+
 
 
             }
@@ -331,10 +366,10 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
 
                     if (fromplace.getText().toString() == null || fromplace.getText().toString().isEmpty()) {
                         addMorePeople.setFrom_place("");
-                        parent_details.setState_from("");
+                        parent_details.setPlace_form("");
                     } else {
                         addMorePeople.setFrom_place(fromplace.getText().toString().trim());
-                        parent_details.setState_from(Global_fromstate);
+                        parent_details.setPlace_form(fromplace.getText().toString());
                     }
 
                     if (placenameto.getText().toString() == null || placenameto.getText().toString().isEmpty()) {
@@ -401,8 +436,8 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
 
 
                                 //TODO SEND OBECT TO SERVER
-                                System.out.println(addMorePeople.toString());
-                                Log.e("From State", Global_fromstate);
+                                System.out.println("#@#@#@#@#@"+addMorePeople.toString());
+                                Log.e("From State @#@#@#@#@", Global_fromstate);
                                 System.out.println(parent_details.toString());
 //TODO
                                 if (AppStatus.getInstance(AddMoreActivity.this).isOnline()) {
@@ -460,6 +495,13 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
         authority.setText(parent_details.getPass_issue_authority());
         purpose.setText(parent_details.getPurpose());
         remarks.setText(parent_details.getRemarks());
+        if(parent_details.getOtherPersons()==null){
+            totalpersons.setText("2");
+        }else{
+            Log.e("size",Integer.toString(parent_details.getOtherPersons().size()));
+            totalpersons.setText(Integer.toString(parent_details.getOtherPersons().size() + 2));
+        }
+
 
 
         Log.e("getState_from", parent_details.getState_from());
@@ -493,6 +535,7 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
         remarks = findViewById(R.id.remarks);
 
         addmore = findViewById(R.id.addmore);
+        totalpersons = findViewById(R.id.totalpersons);
 
 
         grampanchayat = findViewById(R.id.gml);
@@ -523,6 +566,79 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
                 finish();
             } else {
                 CD.showDialogHTMLGeneric(AddMoreActivity.this, response.getResponse());
+            }
+        }
+
+    }
+
+    @Override
+    public void onTaskCompleted(List<?> data, TaskType taskType) throws JSONException {
+        //TODO TODAY
+        if(taskType == TaskType.GET_DISTRICT_VIA_STATE){
+            List<DistrictPojo> pojo = (List<DistrictPojo>) data;
+            if (!pojo.isEmpty()) {
+                fromAdapter = new GenericAdapter(AddMoreActivity.this, android.R.layout.simple_spinner_item, pojo);
+                fromdistrict.setAdapter(fromAdapter);
+                fromdistrict.setSelection(parent_details.getPosition_from_district());
+
+            } else {
+                CD.showDialog(AddMoreActivity.this, "No District found for the specific State");
+                fromAdapter = null;
+                fromdistrict.setAdapter(fromAdapter);
+            }
+        }
+        else if(taskType == TaskType.GET_TEHSIL_VIA_DISTRICT){
+            List<TehsilPojo> tehsils = (List<TehsilPojo>) data;
+            if (!tehsils.isEmpty()) {
+                adapter_tehsil = new GenericAdapterTehsil(AddMoreActivity.this, android.R.layout.simple_spinner_item, tehsils);
+                tehsil.setAdapter(adapter_tehsil);
+                tehsil.setSelection((int) adapter_tehsil.getItemId(parent_details.getPosition_to_tehsil()));
+
+            } else {
+                CD.showDialog(AddMoreActivity.this, "No Tehsils found for the specific District");
+                adapter_tehsil = null;
+                tehsil.setAdapter(adapter_tehsil);
+            }
+        }
+
+        else if(taskType == TaskType.GET_BLOCK_VIA_DISTRICT){
+            List<BlockPojo> blocks = (List<BlockPojo>) data;
+            if (!blocks.isEmpty()) {
+
+                adapterBlocks = new GenericAdapterBlocks(AddMoreActivity.this, android.R.layout.simple_spinner_item, blocks);
+                block.setAdapter(adapterBlocks);
+                block.setSelection((int) adapterBlocks.getItemId(parent_details.getPosition_to_block()));
+
+            } else {
+                CD.showDialog(AddMoreActivity.this, "No Blocks found for the specific District");
+                adapterBlocks = null;
+                block.setAdapter(adapterBlocks);
+            }
+        }
+
+        else if(taskType == TaskType.GET_GP_VIA_DISTRICT){
+            List<GramPanchayatPojo> grampanchayats = (List<GramPanchayatPojo>) data;
+            Log.e("Size", Integer.toString(grampanchayats.size()));
+
+            if (grampanchayats.size() != 0) {
+
+                if(Global_toBlockName.contains("Town")){
+                    GramPanchayatPojo pojo = new GramPanchayatPojo();
+                    pojo.setGp_id("0");
+                    pojo.setGp_name("Please Select");
+                    grampanchayats.add(0, pojo);
+                }
+                grampanchayat.setVisibility(View.VISIBLE);
+                adaptergp = new GenericAdapterGP(AddMoreActivity.this, android.R.layout.simple_spinner_item, grampanchayats);
+                gp.setAdapter(adaptergp);
+                gp.setSelection((int) adaptergp.getItemId(parent_details.getPosition_to_panchayat()));
+
+            } else {
+                // CD.showDialog(ManualEntry.this, "No Panchayats found for the specific blocks");
+                adaptergp = null;
+                gp.setAdapter(adaptergp);
+                grampanchayat.setVisibility(View.GONE);
+                Global_togramPanchayat = "0";
             }
         }
 

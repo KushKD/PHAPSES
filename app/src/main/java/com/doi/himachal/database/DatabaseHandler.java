@@ -329,6 +329,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         } catch (Exception e) {
             Log.d("Got State Table", e.getLocalizedMessage());
             return false;
+        }finally {
+            db.close();
         }
 
     }
@@ -358,6 +360,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         } catch (Exception e) {
             Log.d("Got Error ..", e.getLocalizedMessage());
             return false;
+        }finally {
+            db.close();
         }
 
     }

@@ -130,6 +130,7 @@
                                 android:layout_weight="1"
                                 android:maxLines="1"
                                 android:maxLength="12"
+                                android:inputType="textCapCharacters"
                                 android:background="@drawable/customborder_dialog"
                                 android:gravity="center|center_vertical|center_horizontal"
                                 android:padding="5dp" />
@@ -212,7 +213,7 @@
                                 android:elevation="4dp"
                                 android:orientation="horizontal">
                                 <TextView
-
+                                    android:id="@+id/passenger"
                                     android:layout_width="wrap_content"
                                     android:layout_height="fill_parent"
                                     android:gravity="center|center_vertical|center_horizontal"

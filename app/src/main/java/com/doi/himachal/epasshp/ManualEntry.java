@@ -41,8 +41,10 @@ import com.doi.himachal.Modal.UploadObject;
 import com.doi.himachal.Modal.UploadObjectManual;
 import com.doi.himachal.database.DatabaseHandler;
 import com.doi.himachal.enums.TaskType;
+import com.doi.himachal.generic.GenericAsyncDatabaseObject;
 import com.doi.himachal.generic.GenericAsyncPostObject;
 import com.doi.himachal.generic.GenericAsyncPostObjectForm;
+import com.doi.himachal.interfaces.AsyncTaskListenerDatabase;
 import com.doi.himachal.interfaces.AsyncTaskListenerObjectForm;
 import com.doi.himachal.json.JsonParse;
 import com.doi.himachal.presentation.CustomDialog;
@@ -66,9 +68,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ManualEntry extends LocationBaseActivity implements SamplePresenter.SampleView, AsyncTaskListenerObjectForm {
+public class ManualEntry extends LocationBaseActivity implements SamplePresenter.SampleView, AsyncTaskListenerObjectForm, AsyncTaskListenerDatabase {
 
-    TextView date, time, totalpersons;
+    TextView date, time, totalpersons,passenger;
     EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose, remarks;
     SearchableSpinner fromstate, fromdistrict, district, tehsil, block, gp, appdownloaded;
     DatabaseHandler DB = new DatabaseHandler(ManualEntry.this);
@@ -93,9 +95,9 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     LinearLayout grampanchayat;
     OfflineDataEntry offlineDataEntry = new OfflineDataEntry();
 
-    String Global_fromstate, Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat;
+    String Global_fromstate, Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat, Global_toBlockName;
     int Global_fromstatePosition, Global_fromdistrictPosition, Global_todistrictPosition, Global_totehsilPosition,
-            Global_toblockPosition, Global_togramPanchayatPosition;
+            Global_toblockPosition, Global_togramPanchayatPosition ;
 
     private SamplePresenter samplePresenter;
     public String userLocation = null;
@@ -318,20 +320,27 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
 
                 //  Global_district_id = item.getDistrict_id();
                 Log.e("Stateid", item.getState_id());
-                fromdistricts = DB.getDistrictsViaState(item.getState_id());
-                Global_fromstate = item.getState_id();
                 Global_fromstatePosition = position;
-                Log.e("State Pos", Integer.toString(position));
+                Global_fromstate = item.getState_id();
 
-                if (!fromdistricts.isEmpty()) {
-                    fromAdapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, fromdistricts);
-                    fromdistrict.setAdapter(fromAdapter);
-
-                } else {
-                    CD.showDialog(ManualEntry.this, "No District found for the specific State");
-                    fromAdapter = null;
-                    fromdistrict.setAdapter(fromAdapter);
-                }
+                /**
+                 * TODO HERE TODAY
+                 */
+                new GenericAsyncDatabaseObject(
+                        ManualEntry.this,
+                        ManualEntry.this,
+                        TaskType.GET_DISTRICT_VIA_STATE).
+                        execute(TaskType.GET_DISTRICT_VIA_STATE.toString(),item.getState_id());
+//                fromdistricts = DB.getDistrictsViaState(item.getState_id());
+//                if (!fromdistricts.isEmpty()) {
+//                    fromAdapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, fromdistricts);
+//                    fromdistrict.setAdapter(fromAdapter);
+//
+//                } else {
+//                    CD.showDialog(ManualEntry.this, "No District found for the specific State");
+//                    fromAdapter = null;
+//                    fromdistrict.setAdapter(fromAdapter);
+//                }
 
 
             }
@@ -382,28 +391,47 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
 
                 Global_todistrict = item.getDistrict_id();
                 Global_todistrictPosition = position;
-                tehsils = DB.getTehsilViaDistrict(item.getDistrict_id());
-                blocks = DB.getBlocksViaDistrict(item.getDistrict_id());
 
-                if (!tehsils.isEmpty()) {
-                    adapter_tehsil = new GenericAdapterTehsil(ManualEntry.this, android.R.layout.simple_spinner_item, tehsils);
-                    tehsil.setAdapter(adapter_tehsil);
+                //TODO TODAY TWO
+                /**
+                 * TODO HERE TODAY
+                 */
+                new GenericAsyncDatabaseObject(
+                        ManualEntry.this,
+                        ManualEntry.this,
+                        TaskType.GET_TEHSIL_VIA_DISTRICT).
+                        execute(TaskType.GET_TEHSIL_VIA_DISTRICT.toString(),item.getDistrict_id());
 
-                } else {
-                    CD.showDialog(ManualEntry.this, "No Tehsils found for the specific District");
-                    adapter_tehsil = null;
-                    tehsil.setAdapter(adapter_tehsil);
-                }
-                if (!blocks.isEmpty()) {
 
-                    adapterBlocks = new GenericAdapterBlocks(ManualEntry.this, android.R.layout.simple_spinner_item, blocks);
-                    block.setAdapter(adapterBlocks);
+                new GenericAsyncDatabaseObject(
+                        ManualEntry.this,
+                        ManualEntry.this,
+                        TaskType.GET_BLOCK_VIA_DISTRICT).
+                        execute(TaskType.GET_BLOCK_VIA_DISTRICT.toString(),item.getDistrict_id());
 
-                } else {
-                    CD.showDialog(ManualEntry.this, "No Blocks found for the specific District");
-                    adapterBlocks = null;
-                    block.setAdapter(adapterBlocks);
-                }
+
+                //tehsils = DB.getTehsilViaDistrict(item.getDistrict_id());
+             //   blocks = DB.getBlocksViaDistrict(item.getDistrict_id());
+
+//                if (!tehsils.isEmpty()) {
+//                    adapter_tehsil = new GenericAdapterTehsil(ManualEntry.this, android.R.layout.simple_spinner_item, tehsils);
+//                    tehsil.setAdapter(adapter_tehsil);
+//
+//                } else {
+//                    CD.showDialog(ManualEntry.this, "No Tehsils found for the specific District");
+//                    adapter_tehsil = null;
+//                    tehsil.setAdapter(adapter_tehsil);
+//                }
+//                if (!blocks.isEmpty()) {
+//
+//                    adapterBlocks = new GenericAdapterBlocks(ManualEntry.this, android.R.layout.simple_spinner_item, blocks);
+//                    block.setAdapter(adapterBlocks);
+//
+//                } else {
+//                    CD.showDialog(ManualEntry.this, "No Blocks found for the specific District");
+//                    adapterBlocks = null;
+//                    block.setAdapter(adapterBlocks);
+//                }
 
 
             }
@@ -443,29 +471,37 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 //  Global_district_id = item.getDistrict_id();
                 Log.e("Block Id-===", item.getBlock_code());
                 Global_toblock = item.getBlock_code();
+                Global_toBlockName = item.getBlock_name();
                 Global_toblockPosition = position;
-                grampanchayats = DB.getGPViaDistrict(item.getBlock_code());
 
-                Log.e("Size", Integer.toString(grampanchayats.size()));
+                //TODO TODAY THIRD
+                new GenericAsyncDatabaseObject(
+                        ManualEntry.this,
+                        ManualEntry.this,
+                        TaskType.GET_GP_VIA_DISTRICT).
+                        execute(TaskType.GET_GP_VIA_DISTRICT.toString(),item.getBlock_code());
+             //   grampanchayats = DB.getGPViaDistrict(item.getBlock_code());
 
-                if (grampanchayats.size() != 0) {
-                    if(item.getBlock_name().contains("Town")){
-                        GramPanchayatPojo pojo = new GramPanchayatPojo();
-                        pojo.setGp_id("0");
-                        pojo.setGp_name("Please Select");
-                        grampanchayats.add(0, pojo);
-                    }
-                    grampanchayat.setVisibility(View.VISIBLE);
-                    adaptergp = new GenericAdapterGP(ManualEntry.this, android.R.layout.simple_spinner_item, grampanchayats);
-                    gp.setAdapter(adaptergp);
-
-                } else {
-                    // CD.showDialog(ManualEntry.this, "No Panchayats found for the specific blocks");
-                    adaptergp = null;
-                    gp.setAdapter(adaptergp);
-                    grampanchayat.setVisibility(View.GONE);
-                    Global_togramPanchayat = "0";
-                }
+//                Log.e("Size", Integer.toString(grampanchayats.size()));
+//
+//                if (grampanchayats.size() != 0) {
+//                    if(item.getBlock_name().contains("Town")){
+//                        GramPanchayatPojo pojo = new GramPanchayatPojo();
+//                        pojo.setGp_id("0");
+//                        pojo.setGp_name("Please Select");
+//                        grampanchayats.add(0, pojo);
+//                    }
+//                    grampanchayat.setVisibility(View.VISIBLE);
+//                    adaptergp = new GenericAdapterGP(ManualEntry.this, android.R.layout.simple_spinner_item, grampanchayats);
+//                    gp.setAdapter(adaptergp);
+//
+//                } else {
+//                    // CD.showDialog(ManualEntry.this, "No Panchayats found for the specific blocks");
+//                    adaptergp = null;
+//                    gp.setAdapter(adaptergp);
+//                    grampanchayat.setVisibility(View.GONE);
+//                    Global_togramPanchayat = "0";
+//                }
 
 
             }
@@ -753,6 +789,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
         remarks = findViewById(R.id.remarks);
 
         addmore = findViewById(R.id.addmore);
+        passenger = findViewById(R.id.passenger);
 
 
         grampanchayat = findViewById(R.id.gml);
@@ -881,6 +918,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 Log.e("Add more", addMore.toString());
                 CD.showDialog(ManualEntry.this,addMore.getEnter_name()+" Added Successfully.");
                 addPersons.add(addMore);
+                passenger.setText("Person added");
                 totalpersons.setText(Integer.toString( addPersons.size()+1));
                 Log.e("Size Other Persons", Integer.toString(addPersons.size()));
                 if ((addPersons.size() + 1) == Integer.parseInt(numberpersons.getText().toString())) {
@@ -897,6 +935,74 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
         }
     }
 
+    @Override
+    public void onTaskCompleted(List<?> data, TaskType taskType) throws JSONException {
+        //TODO TODAY
+        if(taskType == TaskType.GET_DISTRICT_VIA_STATE){
+            List<DistrictPojo> pojo = (List<DistrictPojo>) data;
+            if (!pojo.isEmpty()) {
+                fromAdapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, pojo);
+                fromdistrict.setAdapter(fromAdapter);
+
+            } else {
+                CD.showDialog(ManualEntry.this, "No District found for the specific State");
+                fromAdapter = null;
+                fromdistrict.setAdapter(fromAdapter);
+            }
+        }
+        else if(taskType == TaskType.GET_TEHSIL_VIA_DISTRICT){
+            List<TehsilPojo> tehsils = (List<TehsilPojo>) data;
+            if (!tehsils.isEmpty()) {
+                adapter_tehsil = new GenericAdapterTehsil(ManualEntry.this, android.R.layout.simple_spinner_item, tehsils);
+                tehsil.setAdapter(adapter_tehsil);
+
+            } else {
+                CD.showDialog(ManualEntry.this, "No Tehsils found for the specific District");
+                adapter_tehsil = null;
+                tehsil.setAdapter(adapter_tehsil);
+            }
+        }
+
+        else if(taskType == TaskType.GET_BLOCK_VIA_DISTRICT){
+            List<BlockPojo> blocks = (List<BlockPojo>) data;
+            if (!blocks.isEmpty()) {
+
+                adapterBlocks = new GenericAdapterBlocks(ManualEntry.this, android.R.layout.simple_spinner_item, blocks);
+                block.setAdapter(adapterBlocks);
+
+            } else {
+                CD.showDialog(ManualEntry.this, "No Blocks found for the specific District");
+                adapterBlocks = null;
+                block.setAdapter(adapterBlocks);
+            }
+        }
+
+        else if(taskType == TaskType.GET_GP_VIA_DISTRICT){
+            List<GramPanchayatPojo> grampanchayats = (List<GramPanchayatPojo>) data;
+            Log.e("Size", Integer.toString(grampanchayats.size()));
+
+            if (grampanchayats.size() != 0) {
+
+                if(Global_toBlockName.contains("Town")){
+                    GramPanchayatPojo pojo = new GramPanchayatPojo();
+                    pojo.setGp_id("0");
+                    pojo.setGp_name("Please Select");
+                    grampanchayats.add(0, pojo);
+                }
+                grampanchayat.setVisibility(View.VISIBLE);
+                adaptergp = new GenericAdapterGP(ManualEntry.this, android.R.layout.simple_spinner_item, grampanchayats);
+                gp.setAdapter(adaptergp);
+
+            } else {
+                // CD.showDialog(ManualEntry.this, "No Panchayats found for the specific blocks");
+                adaptergp = null;
+                gp.setAdapter(adaptergp);
+                grampanchayat.setVisibility(View.GONE);
+                Global_togramPanchayat = "0";
+            }
+        }
+
+    }
 }
 
 

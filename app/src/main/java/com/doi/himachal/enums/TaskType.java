@@ -8,7 +8,11 @@ package com.doi.himachal.enums;
 public enum TaskType {
     UPLOAD_SCANNED_PASS(1),
     VERIFY_DETAILS(2),
-    MANUAL_FORM_UPLOAD(3);
+    MANUAL_FORM_UPLOAD(3),
+    GET_DISTRICT_VIA_STATE(4),
+    GET_TEHSIL_VIA_DISTRICT(5),
+    GET_BLOCK_VIA_DISTRICT(6),
+    GET_GP_VIA_DISTRICT(7);
 
     int value; private TaskType(int value) { this.value = value; }
 }
