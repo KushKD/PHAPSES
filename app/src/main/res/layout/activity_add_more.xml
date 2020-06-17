@@ -450,13 +450,13 @@
                             android:layout_marginTop="2dp"
                             android:background="#fff"
                             android:elevation="4dp"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
                                 android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
+                                android:gravity="left"
                                 android:padding="5dp"
                                 android:text="From State"
                                 android:textColor="@color/darkblue" />
@@ -465,7 +465,7 @@
                                 android:id="@+id/fromstate"
                                 android:layout_width="match_parent"
                                 android:layout_height="fill_parent"
-                                android:layout_margin="10dp"
+                                android:layout_margin="2dp"
                                 android:background="@drawable/customborder_dialog"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/raleway_semibold"
@@ -480,13 +480,13 @@
                             android:layout_marginTop="2dp"
                             android:background="#fff"
                             android:elevation="4dp"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
                                 android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
+                                android:gravity="left"
                                 android:padding="5dp"
                                 android:text="District"
                                 android:textColor="@color/darkblue" />
@@ -495,7 +495,7 @@
                                 android:id="@+id/fromdistrict"
                                 android:layout_width="match_parent"
                                 android:layout_height="fill_parent"
-                                android:layout_margin="10dp"
+                                android:layout_margin="2dp"
                                 android:background="@drawable/customborder_dialog"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/raleway_semibold"
@@ -559,13 +559,13 @@
                             android:layout_marginTop="2dp"
                             android:background="#fff"
                             android:elevation="4dp"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
                                 android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
+                                android:gravity="left"
                                 android:padding="5dp"
                                 android:text="District"
                                 android:textColor="@color/darkblue" />
@@ -574,7 +574,7 @@
                                 android:id="@+id/district"
                                 android:layout_width="match_parent"
                                 android:layout_height="fill_parent"
-                                android:layout_margin="10dp"
+                                android:layout_margin="2dp"
                                 android:background="@drawable/customborder_dialog"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/raleway_semibold"
@@ -589,13 +589,13 @@
                             android:layout_marginTop="2dp"
                             android:background="#fff"
                             android:elevation="4dp"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
                                 android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
+                                android:gravity="center_horizontal|left"
                                 android:padding="5dp"
                                 android:text="Tehsil"
                                 android:textColor="@color/darkblue" />
@@ -604,7 +604,7 @@
                                 android:id="@+id/tehsil"
                                 android:layout_width="match_parent"
                                 android:layout_height="fill_parent"
-                                android:layout_margin="10dp"
+                                android:layout_margin="2dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/customborder_dialog"
                                 android:fontFamily="@font/raleway_semibold"
@@ -619,13 +619,13 @@
                             android:layout_marginTop="2dp"
                             android:background="#fff"
                             android:elevation="4dp"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
                                 android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
+                                android:gravity="left"
                                 android:padding="5dp"
                                 android:text="Block/ Town"
                                 android:textColor="@color/darkblue" />
@@ -634,7 +634,7 @@
                                 android:id="@+id/block"
                                 android:layout_width="match_parent"
                                 android:layout_height="fill_parent"
-                                android:layout_margin="10dp"
+                                android:layout_margin="2dp"
                                 android:background="@drawable/customborder_dialog"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/raleway_semibold"
@@ -649,13 +649,13 @@
                             android:layout_marginTop="2dp"
                             android:background="#fff"
                             android:elevation="4dp"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
                                 android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
+                                android:gravity="left"
                                 android:padding="5dp"
                                 android:text="Gram Panchayat/ Ward"
                                 android:textColor="@color/darkblue" />
@@ -664,7 +664,7 @@
                                 android:id="@+id/gp"
                                 android:layout_width="match_parent"
                                 android:layout_height="fill_parent"
-                                android:layout_margin="10dp"
+                                android:layout_margin="2dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/customborder_dialog"
                                 android:fontFamily="@font/raleway_semibold"
@@ -887,13 +887,13 @@
                             android:layout_marginTop="2dp"
                             android:background="#fff"
                             android:elevation="4dp"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="fill_parent"
                                 android:layout_height="49dp"
                                 android:layout_weight="1"
-                                android:gravity="center|center_vertical|center_horizontal"
+                                android:gravity="left"
                                 android:padding="5dp"
                                 android:text="Aarogya Setu App Downloaded"
                                 android:textColor="@color/darkblue" />
@@ -903,7 +903,7 @@
                                 android:layout_width="match_parent"
                                 android:entries="@array/yesno"
                                 android:layout_height="fill_parent"
-                                android:layout_margin="10dp"
+                                android:layout_margin="2dp"
                                 android:background="@drawable/customborder_dialog"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/raleway_semibold"

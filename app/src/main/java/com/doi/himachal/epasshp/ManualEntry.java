@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,7 +73,9 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
 
     TextView date, time, totalpersons,passenger;
     EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose, remarks;
-    SearchableSpinner fromstate, fromdistrict, district, tehsil, block, gp, appdownloaded;
+   //SearchableSpinner
+   SearchableSpinner  fromdistrict, district, tehsil, block, gp, appdownloaded;
+    SearchableSpinner fromstate;
     DatabaseHandler DB = new DatabaseHandler(ManualEntry.this);
     CustomDialog CD = new CustomDialog();
     Button back, proceed, addmore;
