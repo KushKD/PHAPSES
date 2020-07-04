@@ -56,5 +56,6 @@
   {"id":"55","district_id":"207","barrier_name":"Pambra Road"},
   {"id":"56","district_id":"207","barrier_name":"Nangal Jarialan"},
   {"id":"57","district_id":"207","barrier_name":"Saloh Beri  Barrier"},
-  {"id":"58","district_id":"207","barrier_name":"Shambhu Barrier Sheetala"}
+  {"id":"58","district_id":"207","barrier_name":"Shambhu Barrier Sheetala"},
+  {"id":"59","district_id":"199","barrier_name":"Gaggal Airport"}
 ]
