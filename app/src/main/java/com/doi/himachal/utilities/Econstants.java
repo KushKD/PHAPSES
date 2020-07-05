@@ -8,6 +8,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.doi.himachal.Modal.ResponsePojo;
+import com.doi.himachal.Modal.ResponsePojoGet;
 import com.doi.himachal.Modal.ScanDataPojo;
 
 import java.io.IOException;
@@ -72,6 +73,17 @@ public class Econstants {
 
 
 
+
+        return pojo;
+    }
+
+    public static ResponsePojoGet createOfflineObject(String url, String requestParams, String response, String Code, String functionName) {
+        ResponsePojoGet pojo = new ResponsePojoGet();
+        pojo.setUrl(url);
+        pojo.setRequestParams(requestParams);
+        pojo.setResponse(response);
+        pojo.setFunctionName(functionName);
+        pojo.setResponseCode(Code);
 
         return pojo;
     }
@@ -235,5 +247,7 @@ public class Econstants {
 
   //  public static final String URL_HTTPS = "https://covid19epass.hp.gov.in/api/v1/";
     public static final String URL_HTTPS = "http://covid19epass.hp.gov.in/api/v1/";
+
+    //getcategory
 
 }

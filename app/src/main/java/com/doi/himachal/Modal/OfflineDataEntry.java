@@ -22,6 +22,7 @@ public class OfflineDataEntry implements Serializable {
     private String tehsil_to;
     private String block_to;
     private String gram_panchayat;
+    private  String CategoryId;
     private String place_to;
     private String pass_no;
     private String pass_issue_authority;
@@ -47,6 +48,23 @@ public class OfflineDataEntry implements Serializable {
     private int position_to_block;
     private int position_to_panchayat;
     private int position_to_tehsil;
+    private int position_to_category;
+
+    public String getCategoryId() {
+        return CategoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        CategoryId = categoryId;
+    }
+
+    public int getPosition_to_category() {
+        return position_to_category;
+    }
+
+    public void setPosition_to_category(int position_to_category) {
+        this.position_to_category = position_to_category;
+    }
 
     private List<AddMorePeoplePojo> otherPersons;
 
@@ -354,6 +372,7 @@ public class OfflineDataEntry implements Serializable {
                 ", tehsil_to='" + tehsil_to + '\'' +
                 ", block_to='" + block_to + '\'' +
                 ", gram_panchayat='" + gram_panchayat + '\'' +
+                ", CategoryId='" + CategoryId + '\'' +
                 ", place_to='" + place_to + '\'' +
                 ", pass_no='" + pass_no + '\'' +
                 ", pass_issue_authority='" + pass_issue_authority + '\'' +
@@ -377,6 +396,7 @@ public class OfflineDataEntry implements Serializable {
                 ", position_to_block=" + position_to_block +
                 ", position_to_panchayat=" + position_to_panchayat +
                 ", position_to_tehsil=" + position_to_tehsil +
+                ", position_to_category=" + position_to_category +
                 ", otherPersons=" + otherPersons +
                 '}';
     }

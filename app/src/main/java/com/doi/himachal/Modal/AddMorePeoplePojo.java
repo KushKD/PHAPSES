@@ -30,6 +30,15 @@ public class AddMorePeoplePojo implements Serializable {
     private String remarks;
     private String app_downloaded;
 
+    private String category;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public String getVehical_number() {
         return vehical_number;
@@ -167,6 +176,8 @@ public class AddMorePeoplePojo implements Serializable {
         this.app_downloaded = app_downloaded;
     }
 
+
+
     @Override
     public String toString() {
         return "AddMorePeoplePojo{" +
@@ -187,6 +198,7 @@ public class AddMorePeoplePojo implements Serializable {
                 ", purpose='" + purpose + '\'' +
                 ", remarks='" + remarks + '\'' +
                 ", app_downloaded='" + app_downloaded + '\'' +
+                ", category='" + category + '\'' +
                 '}';
     }
 }

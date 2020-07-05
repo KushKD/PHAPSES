@@ -25,16 +25,19 @@ import android.widget.Toast;
 import com.doi.himachal.Adapter.GenericAdapter;
 import com.doi.himachal.Adapter.GenericAdapterBarrier;
 import com.doi.himachal.Adapter.GenericAdapterBlocks;
+import com.doi.himachal.Adapter.GenericAdapterCategory;
 import com.doi.himachal.Adapter.GenericAdapterGP;
 import com.doi.himachal.Adapter.GenericAdapterStates;
 import com.doi.himachal.Adapter.GenericAdapterTehsil;
 import com.doi.himachal.Modal.AddMorePeoplePojo;
 import com.doi.himachal.Modal.BlockPojo;
+import com.doi.himachal.Modal.CategoryPojo;
 import com.doi.himachal.Modal.DistrictBarrierPojo;
 import com.doi.himachal.Modal.DistrictPojo;
 import com.doi.himachal.Modal.GramPanchayatPojo;
 import com.doi.himachal.Modal.OfflineDataEntry;
 import com.doi.himachal.Modal.ResponsePojo;
+import com.doi.himachal.Modal.ResponsePojoGet;
 import com.doi.himachal.Modal.StatePojo;
 import com.doi.himachal.Modal.SuccessResponse;
 import com.doi.himachal.Modal.TehsilPojo;
@@ -45,8 +48,10 @@ import com.doi.himachal.enums.TaskType;
 import com.doi.himachal.generic.GenericAsyncDatabaseObject;
 import com.doi.himachal.generic.GenericAsyncPostObject;
 import com.doi.himachal.generic.GenericAsyncPostObjectForm;
+import com.doi.himachal.generic.Generic_Async_Get;
 import com.doi.himachal.interfaces.AsyncTaskListenerDatabase;
 import com.doi.himachal.interfaces.AsyncTaskListenerObjectForm;
+import com.doi.himachal.interfaces.AsyncTaskListenerObjectGet;
 import com.doi.himachal.json.JsonParse;
 import com.doi.himachal.presentation.CustomDialog;
 import com.doi.himachal.utilities.AppStatus;
@@ -62,19 +67,21 @@ import com.kushkumardhawan.locationmanager.configuration.LocationConfiguration;
 import com.kushkumardhawan.locationmanager.constants.FailType;
 import com.kushkumardhawan.locationmanager.constants.ProcessType;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ManualEntry extends LocationBaseActivity implements SamplePresenter.SampleView, AsyncTaskListenerObjectForm, AsyncTaskListenerDatabase {
+public class ManualEntry extends LocationBaseActivity implements SamplePresenter.SampleView, AsyncTaskListenerObjectForm, AsyncTaskListenerDatabase, AsyncTaskListenerObjectGet {
 
     TextView date, time, totalpersons,passenger;
     EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose, remarks;
    //SearchableSpinner
-   SearchableSpinner  fromdistrict, district, tehsil, block, gp, appdownloaded;
+   SearchableSpinner  fromdistrict, district, tehsil, block, gp, appdownloaded,category_sp;
     SearchableSpinner fromstate;
     DatabaseHandler DB = new DatabaseHandler(ManualEntry.this);
     CustomDialog CD = new CustomDialog();
@@ -88,19 +95,21 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     List<TehsilPojo> tehsils = null;
     List<AddMorePeoplePojo> addPersons = new ArrayList<>();
     List<GramPanchayatPojo> grampanchayats = null;
+    List<CategoryPojo> categories = null;
 
     GenericAdapterStates adapter_states = null;
     GenericAdapter adapter, fromAdapter = null;
     GenericAdapterTehsil adapter_tehsil = null;
     GenericAdapterBlocks adapterBlocks = null;
     GenericAdapterGP adaptergp = null;
+    GenericAdapterCategory adapterCategory = null;
 
     LinearLayout grampanchayat;
     OfflineDataEntry offlineDataEntry = new OfflineDataEntry();
 
-    String Global_fromstate, Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat, Global_toBlockName;
+    String Global_fromstate, Global_Category , Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat, Global_toBlockName;
     int Global_fromstatePosition, Global_fromdistrictPosition, Global_todistrictPosition, Global_totehsilPosition,
-            Global_toblockPosition, Global_togramPanchayatPosition ;
+            Global_toblockPosition, Global_togramPanchayatPosition , Global_categoryPosition;
 
     private SamplePresenter samplePresenter;
     public String userLocation = null;
@@ -114,6 +123,22 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
         init();
         samplePresenter = new SamplePresenter(this);
         getLocation();
+
+        if (AppStatus.getInstance(ManualEntry.this).isOnline()) {
+            UploadObject object = new UploadObject();
+            object.setUrl(Econstants.URL_HTTPS);
+            object.setTasktype(TaskType.GET_CATEGORIES);
+            object.setMethordName("getcategory");
+            object.setParam("");
+
+            new Generic_Async_Get(
+                    ManualEntry.this,
+                    ManualEntry.this,
+                    TaskType.GET_CATEGORIES).
+                    execute(object);
+        } else {
+            CD.showDialog(ManualEntry.this, "Please connect to Internet and try again.");
+        }
 
         numberpersons.addTextChangedListener(new TextWatcher() {
             @Override
@@ -183,6 +208,9 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                     offlineDataEntry.setBlock_to(Global_toblock);
                     offlineDataEntry.setPosition_to_block(Global_toblockPosition);
                     offlineDataEntry.setPosition_to_panchayat(Global_togramPanchayatPosition);
+
+                    offlineDataEntry.setPosition_to_category(Global_categoryPosition);
+                    offlineDataEntry.setCategoryId(Global_Category);
 
 
                     offlineDataEntry.setTimeStamp(CommonUtils.getCurrentDate());
@@ -344,6 +372,27 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
 //                    fromAdapter = null;
 //                    fromdistrict.setAdapter(fromAdapter);
 //                }
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        category_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                CategoryPojo item = adapterCategory.getItem(position);
+
+
+                //  Global_district_id = item.getDistrict_id();
+                Log.e("category ID", item.getCategory_id());
+                Global_categoryPosition = position;
+                Global_Category = item.getCategory_id();
+
 
 
             }
@@ -579,6 +628,9 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 offlineDataEntry.setBlock_to(Global_toblock);
                 offlineDataEntry.setPosition_to_block(Global_toblockPosition);
 
+                offlineDataEntry.setPosition_to_category(Global_categoryPosition);
+                offlineDataEntry.setCategoryId(Global_Category);
+
                 offlineDataEntry.setTimeStamp(CommonUtils.getCurrentDate());
                 offlineDataEntry.setAaroyga_app_download(appdownloaded.getSelectedItem().toString());
                 offlineDataEntry.setBarrier_id(Preferences.getInstance().barrier_id);
@@ -660,7 +712,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
 
 
                                 UploadObjectManual object = new UploadObjectManual();
-                                object.setUrl("http://covid19epass.hp.gov.in/api/v1/saveofflinebarrierdata");
+                                object.setUrl("http://covid19epass.hp.gov.in/api/v1/saveofflinebarrierdatav1");
                                 object.setTasktype(TaskType.MANUAL_FORM_UPLOAD);
                                 object.setMethordName("saveofflinebarrierdata");
                                 object.setOfflineDataEntry(offlineDataEntry);
@@ -796,6 +848,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
 
 
         grampanchayat = findViewById(R.id.gml);
+        category_sp = findViewById(R.id.category_sp);
 
 
     }
@@ -1005,6 +1058,49 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
             }
         }
 
+    }
+
+    @Override
+    public void onTaskCompleted(ResponsePojoGet result, TaskType taskType) throws JSONException {
+    Log.e("Result==",result.toString());
+        if (result.getResponse().isEmpty()) {
+            CD.showDialog(ManualEntry.this, "Please Connect to Internet and try again.");
+        } else {
+
+            try {
+                SuccessResponse response = JsonParse.getSuccessResponse(result.getResponse());
+
+                if (response.getStatus().equalsIgnoreCase("200")) {
+
+                    //Parse Json Array
+                    JSONArray jsonArray = new JSONArray(response.getResponse());
+                    if (jsonArray.length() != 0) {
+                        categories = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            CategoryPojo pojo = new CategoryPojo();
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            pojo.setCategory_id(object.optString("category_id"));
+                            pojo.setCategory_name(object.optString("category_name"));
+
+
+                            categories.add(pojo);
+                        }
+
+                        adapterCategory = new GenericAdapterCategory(ManualEntry.this, android.R.layout.simple_spinner_item, categories);
+                        category_sp.setAdapter(adapterCategory);
+
+
+                    } else {
+                        CD.showDialog(ManualEntry.this, response.getMessage());
+                    }
+                } else {
+                    CD.showDialog(ManualEntry.this, response.getMessage());
+                }
+
+            }catch(Exception ex){
+                CD.showDialog(ManualEntry.this, result.getResponse());
+            }
+        }
     }
 }
 

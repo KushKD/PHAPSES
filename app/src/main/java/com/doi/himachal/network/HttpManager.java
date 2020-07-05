@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.doi.himachal.Modal.PhoneDetailsPojo;
 import com.doi.himachal.Modal.ResponsePojo;
+import com.doi.himachal.Modal.ResponsePojoGet;
 import com.doi.himachal.Modal.ScanDataPojo;
 import com.doi.himachal.Modal.UploadObject;
 import com.doi.himachal.Modal.UploadObjectManual;
@@ -30,6 +31,66 @@ import java.net.URL;
  * @Time 03, 05 , 2020
  */
 public class HttpManager {
+
+    public ResponsePojoGet GetData(UploadObject data) throws IOException {
+        BufferedReader reader = null;
+        URL url_ =  null;
+        ResponsePojoGet response = null;
+        HttpURLConnection con = null;
+
+        try {
+            url_ = new URL(data.getUrl()+data.getMethordName()+data.getParam());
+            Log.e("url",url_.toString());
+            con = (HttpURLConnection) url_.openConnection();
+           //con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+           con.setRequestProperty("Authorization", "Basic " + Econstants.generateAuthenticationPasswrd("COVID@908#HeM@nT", "JovpQy2Cez6545sKDRvhX3p"));
+            con.connect();
+
+            if (con.getResponseCode() != 200) {
+                reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                con.disconnect();
+                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),sb.toString() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+
+                return response;
+            }else {
+
+
+                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                con.disconnect();
+                //sb.tostring
+                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),sb.toString() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+                return response;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),e.getLocalizedMessage() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+
+            return response;
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),e.getLocalizedMessage() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+                    return response;
+                }
+            }
+        }
+    }
+
 
     public ResponsePojo PostData(UploadObject data) {
 
@@ -294,6 +355,7 @@ public class HttpManager {
                 userJson.put("scanned_date_time", data.getOfflineDataEntry().getTimeStamp());
                 userJson.put("remarks", data.getOfflineDataEntry().getRemarks());
 
+                userJson.put("pass_category", Integer.parseInt(data.getOfflineDataEntry().getCategoryId()));
 
 
                 Log.e("Here", "We Are8");
