@@ -2,6 +2,7 @@ package com.doi.himachal.json;
 
 import android.util.Log;
 
+import com.doi.himachal.Modal.MastersPojoServer;
 import com.doi.himachal.Modal.ScanDataPojo;
 import com.doi.himachal.Modal.SuccessResponse;
 import com.doi.himachal.Modal.VerifyObject;
@@ -59,6 +60,16 @@ public class JsonParse {
         VerifyObject sr = new VerifyObject();
         sr.setId(responseObject.getString("id"));
         sr.setPass_id(responseObject.getString("pass_id"));
+
+        return sr;
+    }
+
+    public static MastersPojoServer MasterPojo(String data) throws JSONException {
+
+        JSONObject responseObject = new JSONObject(data);
+        MastersPojoServer sr = new MastersPojoServer();
+        sr.setStatus(responseObject.getString("STATUS"));
+        sr.setRecords(responseObject.getString("records"));
 
         return sr;
     }

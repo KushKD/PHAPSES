@@ -35,6 +35,7 @@ import com.doi.himachal.Modal.CategoryPojo;
 import com.doi.himachal.Modal.DistrictBarrierPojo;
 import com.doi.himachal.Modal.DistrictPojo;
 import com.doi.himachal.Modal.GramPanchayatPojo;
+import com.doi.himachal.Modal.MastersPojoServer;
 import com.doi.himachal.Modal.OfflineDataEntry;
 import com.doi.himachal.Modal.ResponsePojo;
 import com.doi.himachal.Modal.ResponsePojoGet;
@@ -49,9 +50,11 @@ import com.doi.himachal.generic.GenericAsyncDatabaseObject;
 import com.doi.himachal.generic.GenericAsyncPostObject;
 import com.doi.himachal.generic.GenericAsyncPostObjectForm;
 import com.doi.himachal.generic.Generic_Async_Get;
+import com.doi.himachal.generic.Generic_Async_Post;
 import com.doi.himachal.interfaces.AsyncTaskListenerDatabase;
 import com.doi.himachal.interfaces.AsyncTaskListenerObjectForm;
 import com.doi.himachal.interfaces.AsyncTaskListenerObjectGet;
+import com.doi.himachal.interfaces.AsyncTaskListenerObjectPost;
 import com.doi.himachal.json.JsonParse;
 import com.doi.himachal.presentation.CustomDialog;
 import com.doi.himachal.utilities.AppStatus;
@@ -76,12 +79,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ManualEntry extends LocationBaseActivity implements SamplePresenter.SampleView, AsyncTaskListenerObjectForm, AsyncTaskListenerDatabase, AsyncTaskListenerObjectGet {
+public class ManualEntry extends LocationBaseActivity implements SamplePresenter.SampleView, AsyncTaskListenerObjectForm, AsyncTaskListenerObjectGet, AsyncTaskListenerObjectPost {
 
-    TextView date, time, totalpersons,passenger;
+    TextView date, time, totalpersons, passenger;
     EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose, remarks;
-   //SearchableSpinner
-   SearchableSpinner  fromdistrict, district, tehsil, block, gp, appdownloaded,category_sp;
+    //SearchableSpinner
+    SearchableSpinner fromdistrict, district, tehsil, block, gp, appdownloaded, category_sp;
     SearchableSpinner fromstate;
     DatabaseHandler DB = new DatabaseHandler(ManualEntry.this);
     CustomDialog CD = new CustomDialog();
@@ -107,9 +110,9 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     LinearLayout grampanchayat;
     OfflineDataEntry offlineDataEntry = new OfflineDataEntry();
 
-    String Global_fromstate, Global_Category , Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat, Global_toBlockName;
+    String Global_fromstate, Global_Category, Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat, Global_toBlockName;
     int Global_fromstatePosition, Global_fromdistrictPosition, Global_todistrictPosition, Global_totehsilPosition,
-            Global_toblockPosition, Global_togramPanchayatPosition , Global_categoryPosition;
+            Global_toblockPosition, Global_togramPanchayatPosition, Global_categoryPosition;
 
     private SamplePresenter samplePresenter;
     public String userLocation = null;
@@ -136,6 +139,20 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                     ManualEntry.this,
                     TaskType.GET_CATEGORIES).
                     execute(object);
+
+            UploadObject statesObject = new UploadObject();
+            statesObject.setUrl(Econstants.URL_HTTPS);
+            statesObject.setTasktype(TaskType.GET_STATES);
+            statesObject.setMethordName("getstates");
+            statesObject.setParam("");
+
+            new Generic_Async_Get(
+                    ManualEntry.this,
+                    ManualEntry.this,
+                    TaskType.GET_STATES).
+                    execute(statesObject);
+
+
         } else {
             CD.showDialog(ManualEntry.this, "Please connect to Internet and try again.");
         }
@@ -156,18 +173,18 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
             @Override
             public void afterTextChanged(Editable s) {
 
-               // if(addPersons.isEmpty()){
-                    if (numberpersons.getText().toString().equalsIgnoreCase("1")) {
-                        addmore.setVisibility(View.GONE);
-                        proceed.setVisibility(View.VISIBLE);
-                    } else if (numberpersons.getText().toString().equalsIgnoreCase("0")) {
-                        addmore.setVisibility(View.GONE);
-                        proceed.setVisibility(View.GONE);
-                    } else{
-                        checkList(s.toString());
-                       // addmore.setVisibility(View.VISIBLE);
-                        //proceed.setVisibility(View.GONE);
-                    }
+                // if(addPersons.isEmpty()){
+                if (numberpersons.getText().toString().equalsIgnoreCase("1")) {
+                    addmore.setVisibility(View.GONE);
+                    proceed.setVisibility(View.VISIBLE);
+                } else if (numberpersons.getText().toString().equalsIgnoreCase("0")) {
+                    addmore.setVisibility(View.GONE);
+                    proceed.setVisibility(View.GONE);
+                } else {
+                    checkList(s.toString());
+                    // addmore.setVisibility(View.VISIBLE);
+                    //proceed.setVisibility(View.GONE);
+                }
 
 
             }
@@ -283,7 +300,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                             if (vehiclenumber.getText().toString() != null && !vehiclenumber.getText().toString().isEmpty()) {
                                 offlineDataEntry.setVehicle_number(vehiclenumber.getText().toString().trim());
 
-                                if (mobilenumber.getText().toString() != null && mobilenumber.getText().toString().length()==10 && !mobilenumber.getText().toString().isEmpty()) {
+                                if (mobilenumber.getText().toString() != null && mobilenumber.getText().toString().length() == 10 && !mobilenumber.getText().toString().isEmpty()) {
                                     offlineDataEntry.setMobile(mobilenumber.getText().toString().trim());
 
                                     // if (passno.getText().toString() != null && !passno.getText().toString().isEmpty()) {
@@ -338,11 +355,6 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
         });
 
 
-        //GET States
-        states = DB.getStates();
-        adapter_states = new GenericAdapterStates(ManualEntry.this, android.R.layout.simple_spinner_item, states);
-        fromstate.setAdapter(adapter_states);
-
         fromstate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -357,21 +369,27 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 /**
                  * TODO HERE TODAY
                  */
-                new GenericAsyncDatabaseObject(
-                        ManualEntry.this,
-                        ManualEntry.this,
-                        TaskType.GET_DISTRICT_VIA_STATE).
-                        execute(TaskType.GET_DISTRICT_VIA_STATE.toString(),item.getState_id());
-//                fromdistricts = DB.getDistrictsViaState(item.getState_id());
-//                if (!fromdistricts.isEmpty()) {
-//                    fromAdapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, fromdistricts);
-//                    fromdistrict.setAdapter(fromAdapter);
-//
-//                } else {
-//                    CD.showDialog(ManualEntry.this, "No District found for the specific State");
-//                    fromAdapter = null;
-//                    fromdistrict.setAdapter(fromAdapter);
-//                }
+//                new GenericAsyncDatabaseObject(
+//                        ManualEntry.this,
+//                        ManualEntry.this,
+//                        TaskType.GET_DISTRICT_VIA_STATE).
+//                        execute(TaskType.GET_DISTRICT_VIA_STATE.toString(), item.getState_id());
+
+                if (AppStatus.getInstance(ManualEntry.this).isOnline()) {
+                    UploadObject object = new UploadObject();
+                    object.setUrl(Econstants.URL_HTTPS);
+                    object.setTasktype(TaskType.GET_DISTRICT_VIA_STATE);
+                    object.setMethordName("getdistricts");
+                    object.setParam("state_id=");
+                    object.setParam2(Integer.parseInt(Global_fromstate));
+                    new Generic_Async_Post(
+                            ManualEntry.this,
+                            ManualEntry.this,
+                            TaskType.GET_DISTRICT_VIA_STATE).
+                            execute(object);
+                } else {
+                    CD.showDialog(ManualEntry.this, "Please connect to Internet and try again.");
+                }
 
 
             }
@@ -392,7 +410,6 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 Log.e("category ID", item.getCategory_id());
                 Global_categoryPosition = position;
                 Global_Category = item.getCategory_id();
-
 
 
             }
@@ -425,11 +442,22 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
             }
         });
 
-        //Get Districts
-        districts = DB.getDistrictsViaState("9");
-        Log.e("@@@District", districts.toString());
-        adapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, districts);
-        district.setAdapter(adapter);
+        //Get Districts TODO
+        if (AppStatus.getInstance(ManualEntry.this).isOnline()) {
+            UploadObject object = new UploadObject();
+            object.setUrl(Econstants.URL_HTTPS);
+            object.setTasktype(TaskType.GET_DISTRICT_VIA_STATE_LOCAL);
+            object.setMethordName("getdistricts");
+            object.setParam("state_id=");
+            object.setParam2(9);
+            new Generic_Async_Post(
+                    ManualEntry.this,
+                    ManualEntry.this,
+                    TaskType.GET_DISTRICT_VIA_STATE_LOCAL).
+                    execute(object);
+        } else {
+            CD.showDialog(ManualEntry.this, "Please connect to Internet and try again.");
+        }
 
 
         district.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -448,42 +476,49 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 /**
                  * TODO HERE TODAY
                  */
-                new GenericAsyncDatabaseObject(
-                        ManualEntry.this,
-                        ManualEntry.this,
-                        TaskType.GET_TEHSIL_VIA_DISTRICT).
-                        execute(TaskType.GET_TEHSIL_VIA_DISTRICT.toString(),item.getDistrict_id());
+//                new GenericAsyncDatabaseObject(
+//                        ManualEntry.this,
+//                        ManualEntry.this,
+//                        TaskType.GET_TEHSIL_VIA_DISTRICT).
+//                        execute(TaskType.GET_TEHSIL_VIA_DISTRICT.toString(), item.getDistrict_id());
+                if (AppStatus.getInstance(ManualEntry.this).isOnline()) {
+                    UploadObject object = new UploadObject();
+                    object.setUrl(Econstants.URL_HTTPS);
+                    object.setTasktype(TaskType.GET_TEHSIL_VIA_DISTRICT);
+                    object.setMethordName("gettehsils");
+                    object.setParam("district=");
+                    object.setParam2(Integer.parseInt(Global_todistrict));
+                    new Generic_Async_Post(
+                            ManualEntry.this,
+                            ManualEntry.this,
+                            TaskType.GET_TEHSIL_VIA_DISTRICT).
+                            execute(object);
+                } else {
+                    CD.showDialog(ManualEntry.this, "Please connect to Internet and try again.");
+                }
 
 
-                new GenericAsyncDatabaseObject(
-                        ManualEntry.this,
-                        ManualEntry.this,
-                        TaskType.GET_BLOCK_VIA_DISTRICT).
-                        execute(TaskType.GET_BLOCK_VIA_DISTRICT.toString(),item.getDistrict_id());
+                if (AppStatus.getInstance(ManualEntry.this).isOnline()) {
+                    UploadObject object = new UploadObject();
+                    object.setUrl(Econstants.URL_HTTPS);
+                    object.setTasktype(TaskType.GET_BLOCK_VIA_DISTRICT);
+                    object.setMethordName("getblocks");
+                    object.setParam("district=");
+                    object.setParam2(Integer.parseInt(Global_todistrict));
+                    new Generic_Async_Post(
+                            ManualEntry.this,
+                            ManualEntry.this,
+                            TaskType.GET_BLOCK_VIA_DISTRICT).
+                            execute(object);
+                } else {
+                    CD.showDialog(ManualEntry.this, "Please connect to Internet and try again.");
+                }
 
-
-                //tehsils = DB.getTehsilViaDistrict(item.getDistrict_id());
-             //   blocks = DB.getBlocksViaDistrict(item.getDistrict_id());
-
-//                if (!tehsils.isEmpty()) {
-//                    adapter_tehsil = new GenericAdapterTehsil(ManualEntry.this, android.R.layout.simple_spinner_item, tehsils);
-//                    tehsil.setAdapter(adapter_tehsil);
-//
-//                } else {
-//                    CD.showDialog(ManualEntry.this, "No Tehsils found for the specific District");
-//                    adapter_tehsil = null;
-//                    tehsil.setAdapter(adapter_tehsil);
-//                }
-//                if (!blocks.isEmpty()) {
-//
-//                    adapterBlocks = new GenericAdapterBlocks(ManualEntry.this, android.R.layout.simple_spinner_item, blocks);
-//                    block.setAdapter(adapterBlocks);
-//
-//                } else {
-//                    CD.showDialog(ManualEntry.this, "No Blocks found for the specific District");
-//                    adapterBlocks = null;
-//                    block.setAdapter(adapterBlocks);
-//                }
+//                new GenericAsyncDatabaseObject(
+//                        ManualEntry.this,
+//                        ManualEntry.this,
+//                        TaskType.GET_BLOCK_VIA_DISTRICT).
+//                        execute(TaskType.GET_BLOCK_VIA_DISTRICT.toString(), item.getDistrict_id());
 
 
             }
@@ -526,34 +561,21 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 Global_toBlockName = item.getBlock_name();
                 Global_toblockPosition = position;
 
-                //TODO TODAY THIRD
-                new GenericAsyncDatabaseObject(
-                        ManualEntry.this,
-                        ManualEntry.this,
-                        TaskType.GET_GP_VIA_DISTRICT).
-                        execute(TaskType.GET_GP_VIA_DISTRICT.toString(),item.getBlock_code());
-             //   grampanchayats = DB.getGPViaDistrict(item.getBlock_code());
-
-//                Log.e("Size", Integer.toString(grampanchayats.size()));
-//
-//                if (grampanchayats.size() != 0) {
-//                    if(item.getBlock_name().contains("Town")){
-//                        GramPanchayatPojo pojo = new GramPanchayatPojo();
-//                        pojo.setGp_id("0");
-//                        pojo.setGp_name("Please Select");
-//                        grampanchayats.add(0, pojo);
-//                    }
-//                    grampanchayat.setVisibility(View.VISIBLE);
-//                    adaptergp = new GenericAdapterGP(ManualEntry.this, android.R.layout.simple_spinner_item, grampanchayats);
-//                    gp.setAdapter(adaptergp);
-//
-//                } else {
-//                    // CD.showDialog(ManualEntry.this, "No Panchayats found for the specific blocks");
-//                    adaptergp = null;
-//                    gp.setAdapter(adaptergp);
-//                    grampanchayat.setVisibility(View.GONE);
-//                    Global_togramPanchayat = "0";
-//                }
+                if (AppStatus.getInstance(ManualEntry.this).isOnline()) {
+                    UploadObject object = new UploadObject();
+                    object.setUrl(Econstants.URL_HTTPS);
+                    object.setTasktype(TaskType.GET_GP_VIA_DISTRICT);
+                    object.setMethordName("getpanchyatv1");
+                    object.setParam("block=");
+                    object.setParam2(Integer.parseInt(Global_toblock));
+                    new Generic_Async_Post(
+                            ManualEntry.this,
+                            ManualEntry.this,
+                            TaskType.GET_GP_VIA_DISTRICT).
+                            execute(object);
+                } else {
+                    CD.showDialog(ManualEntry.this, "Please connect to Internet and try again.");
+                }
 
 
             }
@@ -701,7 +723,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                         if (vehiclenumber.getText().toString() != null && !vehiclenumber.getText().toString().isEmpty()) {
                             offlineDataEntry.setVehicle_number(vehiclenumber.getText().toString().trim());
 
-                            if (mobilenumber.getText().toString() != null && mobilenumber.getText().toString().length()==10 && !mobilenumber.getText().toString().isEmpty()) {
+                            if (mobilenumber.getText().toString() != null && mobilenumber.getText().toString().length() == 10 && !mobilenumber.getText().toString().isEmpty()) {
                                 offlineDataEntry.setMobile(mobilenumber.getText().toString().trim());
 
                                 // if (passno.getText().toString() != null && !passno.getText().toString().isEmpty()) {
@@ -778,37 +800,37 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     }
 
     private void checkList(String s) {
-        Log.e("Data",s);
-        if(s!=null){
-            try{
+        Log.e("Data", s);
+        if (s != null) {
+            try {
                 int number = Integer.parseInt(s);
-                Log.e("number",Integer.toString(number));
-                if(!addPersons.isEmpty()){
+                Log.e("number", Integer.toString(number));
+                if (!addPersons.isEmpty()) {
 
-                    if(number > (addPersons.size()+1) ) {
+                    if (number > (addPersons.size() + 1)) {
                         addmore.setVisibility(View.VISIBLE);
                         proceed.setVisibility(View.GONE);
-                    }else{
-                        Log.e("number","We are in extreme case.");
-                        Log.e("number",Integer.toString(number));
-                        Log.e("list",Integer.toString(addPersons.size()+1));
-                       // CD.showDialog(ManualEntry.this,"There are already ");
+                    } else {
+                        Log.e("number", "We are in extreme case.");
+                        Log.e("number", Integer.toString(number));
+                        Log.e("list", Integer.toString(addPersons.size() + 1));
+                        // CD.showDialog(ManualEntry.this,"There are already ");
                         //TODO
                         //Remove elements here
-                        Toast.makeText(this, "Total number of Persons Added is "+Integer.toString(addPersons.size()+1), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Total number of Persons Added is " + Integer.toString(addPersons.size() + 1), Toast.LENGTH_SHORT).show();
                         proceed.setVisibility(View.VISIBLE);
                         addmore.setVisibility(View.GONE);
                     }
-                }else{
+                } else {
                     addmore.setVisibility(View.VISIBLE);
                     proceed.setVisibility(View.GONE);
                 }
 
-            }catch (Exception ex){
-                Log.e("number",ex.getLocalizedMessage());
+            } catch (Exception ex) {
+                Log.e("number", ex.getLocalizedMessage());
             }
 
-        }else{
+        } else {
             proceed.setVisibility(View.VISIBLE);
             addmore.setVisibility(View.GONE);
         }
@@ -970,16 +992,16 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
         AddMorePeoplePojo addMore = null;
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-                 addMore = (AddMorePeoplePojo) data.getSerializableExtra("AddMore");
+                addMore = (AddMorePeoplePojo) data.getSerializableExtra("AddMore");
                 Log.e("Add more", addMore.toString());
-                CD.showDialog(ManualEntry.this,addMore.getEnter_name()+" Added Successfully.");
+                CD.showDialog(ManualEntry.this, addMore.getEnter_name() + " Added Successfully.");
                 addPersons.add(addMore);
                 passenger.setText("Person added");
-                totalpersons.setText(Integer.toString( addPersons.size()+1));
+                totalpersons.setText(Integer.toString(addPersons.size() + 1));
                 Log.e("Size Other Persons", Integer.toString(addPersons.size()));
                 if ((addPersons.size() + 1) == Integer.parseInt(numberpersons.getText().toString())) {
                     offlineDataEntry.setOtherPersons(addPersons);
-                    totalpersons.setText(Integer.toString(offlineDataEntry.getOtherPersons().size()+1));
+                    totalpersons.setText(Integer.toString(offlineDataEntry.getOtherPersons().size() + 1));
                     Log.e("Size Other Persons", Integer.toString(offlineDataEntry.getOtherPersons().size()));
                     proceed.setVisibility(View.VISIBLE);
                     addmore.setVisibility(View.GONE);
@@ -991,117 +1013,280 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
         }
     }
 
-    @Override
-    public void onTaskCompleted(List<?> data, TaskType taskType) throws JSONException {
-        //TODO TODAY
-        if(taskType == TaskType.GET_DISTRICT_VIA_STATE){
-            List<DistrictPojo> pojo = (List<DistrictPojo>) data;
-            if (!pojo.isEmpty()) {
-                fromAdapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, pojo);
-                fromdistrict.setAdapter(fromAdapter);
 
-            } else {
-                CD.showDialog(ManualEntry.this, "No District found for the specific State");
-                fromAdapter = null;
-                fromdistrict.setAdapter(fromAdapter);
-            }
-        }
-        else if(taskType == TaskType.GET_TEHSIL_VIA_DISTRICT){
-            List<TehsilPojo> tehsils = (List<TehsilPojo>) data;
-            if (!tehsils.isEmpty()) {
-                adapter_tehsil = new GenericAdapterTehsil(ManualEntry.this, android.R.layout.simple_spinner_item, tehsils);
-                tehsil.setAdapter(adapter_tehsil);
-
-            } else {
-                CD.showDialog(ManualEntry.this, "No Tehsils found for the specific District");
-                adapter_tehsil = null;
-                tehsil.setAdapter(adapter_tehsil);
-            }
-        }
-
-        else if(taskType == TaskType.GET_BLOCK_VIA_DISTRICT){
-            List<BlockPojo> blocks = (List<BlockPojo>) data;
-            if (!blocks.isEmpty()) {
-
-                adapterBlocks = new GenericAdapterBlocks(ManualEntry.this, android.R.layout.simple_spinner_item, blocks);
-                block.setAdapter(adapterBlocks);
-
-            } else {
-                CD.showDialog(ManualEntry.this, "No Blocks found for the specific District");
-                adapterBlocks = null;
-                block.setAdapter(adapterBlocks);
-            }
-        }
-
-        else if(taskType == TaskType.GET_GP_VIA_DISTRICT){
-            List<GramPanchayatPojo> grampanchayats = (List<GramPanchayatPojo>) data;
-            Log.e("Size", Integer.toString(grampanchayats.size()));
-
-            if (grampanchayats.size() != 0) {
-
-                if(Global_toBlockName.contains("Town")){
-                    GramPanchayatPojo pojo = new GramPanchayatPojo();
-                    pojo.setGp_id("0");
-                    pojo.setGp_name("Please Select");
-                    grampanchayats.add(0, pojo);
-                }
-                grampanchayat.setVisibility(View.VISIBLE);
-                adaptergp = new GenericAdapterGP(ManualEntry.this, android.R.layout.simple_spinner_item, grampanchayats);
-                gp.setAdapter(adaptergp);
-
-            } else {
-                // CD.showDialog(ManualEntry.this, "No Panchayats found for the specific blocks");
-                adaptergp = null;
-                gp.setAdapter(adaptergp);
-                grampanchayat.setVisibility(View.GONE);
-                Global_togramPanchayat = "0";
-            }
-        }
-
-    }
 
     @Override
     public void onTaskCompleted(ResponsePojoGet result, TaskType taskType) throws JSONException {
-    Log.e("Result==",result.toString());
-        if (result.getResponse().isEmpty()) {
-            CD.showDialog(ManualEntry.this, "Please Connect to Internet and try again.");
-        } else {
 
-            try {
-                SuccessResponse response = JsonParse.getSuccessResponse(result.getResponse());
+        if (taskType == TaskType.GET_CATEGORIES) {
+            Log.e("Result==", result.toString());
+            if (result.getResponse().isEmpty()) {
+                CD.showDialog(ManualEntry.this, "Please Connect to Internet and try again.");
+            } else {
 
-                if (response.getStatus().equalsIgnoreCase("200")) {
+                try {
+                    SuccessResponse response = JsonParse.getSuccessResponse(result.getResponse());
 
-                    //Parse Json Array
-                    JSONArray jsonArray = new JSONArray(response.getResponse());
-                    if (jsonArray.length() != 0) {
-                        categories = new ArrayList<>();
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            CategoryPojo pojo = new CategoryPojo();
-                            JSONObject object = jsonArray.getJSONObject(i);
-                            pojo.setCategory_id(object.optString("category_id"));
-                            pojo.setCategory_name(object.optString("category_name"));
+                    if (response.getStatus().equalsIgnoreCase("200")) {
+
+                        //Parse Json Array
+                        JSONArray jsonArray = new JSONArray(response.getResponse());
+                        if (jsonArray.length() != 0) {
+                            categories = new ArrayList<>();
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                CategoryPojo pojo = new CategoryPojo();
+                                JSONObject object = jsonArray.getJSONObject(i);
+                                pojo.setCategory_id(object.optString("category_id"));
+                                pojo.setCategory_name(object.optString("category_name"));
 
 
-                            categories.add(pojo);
+                                categories.add(pojo);
+                            }
+
+                            adapterCategory = new GenericAdapterCategory(ManualEntry.this, android.R.layout.simple_spinner_item, categories);
+                            category_sp.setAdapter(adapterCategory);
+
+
+                        } else {
+                            CD.showDialog(ManualEntry.this, response.getMessage());
                         }
-
-                        adapterCategory = new GenericAdapterCategory(ManualEntry.this, android.R.layout.simple_spinner_item, categories);
-                        category_sp.setAdapter(adapterCategory);
-
-
                     } else {
                         CD.showDialog(ManualEntry.this, response.getMessage());
                     }
+
+                } catch (Exception ex) {
+                    CD.showDialog(ManualEntry.this, result.getResponse());
+                }
+            }
+        } else if (taskType == TaskType.GET_STATES) {
+
+
+            if (result.getResponse().isEmpty()) {
+                CD.showDialog(ManualEntry.this, "Please Connect to Internet and try again.");
+            } else {
+
+                MastersPojoServer response = JsonParse.MasterPojo(result.getResponse());
+                Log.e("Status", response.getStatus());
+                if (Integer.parseInt(response.getStatus()) == 200) {
+                    JSONArray jsonArray = new JSONArray(response.getRecords());
+                    Log.e("Status", jsonArray.toString());
+                    if (jsonArray.length() != 0) {
+                        states = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            StatePojo pojo = new StatePojo();
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            pojo.setState_id(object.optString("id"));
+                            pojo.setState_name(object.optString("name"));
+
+                            states.add(pojo);
+                        }
+                        if (!states.isEmpty()) {
+                            adapter_states = new GenericAdapterStates(ManualEntry.this, android.R.layout.simple_spinner_item, states);
+                            fromstate.setAdapter(adapter_states);
+
+                        } else {
+
+                            CD.showDialog(ManualEntry.this, "States Not Found. Something bad happened.");
+                            adapter_states = null;
+                            fromstate.setAdapter(adapter_states);
+                        }
+                    }
                 } else {
-                    CD.showDialog(ManualEntry.this, response.getMessage());
+                    CD.showDialog(ManualEntry.this, "States Not Found. Something bad happened.");
+                    adapter_states = null;
+                    fromstate.setAdapter(adapter_states);
+                }
+            }
+        } else if (taskType == TaskType.GET_DISTRICT_VIA_STATE) {
+            if (result.getResponse().isEmpty()) {
+                CD.showDialog(ManualEntry.this, "Please Connect to Internet and try again.");
+            } else {
+
+                MastersPojoServer response = JsonParse.MasterPojo(result.getResponse());
+                Log.e("Status", response.getStatus());
+                if (Integer.parseInt(response.getStatus()) == 200) {
+                    JSONArray jsonArray = new JSONArray(response.getRecords());
+                    if (jsonArray.length() != 0) {
+                        districts = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            DistrictPojo pojo = new DistrictPojo();
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            pojo.setDistrict_id(object.optString("district_id"));
+                            pojo.setDistrict_name(object.optString("district_name"));
+                            pojo.setState_id(object.optString("state_id"));
+
+                            districts.add(pojo);
+                        }
+
+                        fromAdapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, districts);
+                        fromdistrict.setAdapter(fromAdapter);
+                    } else {
+                        CD.showDialog(ManualEntry.this, "District Not Found.");
+                        fromAdapter = null;
+                        fromdistrict.setAdapter(fromAdapter);
+                    }
+                } else {
+                    CD.showDialog(ManualEntry.this, "Something went wrong. Please connect to Internet and try again.");
                 }
 
-            }catch(Exception ex){
-                CD.showDialog(ManualEntry.this, result.getResponse());
             }
+
+        } else if (taskType == TaskType.GET_DISTRICT_VIA_STATE_LOCAL) {
+            if (result.getResponse().isEmpty()) {
+                CD.showDialog(ManualEntry.this, "Please Connect to Internet and try again.");
+            } else {
+
+                MastersPojoServer response = JsonParse.MasterPojo(result.getResponse());
+                Log.e("Status", response.getStatus());
+                if (Integer.parseInt(response.getStatus()) == 200) {
+                    JSONArray jsonArray = new JSONArray(response.getRecords());
+                    if (jsonArray.length() != 0) {
+                        districts = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            DistrictPojo pojo = new DistrictPojo();
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            pojo.setDistrict_id(object.optString("district_id"));
+                            pojo.setDistrict_name(object.optString("district_name"));
+                            pojo.setState_id(object.optString("state_id"));
+
+                            districts.add(pojo);
+                        }
+
+                        adapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, districts);
+                        district.setAdapter(adapter);
+                    } else {
+                        CD.showDialog(ManualEntry.this, "District Not Found.");
+                        adapter = null;
+                        district.setAdapter(adapter);
+                    }
+                } else {
+                    CD.showDialog(ManualEntry.this, "Something went wrong. Please connect to Internet and try again.");
+                }
+
+            }
+
         }
+
+        //TODO
+        else if (taskType == TaskType.GET_TEHSIL_VIA_DISTRICT) {
+            if (result.getResponse().isEmpty()) {
+                CD.showDialog(ManualEntry.this, "Please Connect to Internet and try again.");
+            } else {
+
+                MastersPojoServer response = JsonParse.MasterPojo(result.getResponse());
+                Log.e("Status", response.getStatus());
+                if (Integer.parseInt(response.getStatus()) == 200) {
+                    JSONArray jsonArray = new JSONArray(response.getRecords());
+                    if (jsonArray.length() != 0) {
+                        tehsils = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            TehsilPojo pojo = new TehsilPojo();
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            pojo.setTehsil_id(object.optString("id"));
+                            pojo.setTehsil_name(object.optString("name"));
+
+                            tehsils.add(pojo);
+                        }
+
+                        adapter_tehsil = new GenericAdapterTehsil(ManualEntry.this, android.R.layout.simple_spinner_item, tehsils);
+                        tehsil.setAdapter(adapter_tehsil);
+                    } else {
+                        CD.showDialog(ManualEntry.this, "District Not Found.");
+                        adapter_tehsil = null;
+                        tehsil.setAdapter(adapter_tehsil);
+                    }
+                } else {
+                    CD.showDialog(ManualEntry.this, "Something went wrong. Please connect to Internet and try again.");
+                }
+
+            }
+
+        } else if (taskType == TaskType.GET_BLOCK_VIA_DISTRICT) {
+            if (result.getResponse().isEmpty()) {
+                CD.showDialog(ManualEntry.this, "Please Connect to Internet and try again.");
+            } else {
+
+                MastersPojoServer response = JsonParse.MasterPojo(result.getResponse());
+                Log.e("Status", response.getStatus());
+                if (Integer.parseInt(response.getStatus()) == 200) {
+                    JSONArray jsonArray = new JSONArray(response.getRecords());
+                    if (jsonArray.length() != 0) {
+                        blocks = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            BlockPojo pojo = new BlockPojo();
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            pojo.setBlock_name(object.optString("name"));
+                            pojo.setBlock_code(object.optString("id"));
+
+                            blocks.add(pojo);
+                        }
+
+
+                        adapterBlocks = new GenericAdapterBlocks(ManualEntry.this, android.R.layout.simple_spinner_item, blocks);
+                        block.setAdapter(adapterBlocks);
+                    } else {
+                        CD.showDialog(ManualEntry.this, "No Blocks Found.");
+                        adapterBlocks = null;
+                        block.setAdapter(adapterBlocks);
+                    }
+                } else {
+                    CD.showDialog(ManualEntry.this, "Something went wrong. Please connect to Internet and try again.");
+                }
+
+            }
+
+        } else if (taskType == TaskType.GET_GP_VIA_DISTRICT) {
+            if (result.getResponse().isEmpty()) {
+                CD.showDialog(ManualEntry.this, "Please Connect to Internet and try again.");
+            } else {
+
+                MastersPojoServer response = JsonParse.MasterPojo(result.getResponse());
+                Log.e("Status", response.getStatus());
+                if (Integer.parseInt(response.getStatus()) == 200) {
+                    JSONArray jsonArray = new JSONArray(response.getRecords());
+                    if (jsonArray.length() != 0) {
+                        grampanchayats = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            GramPanchayatPojo pojo = new GramPanchayatPojo();
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            pojo.setGp_name(object.optString("name"));
+                            pojo.setGp_id(object.optString("id"));
+
+                            grampanchayats.add(pojo);
+                        }
+
+
+                        if (Global_toBlockName.contains("Town")) {
+                            GramPanchayatPojo pojo = new GramPanchayatPojo();
+                            pojo.setGp_id("0");
+                            pojo.setGp_name("Please Select");
+                            grampanchayats.add(0, pojo);
+                        }
+                        grampanchayat.setVisibility(View.VISIBLE);
+                        adaptergp = new GenericAdapterGP(ManualEntry.this, android.R.layout.simple_spinner_item, grampanchayats);
+                        gp.setAdapter(adaptergp);
+                    } else {
+                        adaptergp = null;
+                        gp.setAdapter(adaptergp);
+                        grampanchayat.setVisibility(View.GONE);
+                        Global_togramPanchayat = "0";
+                    }
+                } else {
+                    adaptergp = null;
+                    gp.setAdapter(adaptergp);
+                    grampanchayat.setVisibility(View.GONE);
+                    Global_togramPanchayat = "0";
+                    Toast.makeText(ManualEntry.this,"No Gram Panchayat Available for Specific Block.",Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+        }
+
+
     }
+
+
 }
 
 

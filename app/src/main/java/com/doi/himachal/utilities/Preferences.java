@@ -16,7 +16,9 @@ public class Preferences {
         private SharedPreferences preferences;
         private SharedPreferences.Editor editor;
         private String KEY_DISTRICTID = "district_id";
+    private String KEY_DISTRICTNAME = "district_name";
         private String KEY_BARRIERID = "barrier_id";
+    private String KEY_BARRIERNAME = "barrier_name";
         private String KEY_PHONENUMBER = "phone_number";
         private String KEY_IS_LOGED_IN = "isLoggedIn";
         private String KEY_LOAD_TUTORIAL = "showtutorial";
@@ -25,7 +27,7 @@ public class Preferences {
 
 
 
-        public String district_id,barrier_id,phone_number,name,dept_name;
+        public String district_id,district_name,barrier_id,barrier_name,phone_number,name,dept_name;
         public boolean isLoggedIn, showtutorial;
 
 
@@ -45,7 +47,9 @@ public class Preferences {
         {
             preferences = c.getSharedPreferences(preferenceName, Activity.MODE_PRIVATE);
             district_id = preferences.getString(KEY_DISTRICTID, "");
+            district_name =  preferences.getString(KEY_DISTRICTNAME, "");
             barrier_id = preferences.getString(KEY_BARRIERID, "");
+            barrier_name =  preferences.getString(KEY_BARRIERNAME, "");
             phone_number = preferences.getString(KEY_PHONENUMBER, "");
 
             isLoggedIn = preferences.getBoolean(KEY_IS_LOGED_IN, isLoggedIn);
@@ -61,6 +65,8 @@ public class Preferences {
             preferences = c.getSharedPreferences(preferenceName, Activity.MODE_PRIVATE);
             editor = preferences.edit();
             editor.putString(KEY_DISTRICTID, district_id);
+            editor.putString(KEY_DISTRICTNAME,district_name);
+            editor.putString(KEY_BARRIERNAME,barrier_name);
             editor.putString(KEY_BARRIERID, barrier_id);
             editor.putString(KEY_PHONENUMBER, phone_number);
             editor.putString(KEY_NAME, name);

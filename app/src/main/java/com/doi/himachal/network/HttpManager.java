@@ -91,6 +91,64 @@ public class HttpManager {
         }
     }
 
+    public ResponsePojoGet GetDataStates(UploadObject data) throws IOException {
+        BufferedReader reader = null;
+        URL url_ =  null;
+        ResponsePojoGet response = null;
+        HttpURLConnection con = null;
+
+        try {
+            url_ = new URL(data.getUrl()+data.getMethordName()+data.getParam());
+            Log.e("url",url_.toString());
+            con = (HttpURLConnection) url_.openConnection();
+            //con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            //con.setRequestProperty("Authorization", "Basic " + Econstants.generateAuthenticationPasswrd("COVID@908#HeM@nT", "JovpQy2Cez6545sKDRvhX3p"));
+            con.connect();
+
+            if (con.getResponseCode() != 200) {
+                reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                con.disconnect();
+                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),sb.toString() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+
+                return response;
+            }else {
+
+
+                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                con.disconnect();
+                //sb.tostring
+                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),sb.toString() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+                return response;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),e.getLocalizedMessage() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+
+            return response;
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),e.getLocalizedMessage() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+                    return response;
+                }
+            }
+        }
+    }
 
     public ResponsePojo PostData(UploadObject data) {
 
@@ -498,6 +556,97 @@ public class HttpManager {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
+            e.printStackTrace();
+        } finally {
+            if (conn_ != null)
+                conn_.disconnect();
+        }
+        return response;
+    }
+
+    public ResponsePojoGet PostDataParamsGeneric(UploadObject data) {
+
+        URL url_ = null;
+        HttpURLConnection conn_ = null;
+        StringBuilder sb = null;
+        JSONObject userJson = null;
+
+        String URL = null;
+        ResponsePojoGet response = null;
+
+
+        try {
+
+            URL = data.getUrl()+data.getMethordName();
+          //  URL = "http://covidepass.eypoc.com/api/v1/getdistricts";
+            Log.e("URL", URL.toString());
+
+
+            url_ = new URL(URL);
+            conn_ = (HttpURLConnection) url_.openConnection();
+            conn_.setDoOutput(true);
+            conn_.setRequestMethod("POST");
+            conn_.setUseCaches(false);
+            conn_.setConnectTimeout(10000);
+            conn_.setReadTimeout(10000);
+          conn_.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+         //  conn_.setRequestProperty("Authorization", "Basic " + Econstants.generateAuthenticationPasswrd("COVID@908#HeM@nT", "JovpQy2Cez6545sKDRvhX3p"));
+            conn_.connect();
+
+
+
+
+
+            System.out.println(data.getParam()+data.getParam2());
+            Log.e("Object", data.getParam());
+            OutputStreamWriter out = new OutputStreamWriter(conn_.getOutputStream());
+            out.write(data.getParam()+data.getParam2());
+            out.close();
+
+            try {
+                int HttpResult = conn_.getResponseCode();
+                if (HttpResult != HttpURLConnection.HTTP_OK) {
+                    Log.e("Error", conn_.getResponseMessage());
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn_.getErrorStream(), "utf-8"));
+                    String line = null;
+                    sb = new StringBuilder();
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                    }
+                    br.close();
+                    System.out.println(sb.toString());
+                    Log.e("Data from Service", sb.toString());
+                    response = new ResponsePojoGet();
+                    response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),sb.toString() ,  Integer.toString(conn_.getResponseCode()), data.getMethordName());
+                    return response;
+
+
+                } else {
+
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn_.getInputStream(), "utf-8"));
+                    String line = null;
+                    sb = new StringBuilder();
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                    }
+                    br.close();
+                    System.out.println(sb.toString());
+                    Log.e("Data from Service", sb.toString());
+                    response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),sb.toString() ,  Integer.toString(conn_.getResponseCode()), data.getMethordName());
+                    return response;
+
+                }
+
+            } catch (Exception e) {
+
+                Log.e("Data from Service", sb.toString());
+                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),sb.toString() ,  Integer.toString(conn_.getResponseCode()), data.getMethordName());
+                return response;
+            }
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             if (conn_ != null)

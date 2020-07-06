@@ -16,6 +16,15 @@ public class UploadObject implements Serializable {
     private TaskType tasktype;
     private String methordName;
     private String param;
+    private Integer param2;
+
+    public Integer getParam2() {
+        return param2;
+    }
+
+    public void setParam2(Integer param2) {
+        this.param2 = param2;
+    }
 
     public String getParam() {
         return param;
@@ -65,6 +74,7 @@ public class UploadObject implements Serializable {
                 ", tasktype=" + tasktype +
                 ", methordName='" + methordName + '\'' +
                 ", param='" + param + '\'' +
+                ", param2=" + param2 +
                 '}';
     }
 }

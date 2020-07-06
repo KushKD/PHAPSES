@@ -49,7 +49,7 @@ public class CustomDialog {
     int downloadIdOne;
 
 
-    public void showDialog(final Activity activity, String msg)  {
+    public void showDialog(final Activity activity, String msg) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
@@ -77,7 +77,7 @@ public class CustomDialog {
 
     }
 
-    public void showDialogCloseActivity(final Activity activity, String msg)  {
+    public void showDialogCloseActivity(final Activity activity, String msg) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -96,7 +96,7 @@ public class CustomDialog {
         dialog_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 activity.finish();
+                activity.finish();
                 dialog.dismiss();
             }
         });
@@ -119,10 +119,10 @@ public class CustomDialog {
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
 
-        final WebView webView =  dialog.findViewById(R.id.dialog_result);
+        final WebView webView = dialog.findViewById(R.id.dialog_result);
         final EditText remarks = dialog.findViewById(R.id.remarks);
 
-      //  webView.setWebChromeClient(new WebChromeClient() );
+        //  webView.setWebChromeClient(new WebChromeClient() );
         webView.setWebViewClient(new WebViewClient() {
 
             @Override
@@ -157,26 +157,24 @@ public class CustomDialog {
         settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         settings.setDefaultTextEncodingName("utf-8");
-        settings.setAppCacheMaxSize(1024*1024*128);
+        settings.setAppCacheMaxSize(1024 * 1024 * 128);
         settings.setJavaScriptEnabled(true);
-
 
 
         final String mimeType = "text/html";
         final String encoding = "UTF-8";
 
         //msg
-            Log.e("HTML", msg);
+        Log.e("HTML", msg);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             settings.setMixedContentMode(0);
             webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         } else {
             webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
-
 
 
         webView.postInvalidateDelayed(1500);
@@ -210,23 +208,21 @@ public class CustomDialog {
             public void onClick(View v) {
 
 
-
-
                 //TODO
-                Log.e("Message",msgServer);
+                Log.e("Message", msgServer);
                 //{"pass_id":51827,"id":587}
                 String serverMessage = null;
-                try{
+                try {
                     VerifyObject objectVerify = JsonParse.createVerifyMessage(msgServer);
-                    if(remarks.getText().toString()!=null || !remarks.getText().toString().isEmpty()){
+                    if (remarks.getText().toString() != null || !remarks.getText().toString().isEmpty()) {
                         objectVerify.setRemarks(remarks.getText().toString().trim());
-                    }else{
+                    } else {
                         objectVerify.setRemarks("");
                     }
                     //Create Object
-                     serverMessage = JsonParse.createJson(objectVerify);
-                    Log.e("Server ",serverMessage);
-                }catch (JSONException ex){
+                    serverMessage = JsonParse.createJson(objectVerify);
+                    Log.e("Server ", serverMessage);
+                } catch (JSONException ex) {
                     serverMessage = msgServer;
                 }
 
@@ -307,7 +303,6 @@ public class CustomDialog {
 
 
         // Log.e("====Manual Entry", scanData.getNumber_of_passengers_manual());
-        DatabaseHandler DB = new DatabaseHandler(activity);
 
 
         // name.setText(taskPojo.getTask_name());
@@ -317,29 +312,21 @@ public class CustomDialog {
         dateissue.setText(scanData.getDateIssueDate());
 
 
-
-        if(scanData.getDistict().equalsIgnoreCase("0")){
+        if (scanData.getDistict().equalsIgnoreCase("0")) {
             district.setText("Other");
 
-        }else{
-            district.setText(DB.getDistrictNameById(scanData.getDistict()));
+        } else {
+            district.setText(Preferences.getInstance().district_name);
         }
 
-        if(scanData.getBarrrier().equalsIgnoreCase("0")){
+        if (scanData.getBarrrier().equalsIgnoreCase("0")) {
             barrier.setText("Other");
-        }else{
-            barrier.setText(DB.getBarrierNameById(scanData.getDistict(), scanData.getBarrrier()));
+        } else {
+            barrier.setText(Preferences.getInstance().barrier_name);
         }
-
-
-
-
-
-
 
 
         datescan.setText(DateTime.Change_Date_Format_second(scanData.getScanDate()));
-
 
 
         Log.e("ScanDae", DateTime.Change_Date_Format_second(scanData.getScanDate()));
@@ -422,24 +409,20 @@ public class CustomDialog {
         final EditText number_of_passengers = (EditText) dialog.findViewById(R.id.number_of_passengers);
 
 
-        // Log.e("====Manual Entry", scanData.getNumber_of_passengers_manual());
-        DatabaseHandler DB = new DatabaseHandler(activity);
-
-
         // name.setText(taskPojo.getTask_name());
 
-if(scanData.getDistict().equalsIgnoreCase("0")){
-    district.setText("Other");
+        if (scanData.getDistict().equalsIgnoreCase("0")) {
+            district.setText("Other");
 
-}else{
-    district.setText(DB.getDistrictNameById(scanData.getDistict()));
-}
+        } else {
+            district.setText(Preferences.getInstance().district_name);
+        }
 
-if(scanData.getBarrrier().equalsIgnoreCase("0")){
-    barrier.setText("Other");
-}else{
-    barrier.setText(DB.getBarrierNameById(scanData.getDistict(), scanData.getBarrrier()));
-}
+        if (scanData.getBarrrier().equalsIgnoreCase("0")) {
+            barrier.setText("Other");
+        } else {
+            barrier.setText(Preferences.getInstance().barrier_name);
+        }
 
 
         datescan.setText(DateTime.Change_Date_Format_second(scanData.getScanDate()));

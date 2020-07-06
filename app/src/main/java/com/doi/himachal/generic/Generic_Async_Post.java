@@ -9,6 +9,7 @@ import com.doi.himachal.Modal.ResponsePojoGet;
 import com.doi.himachal.Modal.UploadObject;
 import com.doi.himachal.enums.TaskType;
 import com.doi.himachal.interfaces.AsyncTaskListenerObjectGet;
+import com.doi.himachal.interfaces.AsyncTaskListenerObjectPost;
 import com.doi.himachal.network.HttpManager;
 
 import org.json.JSONException;
@@ -18,16 +19,16 @@ import org.json.JSONException;
  * @project HPePass
  * @Time 05, 07 , 2020
  */
-public class Generic_Async_Get extends AsyncTask<UploadObject,Void , ResponsePojoGet> {
+public class Generic_Async_Post extends AsyncTask<UploadObject,Void , ResponsePojoGet> {
 
 
     String outputStr;
     ProgressDialog dialog;
     Context context;
-    AsyncTaskListenerObjectGet taskListener;
+    AsyncTaskListenerObjectPost taskListener;
     TaskType taskType;
 
-    public Generic_Async_Get(Context context, AsyncTaskListenerObjectGet taskListener, TaskType taskType) {
+    public Generic_Async_Post(Context context, AsyncTaskListenerObjectPost taskListener, TaskType taskType) {
         this.context = context;
         this.taskListener = taskListener;
         this.taskType = taskType;
@@ -46,15 +47,11 @@ public class Generic_Async_Get extends AsyncTask<UploadObject,Void , ResponsePoj
         HttpManager http_manager = null;
         try {
             http_manager = new HttpManager();
-            if(uploadObjects[0].getTasktype().toString().equalsIgnoreCase(TaskType.GET_CATEGORIES.toString())){
-                Log.e("We Here", uploadObjects[0].getMethordName());
-                Data_From_Server = http_manager.GetData(uploadObjects[0]);
+          //  if(uploadObjects[0].getTasktype().toString().equalsIgnoreCase(TaskType.GET_DISTRICT_VIA_STATE.toString())){
+            //    Log.e("We Here", uploadObjects[0].getMethordName());
+                Data_From_Server = http_manager.PostDataParamsGeneric(uploadObjects[0]);
                 return Data_From_Server;
-            }else if(uploadObjects[0].getTasktype().toString().equalsIgnoreCase(TaskType.GET_STATES.toString())){
-                Log.e("We Here", uploadObjects[0].getMethordName());
-                Data_From_Server = http_manager.GetDataStates(uploadObjects[0]);
-                return Data_From_Server;
-            }
+            //}
 
 
         } catch (Exception e) {

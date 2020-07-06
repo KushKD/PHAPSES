@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,10 +27,22 @@ import com.doi.himachal.Modal.BlockPojo;
 import com.doi.himachal.Modal.DistrictBarrierPojo;
 import com.doi.himachal.Modal.DistrictPojo;
 import com.doi.himachal.Modal.GramPanchayatPojo;
+import com.doi.himachal.Modal.MastersPojoServer;
+import com.doi.himachal.Modal.ResponsePojoGet;
 import com.doi.himachal.Modal.StatePojo;
+import com.doi.himachal.Modal.SuccessResponse;
 import com.doi.himachal.Modal.TehsilPojo;
+import com.doi.himachal.Modal.UploadObject;
 import com.doi.himachal.database.DatabaseHandler;
+import com.doi.himachal.enums.TaskType;
+import com.doi.himachal.generic.Generic_Async_Get;
+import com.doi.himachal.generic.Generic_Async_Post;
+import com.doi.himachal.interfaces.AsyncTaskListenerObject;
+import com.doi.himachal.interfaces.AsyncTaskListenerObjectGet;
+import com.doi.himachal.interfaces.AsyncTaskListenerObjectPost;
+import com.doi.himachal.json.JsonParse;
 import com.doi.himachal.presentation.CustomDialog;
+import com.doi.himachal.utilities.AppStatus;
 import com.doi.himachal.utilities.Econstants;
 import com.doi.himachal.utilities.Preferences;
 
@@ -44,11 +57,11 @@ import java.util.TreeSet;
 import cmreliefdund.kushkumardhawan.com.instructions.MaterialTutorialActivity;
 import cmreliefdund.kushkumardhawan.com.instructions.TutorialItem;
 
-public class Registration extends AppCompatActivity {
+public class Registration extends AppCompatActivity implements AsyncTaskListenerObjectPost {
 
 
-    private String Global_district_id;
-    private String Global_barrier_id;
+    private String Global_district_id, GlobalDistrictName;
+    private String Global_barrier_id, GlobalBarrierName;
 
     public List<StatePojo> states = null;
     public List<DistrictPojo> districts = null;
@@ -66,6 +79,7 @@ public class Registration extends AppCompatActivity {
     com.doi.spinnersearchable.SearchableSpinner sp_district, sp_barrier;
     EditText phone, depat_name, name;
     Button register;
+
 
     private static final int REQUEST_CODE = 1234;
 
@@ -87,55 +101,20 @@ public class Registration extends AppCompatActivity {
         register = findViewById(R.id.register);
 
 
-//        Preferences.getInstance().loadPreferences(Registration.this);
-//        if(!Preferences.getInstance().showtutorial){
-//            loadTutorial();
-//        }
-
-
-        final DatabaseHandler DB = new DatabaseHandler(Registration.this);
-        if (DB.getNoOfRowsCountDistrict() == 0 &&
-                DB.getNoOfRowsCountBarrir() == 0 &&
-                DB.getNoOfRowsState() == 0 &&
-                DB.getNoOfRowsBlocks() == 0 &&
-                DB.getNoOfRowsGP() == 0 &&
-                DB.getNoOfRowsTehsil() == 0) {
-
-            Registration.create_db_states states = new Registration.create_db_states();
-            states.execute();
-
-
-            Registration.create_db_districts mouDetails_task = new Registration.create_db_districts();
-            mouDetails_task.execute();
-
-            Registration.create_db_districtsBarriers bariers = new Registration.create_db_districtsBarriers();
-            bariers.execute();
-
-            Registration.create_db_tehsils tehsils = new Registration.create_db_tehsils();
-            tehsils.execute();
-
-            Registration.create_db_blocks blocks = new Registration.create_db_blocks();
-            blocks.execute();
-
-            Registration.create_db_gp gp = new Registration.create_db_gp();
-            gp.execute();
-
-
+        if (AppStatus.getInstance(Registration.this).isOnline()) {
+            UploadObject object = new UploadObject();
+            object.setUrl(Econstants.URL_HTTPS);
+            object.setTasktype(TaskType.GET_DISTRICT_VIA_STATE);
+            object.setMethordName("getdistricts");
+            object.setParam("state_id=");
+            object.setParam2(9);
+            new Generic_Async_Post(
+                    Registration.this,
+                    Registration.this,
+                    TaskType.GET_DISTRICT_VIA_STATE).
+                    execute(object);
         } else {
-
-            try {
-                districts = DB.getDistrictsViaState("9");
-                DistrictPojo otherDistrict = new DistrictPojo();
-                otherDistrict.setDistrict_id("0");
-                otherDistrict.setDistrict_name("Other");
-                districts.add(otherDistrict);
-               // districts = DB.getDistrictsViaState();
-                adapter_district = new GenericAdapter(this, android.R.layout.simple_spinner_item, districts);
-                sp_district.setAdapter(adapter_district);
-            } catch (Exception ex) {
-                CD.showDialog(Registration.this, "Something Bad happened . Please reinstall the application and try again.");
-            }
-
+            CD.showDialog(Registration.this, "Please connect to Internet and try again.");
         }
 
 
@@ -145,23 +124,22 @@ public class Registration extends AppCompatActivity {
                 DistrictPojo item = adapter_district.getItem(position);
 
                 Global_district_id = item.getDistrict_id();
+                GlobalDistrictName = item.getDistrict_name();
 
-
-                List<DistrictBarrierPojo> barrier = DB.getBarriers(item.getDistrict_id());
-                DistrictBarrierPojo barrierPojo =  new DistrictBarrierPojo();
-                barrierPojo.setBarrir_name("Other");
-                barrierPojo.setBarrier_id("0");
-                barrier.add(barrierPojo);
-
-
-                if (!barrier.isEmpty()) {
-                    adapter_barrier = new GenericAdapterBarrier(Registration.this, android.R.layout.simple_spinner_item, barrier);
-                    sp_barrier.setAdapter(adapter_barrier);
-
+                if (AppStatus.getInstance(Registration.this).isOnline()) {
+                    UploadObject object = new UploadObject();
+                    object.setUrl(Econstants.URL_HTTPS);
+                    object.setTasktype(TaskType.GET_BARRIER_VIA_DISTRICTS);
+                    object.setMethordName("getbarriers");
+                    object.setParam("districtId=");
+                    object.setParam2(Integer.parseInt(Global_district_id));
+                    new Generic_Async_Post(
+                            Registration.this,
+                            Registration.this,
+                            TaskType.GET_BARRIER_VIA_DISTRICTS).
+                            execute(object);
                 } else {
-                    CD.showDialog(Registration.this, "No Barrier found for the specific District");
-                    adapter_barrier = null;
-                    sp_barrier.setAdapter(adapter_barrier);
+                    CD.showDialog(Registration.this, "Please connect to Internet and try again.");
                 }
 
 
@@ -179,6 +157,7 @@ public class Registration extends AppCompatActivity {
                 DistrictBarrierPojo item = adapter_barrier.getItem(position);
                 Log.e("We are Here", item.getBarrier_id());
                 Global_barrier_id = item.getBarrier_id();
+                GlobalBarrierName = item.getBarrir_name();
 
             }
 
@@ -201,7 +180,9 @@ public class Registration extends AppCompatActivity {
                             //Clicked
                             Preferences.getInstance().loadPreferences(Registration.this);
                             Preferences.getInstance().district_id = Global_district_id;
+                            Preferences.getInstance().district_name = GlobalDistrictName;
                             Preferences.getInstance().barrier_id = Global_barrier_id;
+                            Preferences.getInstance().barrier_name = GlobalBarrierName;
                             Preferences.getInstance().name = name.getText().toString().trim();
                             Preferences.getInstance().dept_name = depat_name.getText().toString().trim();
                             Preferences.getInstance().phone_number = phone.getText().toString().trim();
@@ -233,387 +214,100 @@ public class Registration extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onTaskCompleted(ResponsePojoGet result, TaskType taskType) throws JSONException {
 
-    class create_db_states extends AsyncTask<String, String, String> {
+        if (taskType == TaskType.GET_DISTRICT_VIA_STATE) {
+            if (result.getResponse().isEmpty()) {
+                CD.showDialog(Registration.this, "Please Connect to Internet and try again.");
+            } else {
 
-        ProgressDialog dialog;
+                MastersPojoServer response = JsonParse.MasterPojo(result.getResponse());
+                Log.e("Status", response.getStatus());
+                if (Integer.parseInt(response.getStatus()) == 200) {
+                    JSONArray jsonArray = new JSONArray(response.getRecords());
+                    if (jsonArray.length() != 0) {
+                        districts = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            DistrictPojo pojo = new DistrictPojo();
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            pojo.setDistrict_id(object.optString("district_id"));
+                            pojo.setDistrict_name(object.optString("district_name"));
+                            pojo.setState_id(object.optString("state_id"));
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+                            districts.add(pojo);
+                        }
 
-            dialog = ProgressDialog.show(Registration.this, "Loading", "Loading.. Please Wait", true);
-            dialog.setCancelable(false);
-
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            //Read file From Assets
-
-            JSONArray m_jArry = null;
-            try {
-                m_jArry = new JSONArray(Econstants.loadJSONFromAsset(Registration.this, "states.json"));
-
-                states = new ArrayList<>();
-
-                for (int i = 0; i < m_jArry.length(); i++) {
-
-                    StatePojo statePojo = new StatePojo();
-                    JSONObject jo_inside = m_jArry.getJSONObject(i);
-                    statePojo.setState_id(jo_inside.getString("state_id"));
-                    statePojo.setState_name(jo_inside.getString("state_name"));
-
-                    states.add(statePojo);
-
-
-                }
-                if (!states.isEmpty()) {
-                    DatabaseHandler DB = new DatabaseHandler(Registration.this);
-                    DB.addStates(states);
+                        adapter_district = new GenericAdapter(Registration.this, android.R.layout.simple_spinner_item, districts);
+                        sp_district.setAdapter(adapter_district);
+                    } else {
+                        CD.showDialog(Registration.this, "District Not Found.");
+                        adapter_barrier = null;
+                        sp_district.setAdapter(adapter_district);
+                    }
+                }else{
+                    CD.showDialog(Registration.this,"Something went wrong. Please connect to Internet and try again.");
                 }
 
-
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 
-            return m_jArry.toString();
+        } else if (taskType == TaskType.GET_BARRIER_VIA_DISTRICTS) {
+            if (result.getResponse().isEmpty()) {
+                CD.showDialog(Registration.this, "Please Connect to Internet and try again.");
+            } else {
 
+                MastersPojoServer response = JsonParse.MasterPojo(result.getResponse());
+                Log.e("Status", response.getStatus());
+                if (Integer.parseInt(response.getStatus()) == 200) {
+                        JSONArray jsonArray = new JSONArray(response.getRecords());
+                        Log.e("Status", jsonArray.toString());
+                        if (jsonArray.length() != 0) {
+                            barrirs = new ArrayList<>();
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                DistrictBarrierPojo pojo = new DistrictBarrierPojo();
+                                JSONObject object = jsonArray.getJSONObject(i);
+                                pojo.setBarrier_id(object.optString("id"));
+                                pojo.setBarrir_name(object.optString("name"));
 
-        }
+                                barrirs.add(pojo);
+                            }
+                            DistrictBarrierPojo barrierPojo = new DistrictBarrierPojo();
+                            barrierPojo.setBarrir_name("Other");
+                            barrierPojo.setBarrier_id("0");
+                            barrirs.add(barrierPojo);
 
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
+                            if (!barrirs.isEmpty()) {
+                                adapter_barrier = new GenericAdapterBarrier(Registration.this, android.R.layout.simple_spinner_item, barrirs);
+                                sp_barrier.setAdapter(adapter_barrier);
 
+                            } else {
 
-            dialog.dismiss();
-        }
-    }
+                                barrirs = new ArrayList<>();
+                                adapter_barrier = null;
+                                DistrictBarrierPojo barrierPojox = new DistrictBarrierPojo();
+                                barrierPojox.setBarrir_name("Other");
+                                barrierPojox.setBarrier_id("0");
+                                barrirs.add(barrierPojox);
 
-    class create_db_districts extends AsyncTask<String, String, String> {
+                                Toast.makeText(Registration.this,"No Barrier found for the specific District",Toast.LENGTH_LONG).show();
+                                adapter_barrier = new GenericAdapterBarrier(Registration.this, android.R.layout.simple_spinner_item, barrirs);
+                                sp_barrier.setAdapter(adapter_barrier);
+                            }
+                        }
+                }else{
+                    barrirs = new ArrayList<>();
+                    adapter_barrier = null;
+                    DistrictBarrierPojo barrierPojo = new DistrictBarrierPojo();
+                    barrierPojo.setBarrir_name("Other");
+                    barrierPojo.setBarrier_id("0");
+                    barrirs.add(barrierPojo);
 
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            dialog = ProgressDialog.show(Registration.this, "Loading", "Preparing for the first time. This may take upto 1 minute, please be patient", true);
-            dialog.setCancelable(false);
-
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            //Read file From Assets
-
-            JSONArray m_jArry = null;
-            try {
-                m_jArry = new JSONArray(Econstants.loadJSONFromAsset(Registration.this, "districts.json"));
-
-                districts = new ArrayList<>();
-
-                for (int i = 0; i < m_jArry.length(); i++) {
-
-                    DistrictPojo districtPojo = new DistrictPojo();
-                    JSONObject jo_inside = m_jArry.getJSONObject(i);
-                    districtPojo.setDistrict_id(jo_inside.getString("district_id"));
-                    districtPojo.setDistrict_name(jo_inside.getString("district_name"));
-                    districtPojo.setState_id(jo_inside.getString("state_id"));
-                    districtPojo.setAlertZone(jo_inside.getString("alert_zone"));
-
-                    districts.add(districtPojo);
-
-
+                   Toast.makeText(Registration.this,"No Barrier found for the specific District",Toast.LENGTH_LONG).show();
+                    adapter_barrier = new GenericAdapterBarrier(Registration.this, android.R.layout.simple_spinner_item, barrirs);
+                    sp_barrier.setAdapter(adapter_barrier);
                 }
-                DistrictPojo otherDistrict = new DistrictPojo();
-                otherDistrict.setDistrict_id("0");
-                otherDistrict.setDistrict_name("Other");
-                districts.add(otherDistrict);
-                if (!districts.isEmpty()) {
-                    DatabaseHandler DB = new DatabaseHandler(Registration.this);
-                    DB.addDistrict(districts);
-                }
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 
-            return m_jArry.toString();
-
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            DatabaseHandler DB = new DatabaseHandler(Registration.this);
-            districts = DB.getDistrictsViaState("9");
-            DistrictPojo otherDistrict = new DistrictPojo();
-            otherDistrict.setDistrict_id("0");
-            otherDistrict.setDistrict_name("Other");
-            districts.add(otherDistrict);
-
-            adapter_district = new GenericAdapter(Registration.this, android.R.layout.simple_spinner_item, districts);
-            sp_district.setAdapter(adapter_district);
-
-            dialog.dismiss();
-        }
-    }
-
-    class create_db_tehsils extends AsyncTask<String, String, String> {
-
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            dialog = ProgressDialog.show(Registration.this, "Loading", "Preparing for the first time. This may take upto 1 minute, please be patient", true);
-            dialog.setCancelable(false);
-
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            //Read file From Assets
-
-            JSONArray m_jArry = null;
-            try {
-                m_jArry = new JSONArray(Econstants.loadJSONFromAsset(Registration.this, "tehsils.json"));
-
-                tehsils = new ArrayList<>();
-
-                for (int i = 0; i < m_jArry.length(); i++) {
-
-                    TehsilPojo tehsil = new TehsilPojo();
-                    JSONObject jo_inside = m_jArry.getJSONObject(i);
-                    tehsil.setTehsil_id(jo_inside.getString("tehsil_id"));
-                    tehsil.setTehsil_name(jo_inside.getString("tehsil_name"));
-                    tehsil.setDistrict_id(jo_inside.getString("district_id"));
-
-                    tehsils.add(tehsil);
-
-
-                }
-                if (!tehsils.isEmpty()) {
-                    DatabaseHandler DB = new DatabaseHandler(Registration.this);
-                    DB.addTehsil(tehsils);
-                }
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            return m_jArry.toString();
-
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-
-            dialog.dismiss();
-        }
-    }
-
-    class create_db_blocks extends AsyncTask<String, String, String> {
-
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            dialog = ProgressDialog.show(Registration.this, "Loading", "\"Preparing for the first time. This may take upto 1 minute, please be patient\"", true);
-            dialog.setCancelable(false);
-
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            //Read file From Assets
-
-            JSONArray m_jArry = null;
-            try {
-                m_jArry = new JSONArray(Econstants.loadJSONFromAsset(Registration.this, "blocks.json"));
-
-                blocks = new ArrayList<>();
-
-                for (int i = 0; i < m_jArry.length(); i++) {
-
-                    BlockPojo block = new BlockPojo();
-                    JSONObject jo_inside = m_jArry.getJSONObject(i);
-                    block.setBlock_code(jo_inside.optString("block_id"));
-                    block.setBlock_name(jo_inside.optString("block_name"));
-                    block.setDistrict_id(jo_inside.optString("district_id"));
-                    block.setBlock_code(jo_inside.optString("block_code"));
-                    block.setIs_active(jo_inside.optString("is_active"));
-                    block.setIs_deleted(jo_inside.optString("is_deleted"));
-
-                    blocks.add(block);
-
-
-                }
-                if (!blocks.isEmpty()) {
-                    DatabaseHandler DB = new DatabaseHandler(Registration.this);
-                    DB.addBlocks(blocks);
-                }
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            return m_jArry.toString();
-
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-
-            dialog.dismiss();
-        }
-    }
-
-    class create_db_gp extends AsyncTask<String, String, String> {
-
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            dialog = ProgressDialog.show(Registration.this, "Loading", "Preparing for the first time. This may take upto 1 minute, please be patient", true);
-            dialog.setCancelable(false);
-
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            //Read file From Assets
-
-            JSONArray m_jArry = null;
-            try {
-                m_jArry = new JSONArray(Econstants.loadJSONFromAsset(Registration.this, "gram_panchayat.json"));
-
-                gp = new ArrayList<>();
-
-                for (int i = 0; i < m_jArry.length(); i++) {
-
-                    GramPanchayatPojo gp_ = new GramPanchayatPojo();
-                    JSONObject jo_inside = m_jArry.getJSONObject(i);
-                    gp_.setGp_id(jo_inside.optString("pachayat_code"));
-                    gp_.setGp_name(jo_inside.optString("panchayat_name"));
-                    gp_.setBlock_id(jo_inside.optString("block_id"));
-                    gp_.setIs_active(jo_inside.optString("is_active"));
-                    gp_.setIs_deleted(jo_inside.optString("is_deleted"));
-                    gp_.setPanchayat_pradhan_number(jo_inside.optString("panchayat_pradhan_number"));
-
-                    gp.add(gp_);
-
-
-                }
-                if (!gp.isEmpty()) {
-                    DatabaseHandler DB = new DatabaseHandler(Registration.this);
-                    DB.addGp(gp);
-                }
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            return m_jArry.toString();
-
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-
-            dialog.dismiss();
-        }
-    }
-
-    class create_db_districtsBarriers extends AsyncTask<String, String, String> {
-
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            dialog = ProgressDialog.show(Registration.this, "Loading", "Preparing for the first time. This may take upto 1 minute, please be patient", true);
-            dialog.setCancelable(false);
-
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            //Read file From Assets
-
-            JSONArray m_jArry = null;
-            try {
-                m_jArry = new JSONArray(Econstants.loadJSONFromAsset(Registration.this, "barriers.json"));
-
-                barrirs = new ArrayList<>();
-
-                for (int i = 0; i < m_jArry.length(); i++) {
-
-                    DistrictBarrierPojo districtBarrierPojo = new DistrictBarrierPojo();
-                    JSONObject jo_inside = m_jArry.getJSONObject(i);
-                    districtBarrierPojo.setBarrier_id(jo_inside.getString("id"));
-                    districtBarrierPojo.setBarrier_district_id(jo_inside.getString("district_id"));
-                    districtBarrierPojo.setBarrir_name(jo_inside.getString("barrier_name"));
-
-                    barrirs.add(districtBarrierPojo);
-
-
-                }
-                if (!barrirs.isEmpty()) {
-                    DatabaseHandler DB = new DatabaseHandler(Registration.this);
-                    DB.addDistrictBarriers(barrirs);
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            return m_jArry.toString();
-
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-
-            dialog.dismiss();
 
         }
     }
