@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
@@ -22,8 +23,10 @@ import com.doi.himachal.database.DatabaseHandler;
 import com.doi.himachal.epasshp.History;
 import com.doi.himachal.epasshp.ManualEntry;
 import com.doi.himachal.epasshp.R;
+import com.doi.himachal.epasshp.Registration;
 import com.doi.himachal.lazyloader.ImageLoader;
 import com.doi.himachal.presentation.CustomDialog;
+import com.doi.himachal.utilities.Preferences;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -100,29 +103,50 @@ public class HomeGridViewAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
 
-                if (s.getName().equalsIgnoreCase("Scan ePass")) {
+                if (s.getId().equalsIgnoreCase("1")) {
                     Intent i = new Intent(c.getApplicationContext(), QrCodeActivity.class);
                     ((Activity) c).startActivityForResult(i, 101);
 
                 }
-                if (s.getName().equalsIgnoreCase("Total Scanned Passes")) {
-
-                    DatabaseHandler DB = new DatabaseHandler(c);
-                    CD.showDialog((Activity) c, Integer.toString(DB.getNoOfRowsCount()));
-
-                }
-                if (s.getName().equalsIgnoreCase("Search Pass")) {
+//                if (s.getId().equalsIgnoreCase("")) {
+//
+//                    DatabaseHandler DB = new DatabaseHandler(c);
+//                    CD.showDialog((Activity) c, Integer.toString(DB.getNoOfRowsCount()));
+//
+//                }
+                if (s.getId().equalsIgnoreCase("2")) {
                     try {
                         CD.showDialogSearchByPassId((Activity) c);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                 }
-                if (s.getName().equalsIgnoreCase("Manual Entry")) {
+                if (s.getId().equalsIgnoreCase("3")) {
 
                     Intent i = new Intent(c.getApplicationContext(), ManualEntry.class);
 
                     (c).startActivity(i);
+
+                }
+                if (s.getId().equalsIgnoreCase("4")) {
+                    Preferences.getInstance().loadPreferences(c.getApplicationContext());
+
+
+                    Preferences.getInstance().district_id = "";
+                    Preferences.getInstance().district_name = "";
+                    Preferences.getInstance().barrier_name = "";
+                    Preferences.getInstance().barrier_id = "";
+                    Preferences.getInstance().phone_number = "";
+                    Preferences.getInstance().isLoggedIn = false;
+
+
+                    Preferences.getInstance().savePreferences(c.getApplicationContext());
+                    Toast.makeText(c.getApplicationContext(), "Logout Successful", Toast.LENGTH_LONG).show();
+
+                    Intent mainIntent = new Intent(c.getApplicationContext(), Registration.class);
+                    (c).startActivity(mainIntent);
+                    ((Activity) c).finish();
+
 
                 }
 

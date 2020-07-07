@@ -111,8 +111,8 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
 
         ModulesPojo mp4 = new ModulesPojo();
         mp4.setId("4");
-        mp4.setName("Total Scanned Passes");
-        mp4.setLogo("history");
+        mp4.setName("Logout");
+        mp4.setLogo("logout");
 
 
         modules.add(mp);
