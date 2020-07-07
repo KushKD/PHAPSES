@@ -111,7 +111,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
 
         ModulesPojo mp4 = new ModulesPojo();
         mp4.setId("4");
-        mp4.setName("Logout");
+        mp4.setName("Logout from Barrier");
         mp4.setLogo("logout");
 
 
@@ -169,6 +169,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
 
                         UploadObject object = new UploadObject();
                         object.setUrl(Econstants.URL_HTTPS+"savebarrierdata");
+                       // object.setUrl("http://covidepass.eypoc.com/savebarrierdata");
                         object.setTasktype(TaskType.UPLOAD_SCANNED_PASS);
                         object.setMethordName("savebarrierdata");
                         object.setScanDataPojo(data);
