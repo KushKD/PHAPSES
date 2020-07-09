@@ -51,6 +51,7 @@ dependencies {
     implementation project(path: ':locationmanager')
     implementation project(path: ':spinnersearchable')
     implementation project(path: ':instructions')
+    implementation project(path: ':prdownloader')
 
 
 }

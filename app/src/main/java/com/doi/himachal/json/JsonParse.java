@@ -5,6 +5,7 @@ import android.util.Log;
 import com.doi.himachal.Modal.MastersPojoServer;
 import com.doi.himachal.Modal.ScanDataPojo;
 import com.doi.himachal.Modal.SuccessResponse;
+import com.doi.himachal.Modal.SuccessResponseDocuments;
 import com.doi.himachal.Modal.VerifyObject;
 import com.doi.himachal.utilities.CommonUtils;
 
@@ -50,6 +51,36 @@ public class JsonParse {
         Log.e("!!!!!Status",sr.getStatus());
         sr.setMessage(responseObject.getString("MSG"));
         sr.setResponse(responseObject.getString("RESPONSE"));
+        Log.e("############SR",sr.toString());
+        return sr;
+    }
+
+    public static SuccessResponseDocuments getSuccessResponseDocuments(String data) throws JSONException {
+
+        Object json = new JSONTokener(data).nextValue();
+        if (json instanceof JSONObject){
+            Log.e("true","Is Json Object");
+        } else {
+            Log.e("false","Not Json");
+        }
+
+        Log.e("IS Valid Json", String.valueOf(isJSONValid(data)));
+
+        JSONObject responseObject = new JSONObject(data);
+        SuccessResponseDocuments sr = new SuccessResponseDocuments();
+        sr.setStatus(responseObject.getString("STATUS"));
+        sr.setMessage(responseObject.getString("MSG"));
+        sr.setResponse(responseObject.getString("RESPONSE"));
+
+
+        JSONObject responseObject2 = new JSONObject(sr.getMessage());
+        Log.e("we are here",responseObject2.toString());
+        JSONObject responseObject3 = new JSONObject(responseObject2.getString("document_data"));
+        Log.e("we are here 2",responseObject3.toString());
+//
+        sr.setPass_file(responseObject3.optString("pass_file"));
+        sr.setOther_file(responseObject3.optString("other_file"));
+        sr.setCovid_test_file(responseObject3.optString("covid_test_file"));
         Log.e("############SR",sr.toString());
         return sr;
     }

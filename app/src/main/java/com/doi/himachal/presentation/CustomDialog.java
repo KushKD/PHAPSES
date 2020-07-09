@@ -1,14 +1,18 @@
 package com.doi.himachal.presentation;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +27,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.doi.himachal.Modal.ScanDataPojo;
 import com.doi.himachal.Modal.VerifyObject;
@@ -34,10 +40,22 @@ import com.doi.himachal.json.JsonParse;
 import com.doi.himachal.utilities.CommonUtils;
 import com.doi.himachal.utilities.DateTime;
 import com.doi.himachal.utilities.Econstants;
+import com.doi.himachal.utilities.HardwareDetails;
 import com.doi.himachal.utilities.Preferences;
+import com.downloader.Error;
+import com.downloader.OnCancelListener;
+import com.downloader.OnDownloadListener;
+import com.downloader.OnPauseListener;
+import com.downloader.OnProgressListener;
+import com.downloader.OnStartOrResumeListener;
+import com.downloader.PRDownloader;
+import com.downloader.PRDownloaderConfig;
+import com.downloader.Progress;
+import com.downloader.Status;
 
 import org.json.JSONException;
 
+import java.io.File;
 import java.text.ParseException;
 
 /**
@@ -105,7 +123,8 @@ public class CustomDialog {
 
     }
 
-    public void showDialogHTML(final Activity activity, final String msg, final String msgServer) throws JSONException {
+    public void showDialogHTML(final Activity activity, final String msg, final String msgServer
+    ,final String passFile, final String CovidFile, final String OtherFile) throws JSONException {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -121,6 +140,79 @@ public class CustomDialog {
 
         final WebView webView = dialog.findViewById(R.id.dialog_result);
         final EditText remarks = dialog.findViewById(R.id.remarks);
+        final Button pass_id = dialog.findViewById(R.id.pass_id);
+        final Button covid_id = dialog.findViewById(R.id.covid_id);
+        final Button other_id = dialog.findViewById(R.id.other_id);
+
+        if(!passFile.isEmpty()){
+           pass_id.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   //Download File
+                   String filename= passFile.substring(passFile.lastIndexOf("/")+1);
+                   Log.e("fileName",filename);
+                   String extension = passFile.substring(passFile.lastIndexOf("."));
+                   Log.e("extention",extension);
+                   if(extension.equalsIgnoreCase(".jpg")||extension.equalsIgnoreCase(".png")||extension.equalsIgnoreCase(".jpeg")||
+                           extension.equalsIgnoreCase(".gif")){
+                       showDialogDownloadImageWithName(activity,passFile,filename,"Downloading Attachment 1");
+                   }else if(extension.equalsIgnoreCase(".pdf")){
+                       showDialogDownloadPDFWithoutAsOnDate(activity,passFile,filename);
+                   }else{
+                       showDialog(activity,"File not valid");
+                   }
+               }
+           });
+
+        }else{
+            pass_id.setVisibility(View.GONE);
+        }
+
+        if(!CovidFile.isEmpty()){
+            covid_id.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Download File
+                    String filename= CovidFile.substring(CovidFile.lastIndexOf("/")+1);
+                    Log.e("fileName",filename);
+                    String extension = CovidFile.substring(CovidFile.lastIndexOf("."));
+                    Log.e("extention",extension);
+                    if(extension.equalsIgnoreCase(".jpg")||extension.equalsIgnoreCase(".png")||extension.equalsIgnoreCase(".jpeg")||
+                            extension.equalsIgnoreCase(".gif")){
+                        showDialogDownloadImageWithName(activity,CovidFile,filename,"Downloading Attachment 2");
+                    }else if(extension.equalsIgnoreCase(".pdf")){
+                        showDialogDownloadPDFWithoutAsOnDate(activity,CovidFile,filename);
+                    }else{
+                        showDialog(activity,"File not valid");
+                    }
+                }
+            });
+        }else{
+            covid_id.setVisibility(View.GONE);
+        }
+
+        if(!OtherFile.isEmpty()){
+            other_id.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Download File
+                    String filename= OtherFile.substring(OtherFile.lastIndexOf("/")+1);
+                    Log.e("fileName",filename);
+                    String extension = OtherFile.substring(OtherFile.lastIndexOf("."));
+                    Log.e("extention",extension);
+                    if(extension.equalsIgnoreCase(".jpg")||extension.equalsIgnoreCase(".png")||extension.equalsIgnoreCase(".jpeg")||
+                            extension.equalsIgnoreCase(".gif")){
+                        showDialogDownloadImageWithName(activity,OtherFile,filename,"Downloading Attachment 3");
+                    }else if(extension.equalsIgnoreCase(".pdf")){
+                        showDialogDownloadPDFWithoutAsOnDate(activity,OtherFile,filename);
+                    }else{
+                        showDialog(activity,"File not valid");
+                    }
+                }
+            });
+        }else{
+            other_id.setVisibility(View.GONE);
+        }
 
         //  webView.setWebChromeClient(new WebChromeClient() );
         webView.setWebViewClient(new WebViewClient() {
@@ -477,5 +569,311 @@ public class CustomDialog {
         dialog.show();
 
     }
+
+
+    @SuppressLint("NewApi")
+    public void showDialogDownloadImageWithName(final Activity activity, String url, final String name , final String display_name) {
+
+        Log.e("!@!@!@!URl",url);
+        Log.e("!@!@!@!@Name",name);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        builder.detectFileUriExposure();
+
+
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_custom_download_pdf);
+
+        TextView text = (TextView) dialog.findViewById(R.id.name_file);
+        Button dialog_ok = (Button) dialog.findViewById(R.id.dialog_ok);
+        final ProgressBar progressBar = (ProgressBar)dialog.findViewById(R.id.progressBar);
+        final TextView textViewProgress  = (TextView)dialog.findViewById(R.id.textViewProgress);
+
+        PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
+                .setReadTimeout(300000)
+                .setConnectTimeout(300000)
+                .build();
+        PRDownloader.initialize(activity, config);
+
+        text.setText(display_name);
+
+
+
+        if (Status.RUNNING == PRDownloader.getStatus(downloadIdOne)) {
+            PRDownloader.pause(downloadIdOne);
+            return;
+        }
+
+        // buttonOne.setEnabled(false);
+        progressBar.setIndeterminate(true);
+        progressBar.getIndeterminateDrawable().setColorFilter(Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+
+        if (Status.PAUSED == PRDownloader.getStatus(downloadIdOne)) {
+            PRDownloader.resume(downloadIdOne);
+            return;
+        }
+
+        downloadIdOne = PRDownloader.download(url, HardwareDetails.getRootDirPath(activity), name)
+                .build()
+                .setOnStartOrResumeListener(new OnStartOrResumeListener() {
+                    @Override
+                    public void onStartOrResume() {
+                        //progressBarOne.setIndeterminate(false);
+                        //buttonOne.setEnabled(true);
+                        //buttonOne.setText(R.string.pause);
+                        //buttonCancelOne.setEnabled(true);
+                    }
+                })
+                .setOnPauseListener(new OnPauseListener() {
+                    @Override
+                    public void onPause() {
+                        // buttonOne.setText(R.string.resume);
+                    }
+                })
+                .setOnCancelListener(new OnCancelListener() {
+                    @Override
+                    public void onCancel() {
+//                                buttonOne.setText(R.string.start);
+//                                buttonCancelOne.setEnabled(false);
+//                                progressBarOne.setProgress(0);
+//                                textViewProgressOne.setText("");
+                        downloadIdOne = 0;
+//                                progressBarOne.setIndeterminate(false);
+                    }
+                })
+                .setOnProgressListener(new OnProgressListener() {
+                    @Override
+                    public void onProgress(Progress progress) {
+                        long progressPercent = progress.currentBytes * 100 / progress.totalBytes;
+                        Log.e("Progress",Long.toString(progressPercent));
+                        progressBar.setProgress((int) progressPercent);
+                        textViewProgress.setText(HardwareDetails.getProgressDisplayLine(progress.currentBytes, progress.totalBytes));
+                        progressBar.setIndeterminate(false);
+                    }
+                })
+                .start(new OnDownloadListener() {
+                    @Override
+                    public void onDownloadComplete() {
+//                                buttonOne.setEnabled(false);
+//                                buttonCancelOne.setEnabled(false);
+//                                buttonOne.setText(R.string.completed);
+                       // Toast.makeText(activity, name +"  Download successfully", Toast.LENGTH_SHORT).show();
+                        File file = new File(HardwareDetails.getRootDirPath(activity)+"/"+name);
+                        if(file.exists()) {
+                            Intent target = new Intent(Intent.ACTION_VIEW);
+                            target.setDataAndType(Uri.fromFile(file), "image/*");
+                            // target.setFlags(Intent.FLAG_H);
+                            target.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                            Intent intent = Intent.createChooser(target, "Open File");
+                            try {
+                                Log.e("PDF Viewer ","Installed");
+                                activity.startActivity(intent);
+                                dialog.dismiss();
+                            } catch (ActivityNotFoundException e) {
+                                // Instruct the user to install a PDF reader here, or something
+                                Log.e("PDF Viewer Not","Installed");
+                                Toast.makeText(activity, "Download PDF Viewer", Toast.LENGTH_SHORT).show();
+//                                Intent i = new Intent(Intent.ACTION_VIEW,Uri.parse("market://details?id=com.adobe.reader&hl=en_IN")); /// here "yourpackegName" from your app packeg Name
+//                                activity.startActivity(i);
+
+                            }
+                        }
+                        else
+                            Toast.makeText(activity, "File path is incorrect." , Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(Error error) {
+                        Toast.makeText(activity, "Error " + "1", Toast.LENGTH_SHORT).show();
+                        textViewProgress.setText("");
+                    }
+
+
+
+//                            @Override
+//                            public void onError(Error error) {
+//                               // buttonOne.setText(R.string.start);
+//                                Toast.makeText(getApplicationContext(), "Error " + "1", Toast.LENGTH_SHORT).show();
+//                              //  textViewProgressOne.setText("");
+//                               // progressBarOne.setProgress(0);
+//                                downloadIdOne = 0;
+//                                //buttonCancelOne.setEnabled(false);
+//                                //progressBarOne.setIndeterminate(false);
+//                                //buttonOne.setEnabled(true);
+//                            }
+                });
+
+
+
+
+
+        dialog_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // activity.finish();
+                dialog.dismiss();
+                PRDownloader.cancelAll();
+            }
+        });
+
+        dialog.show();
+
+    }
+
+
+    @SuppressLint("NewApi")
+    public void showDialogDownloadPDFWithoutAsOnDate(final Activity activity, String pdf_url, final String pdf_name) {
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        builder.detectFileUriExposure();
+
+
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_custom_download_pdf);
+
+        TextView text = (TextView) dialog.findViewById(R.id.name_file);
+        Button dialog_ok = (Button) dialog.findViewById(R.id.dialog_ok);
+        final ProgressBar progressBar = (ProgressBar)dialog.findViewById(R.id.progressBar);
+        final TextView textViewProgress  = (TextView)dialog.findViewById(R.id.textViewProgress);
+
+        PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
+                .setReadTimeout(300000)
+                .setConnectTimeout(300000)
+                .build();
+        PRDownloader.initialize(activity, config);
+
+        text.setText(pdf_name);
+
+
+
+        if (Status.RUNNING == PRDownloader.getStatus(downloadIdOne)) {
+            PRDownloader.pause(downloadIdOne);
+            return;
+        }
+
+        // buttonOne.setEnabled(false);
+        progressBar.setIndeterminate(true);
+        progressBar.getIndeterminateDrawable().setColorFilter(Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+
+        if (Status.PAUSED == PRDownloader.getStatus(downloadIdOne)) {
+            PRDownloader.resume(downloadIdOne);
+            return;
+        }
+
+        downloadIdOne = PRDownloader.download(pdf_url, HardwareDetails.getRootDirPath(activity), pdf_name+".pdf")
+                .build()
+                .setOnStartOrResumeListener(new OnStartOrResumeListener() {
+                    @Override
+                    public void onStartOrResume() {
+                        //progressBarOne.setIndeterminate(false);
+                        //buttonOne.setEnabled(true);
+                        //buttonOne.setText(R.string.pause);
+                        //buttonCancelOne.setEnabled(true);
+                    }
+                })
+                .setOnPauseListener(new OnPauseListener() {
+                    @Override
+                    public void onPause() {
+                        // buttonOne.setText(R.string.resume);
+                    }
+                })
+                .setOnCancelListener(new OnCancelListener() {
+                    @Override
+                    public void onCancel() {
+//                                buttonOne.setText(R.string.start);
+//                                buttonCancelOne.setEnabled(false);
+//                                progressBarOne.setProgress(0);
+//                                textViewProgressOne.setText("");
+                        downloadIdOne = 0;
+//                                progressBarOne.setIndeterminate(false);
+                    }
+                })
+                .setOnProgressListener(new OnProgressListener() {
+                    @Override
+                    public void onProgress(Progress progress) {
+                        long progressPercent = progress.currentBytes * 100 / progress.totalBytes;
+                        Log.e("Progress",Long.toString(progressPercent));
+                        progressBar.setProgress((int) progressPercent);
+                        textViewProgress.setText(HardwareDetails.getProgressDisplayLine(progress.currentBytes, progress.totalBytes));
+                        progressBar.setIndeterminate(false);
+                    }
+                })
+                .start(new OnDownloadListener() {
+                    @Override
+                    public void onDownloadComplete() {
+//                                buttonOne.setEnabled(false);
+//                                buttonCancelOne.setEnabled(false);
+//                                buttonOne.setText(R.string.completed);
+                        Toast.makeText(activity, pdf_name +"  Download successfully", Toast.LENGTH_SHORT).show();
+                        File file = new File(HardwareDetails.getRootDirPath(activity)+"/"+pdf_name+".pdf");
+                        if(file.exists()) {
+                            Intent target = new Intent(Intent.ACTION_VIEW);
+                            target.setDataAndType(Uri.fromFile(file), "application/pdf");
+                            target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                            target.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                            Intent intent = Intent.createChooser(target, "Open File");
+                            try {
+                                Log.e("PDF Viewer ","Installed");
+                                activity.startActivity(intent);
+                                dialog.dismiss();
+                            } catch (ActivityNotFoundException e) {
+                                // Instruct the user to install a PDF reader here, or something
+                                Log.e("PDF Viewer Not","Installed");
+                                Toast.makeText(activity, "Download PDF Viewer", Toast.LENGTH_SHORT).show();
+//                                Intent i = new Intent(Intent.ACTION_VIEW,Uri.parse("market://details?id=com.adobe.reader&hl=en_IN")); /// here "yourpackegName" from your app packeg Name
+//                                activity.startActivity(i);
+
+                            }
+                        }
+                        else
+                            Toast.makeText(activity, "File path is incorrect." , Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(Error error) {
+                        Toast.makeText(activity, "Error " + "1", Toast.LENGTH_SHORT).show();
+                        textViewProgress.setText("");
+                    }
+
+//                            @Override
+//                            public void onError(Error error) {
+//                               // buttonOne.setText(R.string.start);
+//                                Toast.makeText(getApplicationContext(), "Error " + "1", Toast.LENGTH_SHORT).show();
+//                              //  textViewProgressOne.setText("");
+//                               // progressBarOne.setProgress(0);
+//                                downloadIdOne = 0;
+//                                //buttonCancelOne.setEnabled(false);
+//                                //progressBarOne.setIndeterminate(false);
+//                                //buttonOne.setEnabled(true);
+//                            }
+                });
+
+
+
+
+
+        dialog_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // activity.finish();
+                dialog.dismiss();
+                PRDownloader.cancelAll();
+            }
+        });
+
+        dialog.show();
+
+    }
+
+
+
+
 
 }

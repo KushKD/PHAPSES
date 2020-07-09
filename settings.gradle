@@ -1,1 +1,2 @@
+include ':prdownloader'
 include ':app', ':qrcodescanner', ':locationmanager', ':spinnersearchable', ':instructions'

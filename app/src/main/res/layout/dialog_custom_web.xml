@@ -60,6 +60,52 @@
                 android:orientation="vertical"
                 android:visibility="visible">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:layout_below="@+id/dialog_result"
+                        android:background="@color/green"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="#ffffffff"
+                        android:layout_margin="2dp"
+                        android:id="@+id/pass_id"
+                        android:text="Pass ID" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:layout_below="@+id/dialog_result"
+                        android:background="@color/green"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="#ffffffff"
+                        android:layout_margin="2dp"
+                        android:id="@+id/covid_id"
+                        android:text="Covid ID" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:layout_margin="2dp"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:layout_below="@+id/dialog_result"
+                        android:background="@color/green"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="#ffffffff"
+                        android:id="@+id/other_id"
+                        android:text="Other ID" />
+
+
+            </LinearLayout>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
