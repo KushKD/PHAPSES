@@ -72,16 +72,24 @@ public class JsonParse {
         sr.setMessage(responseObject.getString("MSG"));
         sr.setResponse(responseObject.getString("RESPONSE"));
 
-
-        JSONObject responseObject2 = new JSONObject(sr.getMessage());
-        Log.e("we are here",responseObject2.toString());
-        JSONObject responseObject3 = new JSONObject(responseObject2.getString("document_data"));
-        Log.e("we are here 2",responseObject3.toString());
+        try{
+            JSONObject responseObject2 = new JSONObject(sr.getMessage());
+            Log.e("we are here",responseObject2.toString());
+            JSONObject responseObject3 = new JSONObject(responseObject2.getString("document_data"));
+            Log.e("we are here 2",responseObject3.toString());
 //
-        sr.setPass_file(responseObject3.optString("pass_file"));
-        sr.setOther_file(responseObject3.optString("other_file"));
-        sr.setCovid_test_file(responseObject3.optString("covid_test_file"));
-        Log.e("############SR",sr.toString());
+            sr.setPass_file(responseObject3.optString("pass_file"));
+            sr.setOther_file(responseObject3.optString("other_file"));
+            sr.setCovid_test_file(responseObject3.optString("covid_test_file"));
+            Log.e("############SR",sr.toString());
+        }catch (Exception ex){
+            sr.setPass_file("");
+            sr.setOther_file("");
+            sr.setCovid_test_file("");
+            Log.e("############SR",sr.toString());
+        }
+
+
         return sr;
     }
 

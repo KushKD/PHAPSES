@@ -100,6 +100,8 @@ public class Registration extends AppCompatActivity implements AsyncTaskListener
         name = findViewById(R.id.name);
         register = findViewById(R.id.register);
 
+        requestPermissions();
+
 
         if (AppStatus.getInstance(Registration.this).isOnline()) {
             UploadObject object = new UploadObject();
@@ -310,5 +312,30 @@ public class Registration extends AppCompatActivity implements AsyncTaskListener
 
 
         }
+    }
+
+
+    private void requestPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.INTERNET,
+                        Manifest.permission.ACCESS_NETWORK_STATE,
+                        Manifest.permission.CHANGE_NETWORK_STATE,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                        Manifest.permission.CAMERA
+
+
+                }, 0);
+            }
+        }
+
+
     }
 }

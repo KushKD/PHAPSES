@@ -71,6 +71,28 @@ public class GenericAsyncPostObject extends AsyncTask<UploadObject,Void , Respon
 
                 return Data_From_Server;
             }
+
+            //UPLOAD_SCANNED_PASS_OUT
+            else if(TaskType.UPLOAD_SCANNED_PASS_OUT.toString().equalsIgnoreCase(data.getTasktype().toString())){
+                Data_From_Server = http_manager.PostDataOut(data);
+                Log.e("Data hhghsds",Data_From_Server.toString());
+
+                //Save Data to DB
+                try{
+                    DatabaseHandler DB = new DatabaseHandler(context);
+                    save =  DB.addOfflineAccess(Data_From_Server);
+                    if(save){
+                        Log.e("Value Saved","Database");
+                    }
+                }catch (Exception ex){
+                    Log.e("Value Saved",ex.getLocalizedMessage().toString());
+                }
+
+
+
+                return Data_From_Server;
+            }
+
             else if(TaskType.VERIFY_DETAILS.toString().equalsIgnoreCase(data.getTasktype().toString())){
                 Data_From_Server = http_manager.PostDataParams(data);
                 Log.e("Verify Details",Data_From_Server.toString());

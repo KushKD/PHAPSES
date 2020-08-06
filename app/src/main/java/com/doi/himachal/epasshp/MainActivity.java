@@ -16,6 +16,7 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.AbsListView;
 import android.widget.GridView;
 
 import androidx.core.content.ContextCompat;
@@ -58,7 +59,8 @@ import java.util.List;
 public class MainActivity extends LocationBaseActivity implements SamplePresenter.SampleView, AsyncTaskListenerObject {
 
 
-    private static final int REQUEST_CODE_QR_SCAN = 101;
+    private static final int REQUEST_CODE_QR_SCAN = 101;  //103
+    private static final int REQUEST_CODE_QR_SCAN_OUT = 103;
     CustomDialog CD = new CustomDialog();
     private final String LOGTAG = "QRCScanner-MainActivity";
     HomeGridViewAdapter adapter_modules;
@@ -77,7 +79,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        requestPermissions();
+
 
 
         home_gv = findViewById(R.id.gv);
@@ -99,13 +101,15 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
 
         ModulesPojo mp = new ModulesPojo();
         mp.setId("1");
-        mp.setName("Scan ePass");
+        mp.setName("Scan Incoming");
         mp.setLogo("scan");
 
         ModulesPojo mp2 = new ModulesPojo();
         mp2.setId("2");
         mp2.setName("Search Pass");
         mp2.setLogo("searchpass");
+
+
 
         ModulesPojo mp3 = new ModulesPojo();
         mp3.setId("3");
@@ -114,14 +118,20 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
 
         ModulesPojo mp4 = new ModulesPojo();
         mp4.setId("4");
-        mp4.setName("Logout from Barrier");
-        mp4.setLogo("logout");
+        mp4.setName("Scan Outgoing");
+        mp4.setLogo("scan");
+
+        ModulesPojo mp5 = new ModulesPojo();
+        mp5.setId("5");
+        mp5.setName("Logout from Barrier");
+        mp5.setLogo("logout");
 
 
         modules.add(mp);
         modules.add(mp2);
         modules.add(mp3);
         modules.add(mp4);
+        modules.add(mp5);
 
         // Log.e("userLocation",userLocation);
 
@@ -155,11 +165,25 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
             }
         });
 
+        home_gv.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int topRowVerticalPosition = (home_gv == null || home_gv.getChildCount() == 0) ? 0 : home_gv.getChildAt(0).getTop();
+                pullToRefresh.setEnabled(firstVisibleItem == 0 && topRowVerticalPosition >= 0);
+            }
+        });
+
+
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.e("We are Here", intent.getAction());
-                if (intent.getAction() == "UploadServer") {
+                if (intent.getAction() == "UploadServer") {  //UploadServerOut
                     //SCAN_DATA
                     Log.e("We are Here 2", intent.getAction());
 
@@ -172,8 +196,9 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
 
                         UploadObject object = new UploadObject();
                       //  object.setUrl(Econstants.URL_HTTPS+"savebarrierdata");
-                         object.setUrl(Econstants.URL_HTTPS+"savebarrierdatav1");
+                      //   object.setUrl(Econstants.URL_HTTPS+"savebarrierdatav1");  working code
                        // object.setUrl("http://covidepass.eypoc.com/savebarrierdata");
+                        object.setUrl(Econstants.URL_HTTPS+"savebarrierdatav2");
                         object.setTasktype(TaskType.UPLOAD_SCANNED_PASS);
                         object.setMethordName("savebarrierdata");
                         object.setScanDataPojo(data);
@@ -187,7 +212,40 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
                         CD.showDialog(MainActivity.this, "Please Connect to Internet and try again.");
                     }
 
-                } else if (intent.getAction() == "UploadServerManual") {
+                }else if (intent.getAction() == "UploadServerOut") {  //UploadServerOut
+                    //SCAN_DATA
+                    Log.e("We are Here 2", intent.getAction());
+
+                    if (AppStatus.getInstance(MainActivity.this).isOnline()) {
+                        Bundle extras = intent.getExtras();
+                        ScanDataPojo data = (ScanDataPojo) extras.getSerializable("SCAN_DATA");
+                        Log.e("Data From Dialog", data.toString());
+
+                        //TODO Internet Check
+
+                        UploadObject object = new UploadObject();
+                        //  object.setUrl(Econstants.URL_HTTPS+"savebarrierdata");
+                        //   object.setUrl(Econstants.URL_HTTPS+"savebarrierdatav1");  working code
+                        // object.setUrl("http://covidepass.eypoc.com/savebarrierdata");
+                        object.setUrl(Econstants.URL_HTTPS+"savebarrierdatav2");
+                        object.setTasktype(TaskType.UPLOAD_SCANNED_PASS_OUT);
+                        object.setMethordName("savebarrierdata");
+                        object.setScanDataPojo(data);
+
+                        new GenericAsyncPostObject(
+                                MainActivity.this,
+                                MainActivity.this,
+                                TaskType.UPLOAD_SCANNED_PASS_OUT).
+                                execute(object);
+                    } else {
+                        CD.showDialog(MainActivity.this, "Please Connect to Internet and try again.");
+                    }
+
+                }
+
+
+
+                else if (intent.getAction() == "UploadServerManual") {
                     //SCAN_DATA
                     Log.e("We are Here 2", intent.getAction());
 
@@ -309,6 +367,32 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
             }
         }
 
+        if (requestCode == REQUEST_CODE_QR_SCAN_OUT) {
+
+            if (data == null) {
+                return;
+            } else {
+                //Getting the passed result
+                String result = data.getStringExtra("com.blikoon.qrcodescanner.got_qr_scan_relult");
+                Log.d(LOGTAG, "Have scan result in your app activity :" + result);
+                // CD.showDialog(MainActivity.this, result);
+                try {
+                    ScanDataPojo scanData = JsonParse.getObjectSave(result);
+                    scanData = updateScanData(scanData);
+                    Log.e("UserLocation", userLocation);
+                    Log.e("scanDate", scanData.toString());
+                    CD.showDialogScanDataOut(MainActivity.this, scanData);
+                    // uploadDataToServer(scanData);
+
+                } catch (JSONException | ParseException e) {
+                    CD.showDialog(MainActivity.this, result);
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+
 
     }
 
@@ -361,6 +445,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
     protected void onResume() {
         super.onResume();
         registerReceiver(mReceiver, new IntentFilter("UploadServer"));
+        registerReceiver(mReceiver, new IntentFilter("UploadServerOut"));
         registerReceiver(mReceiver, new IntentFilter("verifyData"));
         registerReceiver(mReceiver, new IntentFilter("UploadServerManual"));
         if (getLocationManager().isWaitingForLocation()
@@ -463,7 +548,36 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
             }
 
 
-        } else if (taskType == TaskType.VERIFY_DETAILS) {
+        }
+        //UPLOAD_SCANNED_PASS_OUT
+        else if (taskType == TaskType.UPLOAD_SCANNED_PASS_OUT) {
+
+            if (result.getResponse().isEmpty()) {
+                CD.showDialog(MainActivity.this, "Please Connect to Internet and try again.");
+            } else {
+
+                try {
+                    SuccessResponseDocuments response = JsonParse.getSuccessResponseDocuments(result.getResponse());
+
+                    if (response.getStatus().equalsIgnoreCase("200")) {
+                        Log.e("verify", response.toString());
+                        //TODO
+                        CD.showDialogHTML(MainActivity.this, response.getResponse(), response.getMessage(),
+                                response.getPass_file(), response.getCovid_test_file(), response.getOther_file());
+                    } else {
+                        CD.showDialog(MainActivity.this, response.getMessage());
+                    }
+                } catch (Exception ex) {
+                    CD.showDialog(MainActivity.this, result.getResponse());
+                }
+
+            }
+
+
+        }
+
+
+        else if (taskType == TaskType.VERIFY_DETAILS) {
 
             Log.e("We are Heter", "Result" + result.toString());
             if (result.getResponse().isEmpty()) {
@@ -486,28 +600,6 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
         }
     }
 
-    private void requestPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(getApplicationContext(),
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.INTERNET,
-                        Manifest.permission.ACCESS_NETWORK_STATE,
-                        Manifest.permission.CHANGE_NETWORK_STATE,
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                        Manifest.permission.CAMERA
 
-
-                }, 0);
-            }
-        }
-
-
-    }
 
 }

@@ -75,7 +75,7 @@
                         android:textColor="#ffffffff"
                         android:layout_margin="2dp"
                         android:id="@+id/pass_id"
-                        android:text="Pass ID" />
+                        android:text="View Document 1" />
 
                     <Button
                         android:layout_width="wrap_content"
@@ -88,7 +88,7 @@
                         android:textColor="#ffffffff"
                         android:layout_margin="2dp"
                         android:id="@+id/covid_id"
-                        android:text="Covid ID" />
+                        android:text="View Document 2" />
 
                     <Button
                         android:layout_width="wrap_content"
@@ -101,7 +101,7 @@
                         android:layout_centerHorizontal="true"
                         android:textColor="#ffffffff"
                         android:id="@+id/other_id"
-                        android:text="Other ID" />
+                        android:text="View Document 3" />
 
 
             </LinearLayout>

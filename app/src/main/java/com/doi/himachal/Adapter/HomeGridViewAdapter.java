@@ -128,7 +128,13 @@ public class HomeGridViewAdapter extends BaseAdapter {
                     (c).startActivity(i);
 
                 }
+
                 if (s.getId().equalsIgnoreCase("4")) {
+                    Intent i = new Intent(c.getApplicationContext(), QrCodeActivity.class);
+                    ((Activity) c).startActivityForResult(i, 103);
+
+                }
+                if (s.getId().equalsIgnoreCase("5")) {
                     Preferences.getInstance().loadPreferences(c.getApplicationContext());
 
 

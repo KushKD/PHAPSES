@@ -16,7 +16,8 @@ public enum TaskType {
     GET_CATEGORIES(8),
     GET_BARRIER_VIA_DISTRICTS(9),
     GET_STATES(10),
-    GET_DISTRICT_VIA_STATE_LOCAL(11),;
+    GET_DISTRICT_VIA_STATE_LOCAL(11),
+    UPLOAD_SCANNED_PASS_OUT(12);
 
     int value; private TaskType(int value) { this.value = value; }
 }

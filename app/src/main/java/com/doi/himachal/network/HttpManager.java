@@ -150,6 +150,7 @@ public class HttpManager {
         }
     }
 
+    //IN
     public ResponsePojo PostData(UploadObject data) {
 
         URL url_ = null;
@@ -222,6 +223,7 @@ public class HttpManager {
                     .key("scanned_date_time").value(data.getScanDataPojo().getScanDate())
                     .key("mobile_information").value(object.toString())
                     .key("other_information").value(otherInformation.toString())
+                    .key("scan_type").value("In")   // static code
 
 
                     .endObject();
@@ -278,6 +280,138 @@ public class HttpManager {
         }
         return response;
     }
+
+    //Out
+    public ResponsePojo PostDataOut(UploadObject data) {
+
+        URL url_ = null;
+        HttpURLConnection conn_ = null;
+        StringBuilder sb = null;
+        JSONStringer userJson = null;
+
+        String URL = null;
+        ResponsePojo response = null;
+        JSONObject object = new JSONObject();
+        JSONObject otherInformation = new JSONObject();
+        JSONArray array =  new JSONArray();
+
+        PhoneDetailsPojo phoneDetails;
+
+
+        try {
+
+            URL = data.getUrl();
+
+
+            url_ = new URL(URL);
+            conn_ = (HttpURLConnection) url_.openConnection();
+            conn_.setDoOutput(true);
+            conn_.setRequestMethod("POST");
+            conn_.setUseCaches(false);
+            conn_.setConnectTimeout(10000);
+            conn_.setReadTimeout(10000);
+            conn_.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn_.setRequestProperty("Authorization", "Basic " + Econstants.generateAuthenticationPasswrd("COVID@908#HeM@nT", "JovpQy2Cez6545sKDRvhX3p"));
+            conn_.connect();
+
+            try {
+                phoneDetails = CommonUtils.getDeviceInfo();
+            }catch (Exception ex){
+                phoneDetails = null;
+            }
+
+            if(phoneDetails!=null){
+                object.put("phone_brand", phoneDetails.getBrand());
+                object.put("phone_id", phoneDetails.getId());
+                object.put("phone_manufacturer",phoneDetails.getManufacturer());
+                object.put("phone_model",phoneDetails.getModel());
+                object.put("phone_serial",phoneDetails.getSreial());
+                object.put("phone_version",phoneDetails.getVersion_code());
+
+            }
+
+            object.put("logged_in_name", Preferences.getInstance().name);
+            object.put("department_name", Preferences.getInstance().dept_name);
+            object.put("scanned_by", data.getScanDataPojo().getScannedByPhoneNumber());
+            object.put("app_version",data.getScanDataPojo().getVersionApp());
+
+            otherInformation.put("no_of_persons",data.getScanDataPojo().getNumber_of_passengers_manual());
+//            otherInformation.put("person_names",data.getScanDataPojo().getNames());
+//            otherInformation.put("person_phones",data.getScanDataPojo().getPhones());
+//            otherInformation.put("remarks",data.getScanDataPojo().getRemarks());
+
+
+
+
+
+            userJson = new JSONStringer()
+                    .object()
+                    .key("barrier_district").value(data.getScanDataPojo().getDistict())
+                    .key("barrier_id").value(data.getScanDataPojo().getBarrrier())
+                    .key("latitude").value(data.getScanDataPojo().getLatitude())
+                    .key("longititute").value(data.getScanDataPojo().getLongitude())
+                    .key("pass_id").value(data.getScanDataPojo().getPassNo())
+                    .key("scanned_date_time").value(data.getScanDataPojo().getScanDate())
+                    .key("mobile_information").value(object.toString())
+                    .key("other_information").value(otherInformation.toString())
+                    .key("scan_type").value("out")   // static code
+
+
+                    .endObject();
+
+
+            System.out.println(userJson.toString());
+            Log.e("Object", userJson.toString());
+            OutputStreamWriter out = new OutputStreamWriter(conn_.getOutputStream());
+            out.write(userJson.toString());
+            out.close();
+
+            try {
+                int HttpResult = conn_.getResponseCode();
+                if (HttpResult != HttpURLConnection.HTTP_OK) {
+                    Log.e("Error", conn_.getResponseMessage());
+                    data.getScanDataPojo().setUploaddToServeer(false);
+                    response = new ResponsePojo();
+                    response = Econstants.createOfflineObject(URL, userJson.toString(), conn_.getResponseMessage() + conn_.getResponseCode(), data.getScanDataPojo());
+                    return response;
+
+
+                } else {
+                    data.getScanDataPojo().setUploaddToServeer(true);
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn_.getInputStream(), "utf-8"));
+                    String line = null;
+                    sb = new StringBuilder();
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                    }
+                    br.close();
+                    System.out.println(sb.toString());
+                    Log.e("Data from Service", sb.toString());
+                    response = new ResponsePojo();
+                    response = Econstants.createOfflineObject(URL, userJson.toString(), sb.toString(), data.getScanDataPojo());
+
+                }
+
+            } catch (Exception e) {
+                data.getScanDataPojo().setUploaddToServeer(false);
+                response = new ResponsePojo();
+                response = Econstants.createOfflineObject(URL, userJson.toString(), conn_.getResponseMessage() + conn_.getResponseCode(), data.getScanDataPojo());
+                return response;
+            }
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } finally {
+            if (conn_ != null)
+                conn_.disconnect();
+        }
+        return response;
+    }
+
 
 
     public ResponsePojo PostData(UploadObjectManual data) {
