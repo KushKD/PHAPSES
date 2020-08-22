@@ -65,8 +65,8 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
     private OfflineDataEntry parent_details = null;
 
     TextView date, time, totalpersons;
-    EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose, remarks;
-    SearchableSpinner fromstate, fromdistrict, district, tehsil, block, gp, appdownloaded,category_sp;
+    EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose, remarks, qplace;
+    SearchableSpinner fromstate, fromdistrict, district, tehsil, block, gp, appdownloaded,category_sp,quarantine;
     DatabaseHandler DB = new DatabaseHandler(AddMoreActivity.this);
     CustomDialog CD = new CustomDialog();
     Button back, addperson, addmore;
@@ -90,7 +90,7 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
     LinearLayout grampanchayat;
     AddMorePeoplePojo addMorePeople = new AddMorePeoplePojo();
 
-    String Global_fromstate,Global_Category, Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat,Global_toBlockName;
+    String Global_fromstate,Global_Category, Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat,Global_toBlockName,Global_Quarentine, Global_QuarentinePlace;;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +137,37 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
 //        adapter_states = new GenericAdapterStates(AddMoreActivity.this, android.R.layout.simple_spinner_item, states);
 //        fromstate.setAdapter(adapter_states);
 
+        quarantine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Global_Quarentine = quarantine.getSelectedItem().toString();
+                if(Global_Quarentine.equalsIgnoreCase("--Select--")){
+                    Global_Quarentine = "Pending";
+                    parent_details.setQuarantine(Global_Quarentine);
+                    Log.e("tere",Global_Quarentine);
+                    qplace.setVisibility(View.GONE);
+                }else if(Global_Quarentine.equalsIgnoreCase("Institutional")){
+                    Global_Quarentine = "Institutional";
+                    Log.e("tere",Global_Quarentine);
+                    parent_details.setQuarantine(Global_Quarentine);
+                    qplace.setVisibility(View.VISIBLE);
+
+                }else{
+                    Global_Quarentine = "Home";
+                    Log.e("tere",Global_Quarentine);
+                    parent_details.setQuarantine(Global_Quarentine);
+                    qplace.setVisibility(View.GONE);
+                }
+
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         fromstate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -375,6 +406,13 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
                 if (!numberpersons.getText().toString().isEmpty()) {
 
 
+                    if(qplace.getText() != null || !qplace.getText().toString().isEmpty()){
+                        parent_details.setQuarantinePlace(qplace.getText().toString());
+                    }else{
+                        parent_details.setQuarantinePlace("");
+                    }
+
+
                     addMorePeople.setFrom_state(Global_fromstate);
                     parent_details.setState_from(Global_fromstate);
                     addMorePeople.setFrom_district(Global_fromdistrict);
@@ -587,6 +625,8 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
 
         grampanchayat = findViewById(R.id.gml);
         category_sp = findViewById(R.id.category_sp);
+        quarantine = findViewById(R.id.quarantine);
+        qplace = findViewById(R.id.qplace);
 
 
     }

@@ -183,14 +183,14 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.e("We are Here", intent.getAction());
-                if (intent.getAction() == "UploadServer") {  //UploadServerOut
+                if (intent.getAction() == "UploadServer") {
                     //SCAN_DATA
                     Log.e("We are Here 2", intent.getAction());
 
                     if (AppStatus.getInstance(MainActivity.this).isOnline()) {
                         Bundle extras = intent.getExtras();
                         ScanDataPojo data = (ScanDataPojo) extras.getSerializable("SCAN_DATA");
-                        Log.e("Data From Dialog", data.toString());
+                        Log.e("Data From Dialog =====", data.toString());
 
                         //TODO Internet Check
 

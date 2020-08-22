@@ -25,9 +25,12 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -377,8 +380,11 @@ public class CustomDialog {
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.dialog_pojo_custom);
 
-        int width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.95);
-        int height = (int) (activity.getResources().getDisplayMetrics().heightPixels * 0.95);
+        final String[] quarantineType = {null};
+
+
+        int width = (int) (activity.getResources().getDisplayMetrics().widthPixels );
+        int height = (int) (activity.getResources().getDisplayMetrics().heightPixels);
         dialog.getWindow().setLayout(width, height);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -391,13 +397,43 @@ public class CustomDialog {
         TextView barrier = (TextView) dialog.findViewById(R.id.barrier);
         TextView datescan = (TextView) dialog.findViewById(R.id.datescan);
         TextView timescan = (TextView) dialog.findViewById(R.id.timescan);
+        final Spinner quarantine = (Spinner) dialog.findViewById(R.id.quarantine);
+        final EditText place = (EditText) dialog.findViewById(R.id.place);
+        final LinearLayout placelayout = (LinearLayout) dialog.findViewById(R.id.placelayout);
         final EditText number_of_passengers = (EditText) dialog.findViewById(R.id.number_of_passengers);
 
 
-        // Log.e("====Manual Entry", scanData.getNumber_of_passengers_manual());
 
 
-        // name.setText(taskPojo.getTask_name());
+        quarantine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                 quarantineType[0] = quarantine.getSelectedItem().toString();
+                if(quarantineType[0].equalsIgnoreCase("--Select--")){
+                    quarantineType[0] = "Pending";
+                    scanData.setQuarentineType(quarantineType[0]);
+                    Log.e("tere",quarantineType[0]);
+                    placelayout.setVisibility(View.GONE);
+                }else if(quarantineType[0].equalsIgnoreCase("Institutional")){
+                    quarantineType[0] = "Institutional";
+                    Log.e("tere",quarantineType[0]);
+                    scanData.setQuarentineType(quarantineType[0]);
+                    placelayout.setVisibility(View.VISIBLE);
+
+                }else{
+                    quarantineType[0] = "Home";
+                    Log.e("tere",quarantineType[0]);
+                    scanData.setQuarentineType(quarantineType[0]);
+                    placelayout.setVisibility(View.GONE);                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+
         passnumber.setText(scanData.getPassNo());
         vehiclenumber.setText("-");
         mobile.setText(scanData.getMobileNumbr());
@@ -441,6 +477,13 @@ public class CustomDialog {
             @Override
             public void onClick(View v) {
 
+                if(place.getText() != null || !place.getText().toString().isEmpty()){
+                    scanData.setQuarentinePlace(place.getText().toString());
+                }else{
+                    scanData.setQuarentinePlace("");
+                }
+
+
                 if (!number_of_passengers.getText().toString().isEmpty() && number_of_passengers.getText().toString() != null) {
 
                     scanData.setNumber_of_passengers_manual(number_of_passengers.getText().toString());
@@ -471,7 +514,7 @@ public class CustomDialog {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
-        dialog.setContentView(R.layout.dialog_pojo_custom);
+        dialog.setContentView(R.layout.dialog_pojo_custom_out);
 
         int width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.95);
         int height = (int) (activity.getResources().getDisplayMetrics().heightPixels * 0.95);

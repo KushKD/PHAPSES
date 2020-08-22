@@ -50,6 +50,25 @@ public class OfflineDataEntry implements Serializable {
     private int position_to_tehsil;
     private int position_to_category;
 
+    private String quarantine;
+    private String quarantinePlace;
+
+    public String getQuarantine() {
+        return quarantine;
+    }
+
+    public void setQuarantine(String quarantine) {
+        this.quarantine = quarantine;
+    }
+
+    public String getQuarantinePlace() {
+        return quarantinePlace;
+    }
+
+    public void setQuarantinePlace(String quarantinePlace) {
+        this.quarantinePlace = quarantinePlace;
+    }
+
     public String getCategoryId() {
         return CategoryId;
     }
@@ -397,6 +416,8 @@ public class OfflineDataEntry implements Serializable {
                 ", position_to_panchayat=" + position_to_panchayat +
                 ", position_to_tehsil=" + position_to_tehsil +
                 ", position_to_category=" + position_to_category +
+                ", quarantine='" + quarantine + '\'' +
+                ", quarantinePlace='" + quarantinePlace + '\'' +
                 ", otherPersons=" + otherPersons +
                 '}';
     }

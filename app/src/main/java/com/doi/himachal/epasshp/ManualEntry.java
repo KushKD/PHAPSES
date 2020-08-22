@@ -82,9 +82,9 @@ import java.util.Set;
 public class ManualEntry extends LocationBaseActivity implements SamplePresenter.SampleView, AsyncTaskListenerObjectForm, AsyncTaskListenerObjectGet, AsyncTaskListenerObjectPost {
 
     TextView date, time, totalpersons, passenger;
-    EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose, remarks;
+    EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose, qplace ,remarks;
     //SearchableSpinner
-    SearchableSpinner fromdistrict, district, tehsil, block, gp, appdownloaded, category_sp;
+    SearchableSpinner fromdistrict, district, tehsil, block, gp, appdownloaded, category_sp,quarantine;
     SearchableSpinner fromstate;
     DatabaseHandler DB = new DatabaseHandler(ManualEntry.this);
     CustomDialog CD = new CustomDialog();
@@ -110,7 +110,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     LinearLayout grampanchayat;
     OfflineDataEntry offlineDataEntry = new OfflineDataEntry();
 
-    String Global_fromstate, Global_Category, Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat, Global_toBlockName;
+    String Global_fromstate, Global_Category, Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat, Global_toBlockName,Global_Quarentine, Global_QuarentinePlace;
     int Global_fromstatePosition, Global_fromdistrictPosition, Global_todistrictPosition, Global_totehsilPosition,
             Global_toblockPosition, Global_togramPanchayatPosition, Global_categoryPosition;
 
@@ -195,6 +195,12 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
             public void onClick(View v) {
 
                 if (!numberpersons.getText().toString().isEmpty()) {
+
+                    if(qplace.getText() != null || !qplace.getText().toString().isEmpty()){
+                        offlineDataEntry.setQuarantinePlace(qplace.getText().toString());
+                    }else{
+                        offlineDataEntry.setQuarantinePlace("");
+                    }
 
 
                     offlineDataEntry.setVersionCode(Econstants.getVersion(ManualEntry.this));
@@ -304,18 +310,14 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                                     offlineDataEntry.setMobile(mobilenumber.getText().toString().trim());
 
 
+                                    if (!Global_fromstate.equalsIgnoreCase("-1")) {
 
+                                        if (!Global_fromdistrict.equalsIgnoreCase("-1")) {
 
+                                            if (!Global_todistrict.equalsIgnoreCase("-1")) {
+                                                if (!Global_toblock.equalsIgnoreCase("-1")) {
 
-
-                                    if(!Global_fromstate.equalsIgnoreCase("-1")){
-
-                                        if(!Global_fromdistrict.equalsIgnoreCase("-1")){
-
-                                            if(!Global_todistrict.equalsIgnoreCase("-1")){
-                                                if(!Global_toblock.equalsIgnoreCase("-1")){
-
-                                                    if(!Global_totehsil.equalsIgnoreCase("-1")){
+                                                    if (!Global_totehsil.equalsIgnoreCase("-1")) {
 
 
                                                         System.out.println(offlineDataEntry.toString());
@@ -324,29 +326,25 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                                                         startActivityForResult(addmore, 1);
 
 
-                                                    }else{
+                                                    } else {
                                                         CD.showDialog(ManualEntry.this, "Please Select Tehsil ");
                                                     }
 
-                                                }else{
+                                                } else {
                                                     CD.showDialog(ManualEntry.this, "Please Select the Block");
                                                 }
 
-                                            }else{
+                                            } else {
                                                 CD.showDialog(ManualEntry.this, "Please Select the District.");
                                             }
 
-                                        }else{
+                                        } else {
                                             CD.showDialog(ManualEntry.this, "Please Select From District");
                                         }
 
-                                    }else{
+                                    } else {
                                         CD.showDialog(ManualEntry.this, "Please Select From State");
                                     }
-
-
-
-
 
 
                                 } else {
@@ -374,6 +372,38 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
             }
         });
 
+        quarantine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+               Global_Quarentine = quarantine.getSelectedItem().toString();
+                if(Global_Quarentine.equalsIgnoreCase("--Select--")){
+                    Global_Quarentine = "Pending";
+                    offlineDataEntry.setQuarantine(Global_Quarentine);
+                    Log.e("tere",Global_Quarentine);
+                    qplace.setVisibility(View.GONE);
+                }else if(Global_Quarentine.equalsIgnoreCase("Institutional")){
+                    Global_Quarentine = "Institutional";
+                    Log.e("tere",Global_Quarentine);
+                    offlineDataEntry.setQuarantine(Global_Quarentine);
+                    qplace.setVisibility(View.VISIBLE);
+
+                }else{
+                    Global_Quarentine = "Home";
+                    Log.e("tere",Global_Quarentine);
+                    offlineDataEntry.setQuarantine(Global_Quarentine);
+                    qplace.setVisibility(View.GONE);
+                }
+
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
         fromstate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -386,14 +416,6 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 Global_fromstatePosition = position;
                 Global_fromstate = item.getState_id();
 
-                /**
-                 * TODO HERE TODAY
-                 */
-//                new GenericAsyncDatabaseObject(
-//                        ManualEntry.this,
-//                        ManualEntry.this,
-//                        TaskType.GET_DISTRICT_VIA_STATE).
-//                        execute(TaskType.GET_DISTRICT_VIA_STATE.toString(), item.getState_id());
 
                 if (AppStatus.getInstance(ManualEntry.this).isOnline()) {
                     UploadObject object = new UploadObject();
@@ -645,6 +667,13 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 offlineDataEntry.setVersionCode(Econstants.getVersion(ManualEntry.this));
 
 
+                if(qplace.getText() != null || !qplace.getText().toString().isEmpty()){
+                    offlineDataEntry.setQuarantinePlace(qplace.getText().toString());
+                }else{
+                    offlineDataEntry.setQuarantinePlace("");
+                }
+
+
                 if (!userLocation.isEmpty()) {
                     try {
                         String[] locations = userLocation.split(",");
@@ -657,8 +686,6 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                     offlineDataEntry.setLatitude("0");
                     offlineDataEntry.setLongitude("0");
                 }
-
-
 
 
                 offlineDataEntry.setState_from(Global_fromstate);
@@ -750,18 +777,14 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                                 offlineDataEntry.setMobile(mobilenumber.getText().toString().trim());
 
 
+                                if (!Global_fromstate.equalsIgnoreCase("-1")) {
 
+                                    if (!Global_fromdistrict.equalsIgnoreCase("-1")) {
 
+                                        if (!Global_todistrict.equalsIgnoreCase("-1")) {
+                                            if (!Global_toblock.equalsIgnoreCase("-1")) {
 
-
-                                if(!Global_fromstate.equalsIgnoreCase("-1")){
-
-                                    if(!Global_fromdistrict.equalsIgnoreCase("-1")){
-
-                                        if(!Global_todistrict.equalsIgnoreCase("-1")){
-                                            if(!Global_toblock.equalsIgnoreCase("-1")){
-
-                                                if(!Global_totehsil.equalsIgnoreCase("-1")){
+                                                if (!Global_totehsil.equalsIgnoreCase("-1")) {
 
 
                                                     UploadObjectManual object = new UploadObjectManual();
@@ -782,27 +805,25 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                                                     }
 
 
-                                                }else{
+                                                } else {
                                                     CD.showDialog(ManualEntry.this, "Please Select Tehsil ");
                                                 }
 
-                                            }else{
+                                            } else {
                                                 CD.showDialog(ManualEntry.this, "Please Select the Block");
                                             }
 
-                                        }else{
+                                        } else {
                                             CD.showDialog(ManualEntry.this, "Please Select the District.");
                                         }
 
-                                    }else{
+                                    } else {
                                         CD.showDialog(ManualEntry.this, "Please Select From District");
                                     }
 
-                                }else{
+                                } else {
                                     CD.showDialog(ManualEntry.this, "Please Select From State");
                                 }
-
-
 
 
                             } else {
@@ -902,9 +923,11 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
         block = findViewById(R.id.block);
         gp = findViewById(R.id.gp);
         appdownloaded = findViewById(R.id.appdownloaded);
+        quarantine = findViewById(R.id.quarantine);
         back = findViewById(R.id.back);
         proceed = findViewById(R.id.proceed);
         remarks = findViewById(R.id.remarks);
+        qplace = findViewById(R.id.qplace);
 
         addmore = findViewById(R.id.addmore);
         passenger = findViewById(R.id.passenger);
@@ -1151,7 +1174,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 MastersPojoServer response = JsonParse.MasterPojo(result.getResponse());
                 Log.e("Status", response.getStatus());
                 if (Integer.parseInt(response.getStatus()) == 200) {
-                     districts = new ArrayList<>();
+                    districts = new ArrayList<>();
                     DistrictPojo districtPojo = new DistrictPojo();
                     districtPojo.setDistrict_id("-1");
                     districtPojo.setDistrict_name("-- Select --");
@@ -1171,8 +1194,8 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                         }
 
 
-                            fromAdapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, districts);
-                            fromdistrict.setAdapter(fromAdapter);
+                        fromAdapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, districts);
+                        fromdistrict.setAdapter(fromAdapter);
 
 
                     } else {
@@ -1378,7 +1401,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                     gp.setAdapter(adaptergp);
                     grampanchayat.setVisibility(View.GONE);
                     Global_togramPanchayat = "0";
-                  //  Toast.makeText(ManualEntry.this, "No Gram Panchayat Available for Specific Block.", Toast.LENGTH_LONG).show();
+                    //  Toast.makeText(ManualEntry.this, "No Gram Panchayat Available for Specific Block.", Toast.LENGTH_LONG).show();
                 }
 
             }

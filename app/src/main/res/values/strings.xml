@@ -7,9 +7,8 @@
     </string-array>
 
     <string-array name="quarentine">
-        <item>Institutional</item>
+        <item>--Select--</item>
         <item>Home</item>
-        <item>Not Arrived</item>
-        <item>Exempted</item>
+        <item>Institutional</item>
     </string-array>
 </resources>

@@ -29,6 +29,25 @@ public class ScanDataPojo implements Serializable {
 
     private String versionApp;
 
+    private String quarentineType;
+    private String quarentinePlace;
+
+    public String getQuarentineType() {
+        return quarentineType;
+    }
+
+    public void setQuarentineType(String quarentineType) {
+        this.quarentineType = quarentineType;
+    }
+
+    public String getQuarentinePlace() {
+        return quarentinePlace;
+    }
+
+    public void setQuarentinePlace(String quarentinePlace) {
+        this.quarentinePlace = quarentinePlace;
+    }
+
     public String getVersionApp() {
         return versionApp;
     }
@@ -177,6 +196,8 @@ public class ScanDataPojo implements Serializable {
                 ", phones='" + phones + '\'' +
                 ", names='" + names + '\'' +
                 ", versionApp='" + versionApp + '\'' +
+                ", quarentineType='" + quarentineType + '\'' +
+                ", quarentinePlace='" + quarentinePlace + '\'' +
                 ", number_of_passengers_manual='" + number_of_passengers_manual + '\'' +
                 '}';
     }
