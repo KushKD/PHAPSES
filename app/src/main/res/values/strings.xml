@@ -5,4 +5,11 @@
         <item>Yes</item>
         <item>No</item>
     </string-array>
+
+    <string-array name="quarentine">
+        <item>Institutional</item>
+        <item>Home</item>
+        <item>Not Arrived</item>
+        <item>Exempted</item>
+    </string-array>
 </resources>

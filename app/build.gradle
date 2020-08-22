@@ -7,8 +7,8 @@ android {
         applicationId "com.doi.himachal.epasshp"
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 7
-        versionName "1.72"
+        versionCode 8
+        versionName "1.82"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

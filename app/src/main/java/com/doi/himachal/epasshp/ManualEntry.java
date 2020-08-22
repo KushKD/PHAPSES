@@ -303,30 +303,50 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                                 if (mobilenumber.getText().toString() != null && mobilenumber.getText().toString().length() == 10 && !mobilenumber.getText().toString().isEmpty()) {
                                     offlineDataEntry.setMobile(mobilenumber.getText().toString().trim());
 
-                                    // if (passno.getText().toString() != null && !passno.getText().toString().isEmpty()) {
-                                    // offlineDataEntry.setPass_no(passno.getText().toString().trim());
-
-                                    // if (authority.getText().toString() != null && !authority.getText().toString().isEmpty()) {
-                                    //   offlineDataEntry.setPass_issue_authority(authority.getText().toString().trim());
 
 
-                                    //TODO SEND OBECT TO SERVER
-                                    System.out.println(offlineDataEntry.toString());
-
-                                    //TODO Go to add more Activity
-                                    Intent addmore = new Intent(ManualEntry.this, AddMoreActivity.class);
-                                    addmore.putExtra("PARENT", offlineDataEntry);
-                                    startActivityForResult(addmore, 1);
 
 
-//                                    } else {
-//                                        CD.showDialog(ManualEntry.this, "Please enter Pass Issuing Authority .");
-//                                    }
+
+                                    if(!Global_fromstate.equalsIgnoreCase("-1")){
+
+                                        if(!Global_fromdistrict.equalsIgnoreCase("-1")){
+
+                                            if(!Global_todistrict.equalsIgnoreCase("-1")){
+                                                if(!Global_toblock.equalsIgnoreCase("-1")){
+
+                                                    if(!Global_totehsil.equalsIgnoreCase("-1")){
 
 
-//                                } else {
-//                                    CD.showDialog(ManualEntry.this, "Please enter valid Pass number .");
-//                                }
+                                                        System.out.println(offlineDataEntry.toString());
+                                                        Intent addmore = new Intent(ManualEntry.this, AddMoreActivity.class);
+                                                        addmore.putExtra("PARENT", offlineDataEntry);
+                                                        startActivityForResult(addmore, 1);
+
+
+                                                    }else{
+                                                        CD.showDialog(ManualEntry.this, "Please Select Tehsil ");
+                                                    }
+
+                                                }else{
+                                                    CD.showDialog(ManualEntry.this, "Please Select the Block");
+                                                }
+
+                                            }else{
+                                                CD.showDialog(ManualEntry.this, "Please Select the District.");
+                                            }
+
+                                        }else{
+                                            CD.showDialog(ManualEntry.this, "Please Select From District");
+                                        }
+
+                                    }else{
+                                        CD.showDialog(ManualEntry.this, "Please Select From State");
+                                    }
+
+
+
+
 
 
                                 } else {
@@ -638,6 +658,9 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                     offlineDataEntry.setLongitude("0");
                 }
 
+
+
+
                 offlineDataEntry.setState_from(Global_fromstate);
                 offlineDataEntry.setPosition_from_state(Global_fromstatePosition);
                 offlineDataEntry.setDistrict_from(Global_fromdistrict);
@@ -726,42 +749,60 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                             if (mobilenumber.getText().toString() != null && mobilenumber.getText().toString().length() == 10 && !mobilenumber.getText().toString().isEmpty()) {
                                 offlineDataEntry.setMobile(mobilenumber.getText().toString().trim());
 
-                                // if (passno.getText().toString() != null && !passno.getText().toString().isEmpty()) {
-                                // offlineDataEntry.setPass_no(passno.getText().toString().trim());
-
-                                // if (authority.getText().toString() != null && !authority.getText().toString().isEmpty()) {
-                                //   offlineDataEntry.setPass_issue_authority(authority.getText().toString().trim());
 
 
-                                UploadObjectManual object = new UploadObjectManual();
-                                object.setUrl("http://covid19epass.hp.gov.in/api/v1/saveofflinebarrierdatav1");
-                                object.setTasktype(TaskType.MANUAL_FORM_UPLOAD);
-                                object.setMethordName("saveofflinebarrierdata");
-                                object.setOfflineDataEntry(offlineDataEntry);
 
 
-                                //TODO SEND OBECT TO SERVER
-                                System.out.println(offlineDataEntry.toString());
-//TODO
-                                if (AppStatus.getInstance(ManualEntry.this).isOnline()) {
-                                    new GenericAsyncPostObjectForm(
-                                            ManualEntry.this,
-                                            ManualEntry.this,
-                                            TaskType.MANUAL_FORM_UPLOAD).
-                                            execute(object);
-                                } else {
-                                    CD.showDialog(ManualEntry.this, "Please connect to Internet and try again.");
+
+                                if(!Global_fromstate.equalsIgnoreCase("-1")){
+
+                                    if(!Global_fromdistrict.equalsIgnoreCase("-1")){
+
+                                        if(!Global_todistrict.equalsIgnoreCase("-1")){
+                                            if(!Global_toblock.equalsIgnoreCase("-1")){
+
+                                                if(!Global_totehsil.equalsIgnoreCase("-1")){
+
+
+                                                    UploadObjectManual object = new UploadObjectManual();
+                                                    object.setUrl("http://covid19epass.hp.gov.in/api/v1/saveofflinebarrierdatav1");
+                                                    object.setTasktype(TaskType.MANUAL_FORM_UPLOAD);
+                                                    object.setMethordName("saveofflinebarrierdata");
+                                                    object.setOfflineDataEntry(offlineDataEntry);
+                                                    System.out.println(offlineDataEntry.toString());
+
+                                                    if (AppStatus.getInstance(ManualEntry.this).isOnline()) {
+                                                        new GenericAsyncPostObjectForm(
+                                                                ManualEntry.this,
+                                                                ManualEntry.this,
+                                                                TaskType.MANUAL_FORM_UPLOAD).
+                                                                execute(object);
+                                                    } else {
+                                                        CD.showDialog(ManualEntry.this, "Please connect to Internet and try again.");
+                                                    }
+
+
+                                                }else{
+                                                    CD.showDialog(ManualEntry.this, "Please Select Tehsil ");
+                                                }
+
+                                            }else{
+                                                CD.showDialog(ManualEntry.this, "Please Select the Block");
+                                            }
+
+                                        }else{
+                                            CD.showDialog(ManualEntry.this, "Please Select the District.");
+                                        }
+
+                                    }else{
+                                        CD.showDialog(ManualEntry.this, "Please Select From District");
+                                    }
+
+                                }else{
+                                    CD.showDialog(ManualEntry.this, "Please Select From State");
                                 }
 
 
-//                                    } else {
-//                                        CD.showDialog(ManualEntry.this, "Please enter Pass Issuing Authority .");
-//                                    }
-
-
-//                                } else {
-//                                    CD.showDialog(ManualEntry.this, "Please enter valid Pass number .");
-//                                }
 
 
                             } else {
@@ -1014,7 +1055,6 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     }
 
 
-
     @Override
     public void onTaskCompleted(ResponsePojoGet result, TaskType taskType) throws JSONException {
 
@@ -1080,6 +1120,12 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
 
                             states.add(pojo);
                         }
+
+                        StatePojo statePojo = new StatePojo();
+                        statePojo.setState_id("-1");
+                        statePojo.setState_name("-- Select --");
+                        states.add(0, statePojo);
+
                         if (!states.isEmpty()) {
                             adapter_states = new GenericAdapterStates(ManualEntry.this, android.R.layout.simple_spinner_item, states);
                             fromstate.setAdapter(adapter_states);
@@ -1105,9 +1151,15 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 MastersPojoServer response = JsonParse.MasterPojo(result.getResponse());
                 Log.e("Status", response.getStatus());
                 if (Integer.parseInt(response.getStatus()) == 200) {
+                     districts = new ArrayList<>();
+                    DistrictPojo districtPojo = new DistrictPojo();
+                    districtPojo.setDistrict_id("-1");
+                    districtPojo.setDistrict_name("-- Select --");
+                    districts.add(0, districtPojo);
+
                     JSONArray jsonArray = new JSONArray(response.getRecords());
                     if (jsonArray.length() != 0) {
-                        districts = new ArrayList<>();
+
                         for (int i = 0; i < jsonArray.length(); i++) {
                             DistrictPojo pojo = new DistrictPojo();
                             JSONObject object = jsonArray.getJSONObject(i);
@@ -1118,15 +1170,25 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                             districts.add(pojo);
                         }
 
-                        fromAdapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, districts);
-                        fromdistrict.setAdapter(fromAdapter);
+
+                            fromAdapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, districts);
+                            fromdistrict.setAdapter(fromAdapter);
+
+
                     } else {
                         CD.showDialog(ManualEntry.this, "District Not Found.");
                         fromAdapter = null;
                         fromdistrict.setAdapter(fromAdapter);
                     }
                 } else {
-                    CD.showDialog(ManualEntry.this, "Something went wrong. Please connect to Internet and try again.");
+                    districts = new ArrayList<>();
+                    DistrictPojo districtPojo = new DistrictPojo();
+                    districtPojo.setDistrict_id("-1");
+                    districtPojo.setDistrict_name("-- Select --");
+                    districts.add(0, districtPojo);
+                    fromAdapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, districts);
+                    fromdistrict.setAdapter(fromAdapter);
+                    // CD.showDialog(ManualEntry.this, "Something went wrong. Please connect to Internet and try again.");
                 }
 
             }
@@ -1152,8 +1214,20 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                             districts.add(pojo);
                         }
 
-                        adapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, districts);
-                        district.setAdapter(adapter);
+                        DistrictPojo districtPojo = new DistrictPojo();
+                        districtPojo.setDistrict_id("-1");
+                        districtPojo.setDistrict_name("-- Select --");
+                        districts.add(0, districtPojo);
+
+                        if (!districts.isEmpty()) {
+                            adapter = new GenericAdapter(ManualEntry.this, android.R.layout.simple_spinner_item, districts);
+                            district.setAdapter(adapter);
+                        } else {
+                            adapter = null;
+                            district.setAdapter(adapter);
+                        }
+
+
                     } else {
                         CD.showDialog(ManualEntry.this, "District Not Found.");
                         adapter = null;
@@ -1177,8 +1251,12 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 Log.e("Status", response.getStatus());
                 if (Integer.parseInt(response.getStatus()) == 200) {
                     JSONArray jsonArray = new JSONArray(response.getRecords());
+                    tehsils = new ArrayList<>();
                     if (jsonArray.length() != 0) {
-                        tehsils = new ArrayList<>();
+                        TehsilPojo tehsilPojo = new TehsilPojo();
+                        tehsilPojo.setTehsil_id("-1");
+                        tehsilPojo.setTehsil_name("-- Select --");
+                        tehsils.add(0, tehsilPojo);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             TehsilPojo pojo = new TehsilPojo();
                             JSONObject object = jsonArray.getJSONObject(i);
@@ -1191,12 +1269,22 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                         adapter_tehsil = new GenericAdapterTehsil(ManualEntry.this, android.R.layout.simple_spinner_item, tehsils);
                         tehsil.setAdapter(adapter_tehsil);
                     } else {
-                        CD.showDialog(ManualEntry.this, "District Not Found.");
-                        adapter_tehsil = null;
+                        tehsils = new ArrayList<>();
+                        TehsilPojo tehsilPojo = new TehsilPojo();
+                        tehsilPojo.setTehsil_id("-1");
+                        tehsilPojo.setTehsil_name("-- Select --");
+                        tehsils.add(0, tehsilPojo);
+                        adapter_tehsil = new GenericAdapterTehsil(ManualEntry.this, android.R.layout.simple_spinner_item, tehsils);
                         tehsil.setAdapter(adapter_tehsil);
                     }
                 } else {
-                    CD.showDialog(ManualEntry.this, "Something went wrong. Please connect to Internet and try again.");
+                    tehsils = new ArrayList<>();
+                    TehsilPojo tehsilPojo = new TehsilPojo();
+                    tehsilPojo.setTehsil_id("-1");
+                    tehsilPojo.setTehsil_name("-- Select --");
+                    tehsils.add(0, tehsilPojo);
+                    adapter_tehsil = new GenericAdapterTehsil(ManualEntry.this, android.R.layout.simple_spinner_item, tehsils);
+                    tehsil.setAdapter(adapter_tehsil);
                 }
 
             }
@@ -1212,6 +1300,10 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                     JSONArray jsonArray = new JSONArray(response.getRecords());
                     if (jsonArray.length() != 0) {
                         blocks = new ArrayList<>();
+                        BlockPojo blocksPojo = new BlockPojo();
+                        blocksPojo.setBlock_code("-1");
+                        blocksPojo.setBlock_name("-- Select --");
+                        blocks.add(0, blocksPojo);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             BlockPojo pojo = new BlockPojo();
                             JSONObject object = jsonArray.getJSONObject(i);
@@ -1225,12 +1317,22 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                         adapterBlocks = new GenericAdapterBlocks(ManualEntry.this, android.R.layout.simple_spinner_item, blocks);
                         block.setAdapter(adapterBlocks);
                     } else {
-                        CD.showDialog(ManualEntry.this, "No Blocks Found.");
-                        adapterBlocks = null;
+                        BlockPojo blocksPojo = new BlockPojo();
+                        blocksPojo.setBlock_code("-1");
+                        blocksPojo.setBlock_name("-- Select --");
+                        blocks.add(0, blocksPojo);
+                        // CD.showDialog(ManualEntry.this, "No Blocks Found.");
+                        adapterBlocks = new GenericAdapterBlocks(ManualEntry.this, android.R.layout.simple_spinner_item, blocks);
                         block.setAdapter(adapterBlocks);
                     }
                 } else {
-                    CD.showDialog(ManualEntry.this, "Something went wrong. Please connect to Internet and try again.");
+                    blocks = new ArrayList<>();
+                    BlockPojo blocksPojo = new BlockPojo();
+                    blocksPojo.setBlock_code("-1");
+                    blocksPojo.setBlock_name("-- Select --");
+                    blocks.add(0, blocksPojo);
+                    adapterBlocks = new GenericAdapterBlocks(ManualEntry.this, android.R.layout.simple_spinner_item, blocks);
+                    block.setAdapter(adapterBlocks);
                 }
 
             }
@@ -1276,7 +1378,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                     gp.setAdapter(adaptergp);
                     grampanchayat.setVisibility(View.GONE);
                     Global_togramPanchayat = "0";
-                    Toast.makeText(ManualEntry.this,"No Gram Panchayat Available for Specific Block.",Toast.LENGTH_LONG).show();
+                  //  Toast.makeText(ManualEntry.this, "No Gram Panchayat Available for Specific Block.", Toast.LENGTH_LONG).show();
                 }
 
             }

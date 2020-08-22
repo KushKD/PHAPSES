@@ -686,6 +686,11 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
 
                             states.add(pojo);
                         }
+                        StatePojo statePojo = new StatePojo();
+                        statePojo.setState_id("-1");
+                        statePojo.setState_name("-- Select --");
+                        states.add(0, statePojo);
+
                         if (!states.isEmpty()) {
                             adapter_states = new GenericAdapterStates(AddMoreActivity.this, android.R.layout.simple_spinner_item, states);
                             fromstate.setAdapter(adapter_states);
@@ -712,9 +717,16 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
                 MastersPojoServer response = JsonParse.MasterPojo(result.getResponse());
                 Log.e("Status", response.getStatus());
                 if (Integer.parseInt(response.getStatus()) == 200) {
+                    districts = new ArrayList<>();
+                    DistrictPojo districtPojo = new DistrictPojo();
+                    districtPojo.setDistrict_id("-1");
+                    districtPojo.setDistrict_name("-- Select --");
+                    districts.add(0, districtPojo);
+
                     JSONArray jsonArray = new JSONArray(response.getRecords());
+
                     if (jsonArray.length() != 0) {
-                        districts = new ArrayList<>();
+
                         for (int i = 0; i < jsonArray.length(); i++) {
                             DistrictPojo pojo = new DistrictPojo();
                             JSONObject object = jsonArray.getJSONObject(i);
@@ -734,7 +746,14 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
                         fromdistrict.setAdapter(fromAdapter);
                     }
                 } else {
-                    CD.showDialog(AddMoreActivity.this, "Something went wrong. Please connect to Internet and try again.");
+                    districts = new ArrayList<>();
+                    DistrictPojo districtPojo = new DistrictPojo();
+                    districtPojo.setDistrict_id("-1");
+                    districtPojo.setDistrict_name("-- Select --");
+                    districts.add(0, districtPojo);
+                    fromAdapter = new GenericAdapter(AddMoreActivity.this, android.R.layout.simple_spinner_item, districts);
+                    fromdistrict.setAdapter(fromAdapter);
+                   // CD.showDialog(AddMoreActivity.this, "Something went wrong. Please connect to Internet and try again.");
                 }
 
             }
@@ -759,6 +778,10 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
 
                             districts.add(pojo);
                         }
+                        DistrictPojo districtPojo = new DistrictPojo();
+                        districtPojo.setDistrict_id("-1");
+                        districtPojo.setDistrict_name("-- Select --");
+                        districts.add(0, districtPojo);
 
                         adapter = new GenericAdapter(AddMoreActivity.this, android.R.layout.simple_spinner_item, districts);
                         district.setAdapter(adapter);
@@ -786,8 +809,12 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
                 Log.e("Status", response.getStatus());
                 if (Integer.parseInt(response.getStatus()) == 200) {
                     JSONArray jsonArray = new JSONArray(response.getRecords());
+                    tehsils = new ArrayList<>();
                     if (jsonArray.length() != 0) {
-                        tehsils = new ArrayList<>();
+                        TehsilPojo tehsilPojo = new TehsilPojo();
+                        tehsilPojo.setTehsil_id("-1");
+                        tehsilPojo.setTehsil_name("-- Select --");
+                        tehsils.add(0, tehsilPojo);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             TehsilPojo pojo = new TehsilPojo();
                             JSONObject object = jsonArray.getJSONObject(i);
@@ -801,12 +828,23 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
                         tehsil.setAdapter(adapter_tehsil);
                         tehsil.setSelection((int) adapter_tehsil.getItemId(parent_details.getPosition_to_tehsil()));
                     } else {
-                        CD.showDialog(AddMoreActivity.this, "District Not Found.");
-                        adapter_tehsil = null;
+                        tehsils = new ArrayList<>();
+                        TehsilPojo tehsilPojo = new TehsilPojo();
+                        tehsilPojo.setTehsil_id("-1");
+                        tehsilPojo.setTehsil_name("-- Select --");
+                        tehsils.add(0, tehsilPojo);
+                        adapter_tehsil = new GenericAdapterTehsil(AddMoreActivity.this, android.R.layout.simple_spinner_item, tehsils);
                         tehsil.setAdapter(adapter_tehsil);
                     }
                 } else {
-                    CD.showDialog(AddMoreActivity.this, "Something went wrong. Please connect to Internet and try again.");
+                    //CD.showDialog(AddMoreActivity.this, "Something went wrong. Please connect to Internet and try again.");
+                    tehsils = new ArrayList<>();
+                    TehsilPojo tehsilPojox = new TehsilPojo();
+                    tehsilPojox.setTehsil_id("-1");
+                    tehsilPojox.setTehsil_name("-- Select --");
+                    tehsils.add(0, tehsilPojox);
+                    adapter_tehsil = new GenericAdapterTehsil(AddMoreActivity.this, android.R.layout.simple_spinner_item, tehsils);
+                    tehsil.setAdapter(adapter_tehsil);
                 }
 
             }
@@ -822,6 +860,10 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
                     JSONArray jsonArray = new JSONArray(response.getRecords());
                     if (jsonArray.length() != 0) {
                         blocks = new ArrayList<>();
+                        BlockPojo blocksPojo = new BlockPojo();
+                        blocksPojo.setBlock_code("-1");
+                        blocksPojo.setBlock_name("-- Select --");
+                        blocks.add(0, blocksPojo);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             BlockPojo pojo = new BlockPojo();
                             JSONObject object = jsonArray.getJSONObject(i);
@@ -836,12 +878,23 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
                         block.setAdapter(adapterBlocks);
                         block.setSelection((int) adapterBlocks.getItemId(parent_details.getPosition_to_block()));
                     } else {
-                        CD.showDialog(AddMoreActivity.this, "No Blocks Found.");
-                        adapterBlocks = null;
+                        BlockPojo blocksPojo = new BlockPojo();
+                        blocksPojo.setBlock_code("-1");
+                        blocksPojo.setBlock_name("-- Select --");
+                        blocks.add(0, blocksPojo);
+                        // CD.showDialog(ManualEntry.this, "No Blocks Found.");
+                        adapterBlocks = new GenericAdapterBlocks(AddMoreActivity.this, android.R.layout.simple_spinner_item, blocks);
                         block.setAdapter(adapterBlocks);
                     }
                 } else {
-                    CD.showDialog(AddMoreActivity.this, "Something went wrong. Please connect to Internet and try again.");
+                    blocks = new ArrayList<>();
+                    BlockPojo blocksPojo = new BlockPojo();
+                    blocksPojo.setBlock_code("-1");
+                    blocksPojo.setBlock_name("-- Select --");
+                    blocks.add(0, blocksPojo);
+                    // CD.showDialog(ManualEntry.this, "No Blocks Found.");
+                    adapterBlocks = new GenericAdapterBlocks(AddMoreActivity.this, android.R.layout.simple_spinner_item, blocks);
+                    block.setAdapter(adapterBlocks);
                 }
 
             }
