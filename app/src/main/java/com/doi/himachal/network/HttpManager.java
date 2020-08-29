@@ -34,16 +34,16 @@ public class HttpManager {
 
     public ResponsePojoGet GetData(UploadObject data) throws IOException {
         BufferedReader reader = null;
-        URL url_ =  null;
+        URL url_ = null;
         ResponsePojoGet response = null;
         HttpURLConnection con = null;
 
         try {
-            url_ = new URL(data.getUrl()+data.getMethordName()+data.getParam());
-            Log.e("url",url_.toString());
+            url_ = new URL(data.getUrl() + data.getMethordName() + data.getParam());
+            Log.e("url", url_.toString());
             con = (HttpURLConnection) url_.openConnection();
-           //con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-           con.setRequestProperty("Authorization", "Basic " + Econstants.generateAuthenticationPasswrd("COVID@908#HeM@nT", "JovpQy2Cez6545sKDRvhX3p"));
+            //con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            con.setRequestProperty("Authorization", "Basic " + Econstants.generateAuthenticationPasswrd("COVID@908#HeM@nT", "JovpQy2Cez6545sKDRvhX3p"));
             con.connect();
 
             if (con.getResponseCode() != 200) {
@@ -54,10 +54,10 @@ public class HttpManager {
                     sb.append(line + "\n");
                 }
                 con.disconnect();
-                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),sb.toString() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(), sb.toString(), Integer.toString(con.getResponseCode()), data.getMethordName());
 
                 return response;
-            }else {
+            } else {
 
 
                 reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -68,13 +68,13 @@ public class HttpManager {
                 }
                 con.disconnect();
                 //sb.tostring
-                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),sb.toString() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(), sb.toString(), Integer.toString(con.getResponseCode()), data.getMethordName());
                 return response;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),e.getLocalizedMessage() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+            response = Econstants.createOfflineObject(data.getUrl(), data.getParam(), e.getLocalizedMessage(), Integer.toString(con.getResponseCode()), data.getMethordName());
 
             return response;
         } finally {
@@ -84,7 +84,7 @@ public class HttpManager {
 
                 } catch (IOException e) {
                     e.printStackTrace();
-                    response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),e.getLocalizedMessage() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+                    response = Econstants.createOfflineObject(data.getUrl(), data.getParam(), e.getLocalizedMessage(), Integer.toString(con.getResponseCode()), data.getMethordName());
                     return response;
                 }
             }
@@ -93,13 +93,13 @@ public class HttpManager {
 
     public ResponsePojoGet GetDataStates(UploadObject data) throws IOException {
         BufferedReader reader = null;
-        URL url_ =  null;
+        URL url_ = null;
         ResponsePojoGet response = null;
         HttpURLConnection con = null;
 
         try {
-            url_ = new URL(data.getUrl()+data.getMethordName()+data.getParam());
-            Log.e("url",url_.toString());
+            url_ = new URL(data.getUrl() + data.getMethordName() + data.getParam());
+            Log.e("url", url_.toString());
             con = (HttpURLConnection) url_.openConnection();
             //con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             //con.setRequestProperty("Authorization", "Basic " + Econstants.generateAuthenticationPasswrd("COVID@908#HeM@nT", "JovpQy2Cez6545sKDRvhX3p"));
@@ -113,10 +113,10 @@ public class HttpManager {
                     sb.append(line + "\n");
                 }
                 con.disconnect();
-                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),sb.toString() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(), sb.toString(), Integer.toString(con.getResponseCode()), data.getMethordName());
 
                 return response;
-            }else {
+            } else {
 
 
                 reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -127,13 +127,13 @@ public class HttpManager {
                 }
                 con.disconnect();
                 //sb.tostring
-                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),sb.toString() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(), sb.toString(), Integer.toString(con.getResponseCode()), data.getMethordName());
                 return response;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),e.getLocalizedMessage() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+            response = Econstants.createOfflineObject(data.getUrl(), data.getParam(), e.getLocalizedMessage(), Integer.toString(con.getResponseCode()), data.getMethordName());
 
             return response;
         } finally {
@@ -143,7 +143,7 @@ public class HttpManager {
 
                 } catch (IOException e) {
                     e.printStackTrace();
-                    response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),e.getLocalizedMessage() ,  Integer.toString(con.getResponseCode()), data.getMethordName());
+                    response = Econstants.createOfflineObject(data.getUrl(), data.getParam(), e.getLocalizedMessage(), Integer.toString(con.getResponseCode()), data.getMethordName());
                     return response;
                 }
             }
@@ -162,7 +162,7 @@ public class HttpManager {
         ResponsePojo response = null;
         JSONObject object = new JSONObject();
         JSONObject otherInformation = new JSONObject();
-        JSONArray array =  new JSONArray();
+        JSONArray array = new JSONArray();
 
         PhoneDetailsPojo phoneDetails;
 
@@ -184,35 +184,32 @@ public class HttpManager {
             conn_.connect();
 
             try {
-                 phoneDetails = CommonUtils.getDeviceInfo();
-            }catch (Exception ex){
+                phoneDetails = CommonUtils.getDeviceInfo();
+            } catch (Exception ex) {
                 phoneDetails = null;
             }
 
-            if(phoneDetails!=null){
+            if (phoneDetails != null) {
                 object.put("phone_brand", phoneDetails.getBrand());
                 object.put("phone_id", phoneDetails.getId());
-                object.put("phone_manufacturer",phoneDetails.getManufacturer());
-                object.put("phone_model",phoneDetails.getModel());
-                object.put("phone_serial",phoneDetails.getSreial());
-                object.put("phone_version",phoneDetails.getVersion_code());
+                object.put("phone_manufacturer", phoneDetails.getManufacturer());
+                object.put("phone_model", phoneDetails.getModel());
+                object.put("phone_serial", phoneDetails.getSreial());
+                object.put("phone_version", phoneDetails.getVersion_code());
 
             }
 
             object.put("logged_in_name", Preferences.getInstance().name);
             object.put("department_name", Preferences.getInstance().dept_name);
             object.put("scanned_by", data.getScanDataPojo().getScannedByPhoneNumber());
-            object.put("app_version",data.getScanDataPojo().getVersionApp());
+            object.put("app_version", data.getScanDataPojo().getVersionApp());
 
-            otherInformation.put("no_of_persons",data.getScanDataPojo().getNumber_of_passengers_manual());
-            otherInformation.put("quarantineType",data.getScanDataPojo().getQuarentineType());
-            otherInformation.put("quarantinePlace",data.getScanDataPojo().getQuarentinePlace());
+            otherInformation.put("no_of_persons", data.getScanDataPojo().getNumber_of_passengers_manual());
+            otherInformation.put("quarantineType", data.getScanDataPojo().getQuarentineType());
+            otherInformation.put("quarantinePlace", data.getScanDataPojo().getQuarentinePlace());
 //            otherInformation.put("person_names",data.getScanDataPojo().getNames());
 //            otherInformation.put("person_phones",data.getScanDataPojo().getPhones());
 //            otherInformation.put("remarks",data.getScanDataPojo().getRemarks());
-
-
-
 
 
             userJson = new JSONStringer()
@@ -295,7 +292,7 @@ public class HttpManager {
         ResponsePojo response = null;
         JSONObject object = new JSONObject();
         JSONObject otherInformation = new JSONObject();
-        JSONArray array =  new JSONArray();
+        JSONArray array = new JSONArray();
 
         PhoneDetailsPojo phoneDetails;
 
@@ -318,32 +315,29 @@ public class HttpManager {
 
             try {
                 phoneDetails = CommonUtils.getDeviceInfo();
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 phoneDetails = null;
             }
 
-            if(phoneDetails!=null){
+            if (phoneDetails != null) {
                 object.put("phone_brand", phoneDetails.getBrand());
                 object.put("phone_id", phoneDetails.getId());
-                object.put("phone_manufacturer",phoneDetails.getManufacturer());
-                object.put("phone_model",phoneDetails.getModel());
-                object.put("phone_serial",phoneDetails.getSreial());
-                object.put("phone_version",phoneDetails.getVersion_code());
+                object.put("phone_manufacturer", phoneDetails.getManufacturer());
+                object.put("phone_model", phoneDetails.getModel());
+                object.put("phone_serial", phoneDetails.getSreial());
+                object.put("phone_version", phoneDetails.getVersion_code());
 
             }
 
             object.put("logged_in_name", Preferences.getInstance().name);
             object.put("department_name", Preferences.getInstance().dept_name);
             object.put("scanned_by", data.getScanDataPojo().getScannedByPhoneNumber());
-            object.put("app_version",data.getScanDataPojo().getVersionApp());
+            object.put("app_version", data.getScanDataPojo().getVersionApp());
 
-            otherInformation.put("no_of_persons",data.getScanDataPojo().getNumber_of_passengers_manual());
+            otherInformation.put("no_of_persons", data.getScanDataPojo().getNumber_of_passengers_manual());
 //            otherInformation.put("person_names",data.getScanDataPojo().getNames());
 //            otherInformation.put("person_phones",data.getScanDataPojo().getPhones());
 //            otherInformation.put("remarks",data.getScanDataPojo().getRemarks());
-
-
-
 
 
             userJson = new JSONStringer()
@@ -415,7 +409,6 @@ public class HttpManager {
     }
 
 
-
     public ResponsePojo PostData(UploadObjectManual data) {
         Log.e("Here", "We Are 2");
         URL url_ = null;
@@ -460,42 +453,33 @@ public class HttpManager {
 
                 try {
                     phoneDetails = CommonUtils.getDeviceInfo();
-                }catch (Exception ex){
+                } catch (Exception ex) {
                     phoneDetails = null;
                 }
 
 
-                if(phoneDetails!=null){
+                if (phoneDetails != null) {
                     object.put("phone_brand", phoneDetails.getBrand());
                     object.put("phone_id", phoneDetails.getId());
-                    object.put("phone_manufacturer",phoneDetails.getManufacturer());
-                    object.put("phone_model",phoneDetails.getModel());
-                    object.put("phone_serial",phoneDetails.getSreial());
-                    object.put("phone_version",phoneDetails.getVersion_code());
+                    object.put("phone_manufacturer", phoneDetails.getManufacturer());
+                    object.put("phone_model", phoneDetails.getModel());
+                    object.put("phone_serial", phoneDetails.getSreial());
+                    object.put("phone_version", phoneDetails.getVersion_code());
 
                 }
 
                 object.put("logged_in_name", Preferences.getInstance().name);
                 object.put("department_name", Preferences.getInstance().dept_name);
-                object.put("scanned_by",  data.getOfflineDataEntry().getUser_mobile());
-                object.put("app_version",data.getOfflineDataEntry().getVersionCode());
+                object.put("scanned_by", data.getOfflineDataEntry().getUser_mobile());
+                object.put("app_version", data.getOfflineDataEntry().getVersionCode());
 
 
+                //TODO KUSH YESTERDAY
 
-                            otherPersons = new JSONObject();
-                            otherPersons.put("name",data.getOfflineDataEntry().getQuarantine());
-                            otherPersons.put("place",data.getOfflineDataEntry().getQuarantinePlace());
-                            object.put("other_information",otherPersons);
-
-
-
-
-
-
-
-
-
-
+                otherPersons = new JSONObject();
+                otherPersons.put("quarantineType", data.getOfflineDataEntry().getQuarantine());
+                otherPersons.put("quarantinePlace", data.getOfflineDataEntry().getQuarantinePlace());
+                object.put("other_information", otherPersons);
 
 
                 userJson = new JSONObject();
@@ -510,8 +494,8 @@ public class HttpManager {
                 Log.e("Here", "We Are7");
                 try {
                     userJson.put("state_from", Integer.parseInt(data.getOfflineDataEntry().getState_from()));
-                }catch(Exception ex){
-                    Log.e(ex.getLocalizedMessage(),data.getOfflineDataEntry().getState_from());
+                } catch (Exception ex) {
+                    Log.e(ex.getLocalizedMessage(), data.getOfflineDataEntry().getState_from());
                 }
                 //district_from ,  place_to
                 userJson.put("place_to", data.getOfflineDataEntry().getPlace_to());
@@ -533,6 +517,9 @@ public class HttpManager {
                 userJson.put("remarks", data.getOfflineDataEntry().getRemarks());
 
                 userJson.put("pass_category", Integer.parseInt(data.getOfflineDataEntry().getCategoryId()));
+                //New Code
+                userJson.put("quarantineType", data.getOfflineDataEntry().getQuarantine());
+                userJson.put("quarantinePlace", data.getOfflineDataEntry().getQuarantinePlace());
 
 
                 Log.e("Here", "We Are8");
@@ -696,8 +683,8 @@ public class HttpManager {
 
         try {
 
-            URL = data.getUrl()+data.getMethordName();
-          //  URL = "http://covidepass.eypoc.com/api/v1/getdistricts";
+            URL = data.getUrl() + data.getMethordName();
+            //  URL = "http://covidepass.eypoc.com/api/v1/getdistricts";
             Log.e("URL", URL.toString());
 
 
@@ -708,18 +695,15 @@ public class HttpManager {
             conn_.setUseCaches(false);
             conn_.setConnectTimeout(10000);
             conn_.setReadTimeout(10000);
-          conn_.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-         //  conn_.setRequestProperty("Authorization", "Basic " + Econstants.generateAuthenticationPasswrd("COVID@908#HeM@nT", "JovpQy2Cez6545sKDRvhX3p"));
+            conn_.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            //  conn_.setRequestProperty("Authorization", "Basic " + Econstants.generateAuthenticationPasswrd("COVID@908#HeM@nT", "JovpQy2Cez6545sKDRvhX3p"));
             conn_.connect();
 
 
-
-
-
-            System.out.println(data.getParam()+data.getParam2());
+            System.out.println(data.getParam() + data.getParam2());
             Log.e("Object", data.getParam());
             OutputStreamWriter out = new OutputStreamWriter(conn_.getOutputStream());
-            out.write(data.getParam()+data.getParam2());
+            out.write(data.getParam() + data.getParam2());
             out.close();
 
             try {
@@ -736,7 +720,7 @@ public class HttpManager {
                     System.out.println(sb.toString());
                     Log.e("Data from Service", sb.toString());
                     response = new ResponsePojoGet();
-                    response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),sb.toString() ,  Integer.toString(conn_.getResponseCode()), data.getMethordName());
+                    response = Econstants.createOfflineObject(data.getUrl(), data.getParam(), sb.toString(), Integer.toString(conn_.getResponseCode()), data.getMethordName());
                     return response;
 
 
@@ -751,7 +735,7 @@ public class HttpManager {
                     br.close();
                     System.out.println(sb.toString());
                     Log.e("Data from Service", sb.toString());
-                    response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),sb.toString() ,  Integer.toString(conn_.getResponseCode()), data.getMethordName());
+                    response = Econstants.createOfflineObject(data.getUrl(), data.getParam(), sb.toString(), Integer.toString(conn_.getResponseCode()), data.getMethordName());
                     return response;
 
                 }
@@ -759,7 +743,7 @@ public class HttpManager {
             } catch (Exception e) {
 
                 Log.e("Data from Service", sb.toString());
-                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(),sb.toString() ,  Integer.toString(conn_.getResponseCode()), data.getMethordName());
+                response = Econstants.createOfflineObject(data.getUrl(), data.getParam(), sb.toString(), Integer.toString(conn_.getResponseCode()), data.getMethordName());
                 return response;
             }
 

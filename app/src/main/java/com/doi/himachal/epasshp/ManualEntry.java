@@ -90,6 +90,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     CustomDialog CD = new CustomDialog();
     Button back, proceed, addmore;
     private ProgressDialog progressDialog;
+    LinearLayout quarentine_layout;
 
     List<StatePojo> states = null;
     List<DistrictPojo> districts = null;
@@ -380,18 +381,18 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                     Global_Quarentine = "Pending";
                     offlineDataEntry.setQuarantine(Global_Quarentine);
                     Log.e("tere",Global_Quarentine);
-                    qplace.setVisibility(View.GONE);
+                    quarentine_layout.setVisibility(View.GONE);
                 }else if(Global_Quarentine.equalsIgnoreCase("Institutional")){
                     Global_Quarentine = "Institutional";
                     Log.e("tere",Global_Quarentine);
                     offlineDataEntry.setQuarantine(Global_Quarentine);
-                    qplace.setVisibility(View.VISIBLE);
+                    quarentine_layout.setVisibility(View.VISIBLE);
 
                 }else{
                     Global_Quarentine = "Home";
                     Log.e("tere",Global_Quarentine);
                     offlineDataEntry.setQuarantine(Global_Quarentine);
-                    qplace.setVisibility(View.GONE);
+                    quarentine_layout.setVisibility(View.GONE);
                 }
 
 
@@ -935,6 +936,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
 
         grampanchayat = findViewById(R.id.gml);
         category_sp = findViewById(R.id.category_sp);
+        quarentine_layout = findViewById(R.id.quarentine_layout);
 
 
     }

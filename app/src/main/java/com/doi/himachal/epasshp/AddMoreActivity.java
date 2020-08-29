@@ -87,6 +87,8 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
     GenericAdapterGP adaptergp = null;
     GenericAdapterCategory adapterCategory = null;
 
+    LinearLayout quarentine_layout;
+
     LinearLayout grampanchayat;
     AddMorePeoplePojo addMorePeople = new AddMorePeoplePojo();
 
@@ -145,18 +147,18 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
                     Global_Quarentine = "Pending";
                     parent_details.setQuarantine(Global_Quarentine);
                     Log.e("tere",Global_Quarentine);
-                    qplace.setVisibility(View.GONE);
+                    quarentine_layout.setVisibility(View.GONE);
                 }else if(Global_Quarentine.equalsIgnoreCase("Institutional")){
                     Global_Quarentine = "Institutional";
                     Log.e("tere",Global_Quarentine);
                     parent_details.setQuarantine(Global_Quarentine);
-                    qplace.setVisibility(View.VISIBLE);
+                    quarentine_layout.setVisibility(View.VISIBLE);
 
                 }else{
                     Global_Quarentine = "Home";
                     Log.e("tere",Global_Quarentine);
                     parent_details.setQuarantine(Global_Quarentine);
-                    qplace.setVisibility(View.GONE);
+                    quarentine_layout.setVisibility(View.GONE);
                 }
 
 
@@ -627,6 +629,7 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
         category_sp = findViewById(R.id.category_sp);
         quarantine = findViewById(R.id.quarantine);
         qplace = findViewById(R.id.qplace);
+        quarentine_layout = findViewById(R.id.quarentine_layout);
 
 
     }

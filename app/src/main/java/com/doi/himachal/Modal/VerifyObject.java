@@ -12,7 +12,24 @@ public class VerifyObject implements Serializable {
     private String pass_id;
     private String id;
     private String remarks;
+    private String quarentine_place;
+    private String quarentine_type;
 
+    public String getQuarentine_place() {
+        return quarentine_place;
+    }
+
+    public void setQuarentine_place(String quarentine_place) {
+        this.quarentine_place = quarentine_place;
+    }
+
+    public String getQuarentine_type() {
+        return quarentine_type;
+    }
+
+    public void setQuarentine_type(String quarentine_type) {
+        this.quarentine_type = quarentine_type;
+    }
 
     public String getPass_id() {
         return pass_id;
@@ -44,6 +61,8 @@ public class VerifyObject implements Serializable {
                 "pass_id='" + pass_id + '\'' +
                 ", id='" + id + '\'' +
                 ", remarks='" + remarks + '\'' +
+                ", quarentine_place='" + quarentine_place + '\'' +
+                ", quarentine_type='" + quarentine_type + '\'' +
                 '}';
     }
 }

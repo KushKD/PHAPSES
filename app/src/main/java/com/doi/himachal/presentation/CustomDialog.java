@@ -125,7 +125,7 @@ public class CustomDialog {
         dialog.show();
 
     }
-
+//TODO KD KD KD
     public void showDialogHTML(final Activity activity, final String msg, final String msgServer
     ,final String passFile, final String CovidFile, final String OtherFile) throws JSONException {
         final Dialog dialog = new Dialog(activity);
@@ -141,11 +141,44 @@ public class CustomDialog {
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
 
+        final String[] quarantineType = {null};
         final WebView webView = dialog.findViewById(R.id.dialog_result);
         final EditText remarks = dialog.findViewById(R.id.remarks);
         final Button pass_id = dialog.findViewById(R.id.pass_id);
         final Button covid_id = dialog.findViewById(R.id.covid_id);
         final Button other_id = dialog.findViewById(R.id.other_id);
+        final Spinner quarantine = (Spinner) dialog.findViewById(R.id.quarantine);
+        final EditText place = (EditText) dialog.findViewById(R.id.place);
+        final LinearLayout placelayout = (LinearLayout) dialog.findViewById(R.id.placelayout);
+
+                quarantine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                 quarantineType[0] = quarantine.getSelectedItem().toString();
+                if(quarantineType[0].equalsIgnoreCase("--Select--")){
+                    quarantineType[0] = "Pending";
+                   // scanData.setQuarentineType(quarantineType[0]);
+                    Log.e("tere",quarantineType[0]);
+                    placelayout.setVisibility(View.GONE);
+                }else if(quarantineType[0].equalsIgnoreCase("Institutional")){
+                    quarantineType[0] = "Institutional";
+                    Log.e("tere",quarantineType[0]);
+                   // scanData.setQuarentineType(quarantineType[0]);
+                    placelayout.setVisibility(View.VISIBLE);
+
+                }else{
+                    quarantineType[0] = "Home";
+                    Log.e("tere",quarantineType[0]);
+                   // scanData.setQuarentineType(quarantineType[0]);
+                    placelayout.setVisibility(View.GONE);                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
 
         if(!passFile.isEmpty()){
            pass_id.setOnClickListener(new View.OnClickListener() {
@@ -314,6 +347,264 @@ public class CustomDialog {
                     } else {
                         objectVerify.setRemarks("");
                     }
+                    if (place.getText() != null || !place.getText().toString().isEmpty()) {
+                        objectVerify.setQuarentine_place(place.getText().toString());
+                    } else {
+                        objectVerify.setQuarentine_place("");
+                    }
+                    objectVerify.setQuarentine_type(quarantineType[0]);
+                    //Create Object
+                    serverMessage = JsonParse.createJson(objectVerify);
+                    Log.e("Server ", serverMessage);
+                } catch (JSONException ex) {
+                    serverMessage = msgServer;
+                }
+
+
+                Intent intent = new Intent("verifyData");
+                intent.setPackage(activity.getPackageName());
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("VERIFY_DATA", serverMessage);
+                intent.putExtras(bundle);
+                activity.sendBroadcast(intent);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+
+    }
+
+
+
+    public void showDialogHTMLOut(final Activity activity, final String msg, final String msgServer
+            ,final String passFile, final String CovidFile, final String OtherFile) throws JSONException {
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_custom_web_out);
+
+        int width = (int) (activity.getResources().getDisplayMetrics().widthPixels);
+        int height = (int) (activity.getResources().getDisplayMetrics().heightPixels);
+        dialog.getWindow().setLayout(width, height);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+
+        final String[] quarantineType = {null};
+        final WebView webView = dialog.findViewById(R.id.dialog_result);
+        final EditText remarks = dialog.findViewById(R.id.remarks);
+        final Button pass_id = dialog.findViewById(R.id.pass_id);
+        final Button covid_id = dialog.findViewById(R.id.covid_id);
+        final Button other_id = dialog.findViewById(R.id.other_id);
+        final Spinner quarantine = (Spinner) dialog.findViewById(R.id.quarantine);
+        final EditText place = (EditText) dialog.findViewById(R.id.place);
+        final LinearLayout placelayout = (LinearLayout) dialog.findViewById(R.id.placelayout);
+
+//        quarantine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+//                quarantineType[0] = quarantine.getSelectedItem().toString();
+//                if(quarantineType[0].equalsIgnoreCase("--Select--")){
+//                    quarantineType[0] = "Pending";
+//                    // scanData.setQuarentineType(quarantineType[0]);
+//                    Log.e("tere",quarantineType[0]);
+//                    placelayout.setVisibility(View.GONE);
+//                }else if(quarantineType[0].equalsIgnoreCase("Institutional")){
+//                    quarantineType[0] = "Institutional";
+//                    Log.e("tere",quarantineType[0]);
+//                    // scanData.setQuarentineType(quarantineType[0]);
+//                    placelayout.setVisibility(View.VISIBLE);
+//
+//                }else{
+//                    quarantineType[0] = "Home";
+//                    Log.e("tere",quarantineType[0]);
+//                    // scanData.setQuarentineType(quarantineType[0]);
+//                    placelayout.setVisibility(View.GONE);                }
+//            }
+
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parentView) {
+//                // your code here
+//            }
+//
+//        });
+
+        if(!passFile.isEmpty()){
+            pass_id.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Download File
+                    String filename= passFile.substring(passFile.lastIndexOf("/")+1);
+                    Log.e("fileName",filename);
+                    String extension = passFile.substring(passFile.lastIndexOf("."));
+                    Log.e("extention",extension);
+                    if(extension.equalsIgnoreCase(".jpg")||extension.equalsIgnoreCase(".png")||extension.equalsIgnoreCase(".jpeg")||
+                            extension.equalsIgnoreCase(".gif")){
+                        showDialogDownloadImageWithName(activity,passFile,filename,"Downloading Attachment 1");
+                    }else if(extension.equalsIgnoreCase(".pdf")){
+                        showDialogDownloadPDFWithoutAsOnDate(activity,passFile,filename);
+                    }else{
+                        showDialog(activity,"File not valid");
+                    }
+                }
+            });
+
+        }else{
+            pass_id.setVisibility(View.GONE);
+        }
+
+        if(!CovidFile.isEmpty()){
+            covid_id.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Download File
+                    String filename= CovidFile.substring(CovidFile.lastIndexOf("/")+1);
+                    Log.e("fileName",filename);
+                    String extension = CovidFile.substring(CovidFile.lastIndexOf("."));
+                    Log.e("extention",extension);
+                    if(extension.equalsIgnoreCase(".jpg")||extension.equalsIgnoreCase(".png")||extension.equalsIgnoreCase(".jpeg")||
+                            extension.equalsIgnoreCase(".gif")){
+                        showDialogDownloadImageWithName(activity,CovidFile,filename,"Downloading Attachment 2");
+                    }else if(extension.equalsIgnoreCase(".pdf")){
+                        showDialogDownloadPDFWithoutAsOnDate(activity,CovidFile,filename);
+                    }else{
+                        showDialog(activity,"File not valid");
+                    }
+                }
+            });
+        }else{
+            covid_id.setVisibility(View.GONE);
+        }
+
+        if(!OtherFile.isEmpty()){
+            other_id.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Download File
+                    String filename= OtherFile.substring(OtherFile.lastIndexOf("/")+1);
+                    Log.e("fileName",filename);
+                    String extension = OtherFile.substring(OtherFile.lastIndexOf("."));
+                    Log.e("extention",extension);
+                    if(extension.equalsIgnoreCase(".jpg")||extension.equalsIgnoreCase(".png")||extension.equalsIgnoreCase(".jpeg")||
+                            extension.equalsIgnoreCase(".gif")){
+                        showDialogDownloadImageWithName(activity,OtherFile,filename,"Downloading Attachment 3");
+                    }else if(extension.equalsIgnoreCase(".pdf")){
+                        showDialogDownloadPDFWithoutAsOnDate(activity,OtherFile,filename);
+                    }else{
+                        showDialog(activity,"File not valid");
+                    }
+                }
+            });
+        }else{
+            other_id.setVisibility(View.GONE);
+        }
+
+        //  webView.setWebChromeClient(new WebChromeClient() );
+        webView.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                Log.d("Log-->> ", "onPageStarted: ");
+            }
+
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                Log.d("Log-->> ", "onPageFinished: ");
+
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                Log.d("Log-->> ", "onReceivedError: ");
+            }
+
+            @Override
+            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                super.onReceivedHttpError(view, request, errorResponse);
+                Log.d("Log-->> ", "onReceivedHttpError: ");
+            }
+        });
+        webView.requestFocus();
+        webView.setVerticalScrollBarEnabled(true);
+
+
+        WebSettings settings = webView.getSettings();
+        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        settings.setDefaultTextEncodingName("utf-8");
+        settings.setAppCacheMaxSize(1024 * 1024 * 128);
+        settings.setJavaScriptEnabled(true);
+
+
+        final String mimeType = "text/html";
+        final String encoding = "UTF-8";
+
+        //msg
+        Log.e("HTML", msg);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            settings.setMixedContentMode(0);
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        } else {
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+
+
+        webView.postInvalidateDelayed(1500);
+
+
+        webView.loadDataWithBaseURL("", msg, mimeType, encoding, "");
+
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                webView.loadDataWithBaseURL("", msg, mimeType, encoding, "");
+//            }
+//        }, 2000) ;
+//
+//        webView.reload();
+
+        Button dialog_ok = (Button) dialog.findViewById(R.id.dialog_ok);
+        Button dialog_verified = (Button) dialog.findViewById(R.id.dialog_verified);
+
+        dialog_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // activity.finish();
+                dialog.dismiss();
+            }
+        });
+
+        dialog_verified.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                //TODO
+                Log.e("Message", msgServer);
+                //{"pass_id":51827,"id":587}
+                String serverMessage = null;
+                try {
+                    VerifyObject objectVerify = JsonParse.createVerifyMessage(msgServer);
+                    if (remarks.getText().toString() != null || !remarks.getText().toString().isEmpty()) {
+                        objectVerify.setRemarks(remarks.getText().toString().trim());
+                    } else {
+                        objectVerify.setRemarks("");
+                    }
+//                    if (place.getText() != null || !place.getText().toString().isEmpty()) {
+//                        objectVerify.setQuarentine_place(place.getText().toString());
+//                    } else {
+//                        objectVerify.setQuarentine_place("");
+//                    }
+                    objectVerify.setQuarentine_type("");
+                    objectVerify.setQuarentine_place("");
                     //Create Object
                     serverMessage = JsonParse.createJson(objectVerify);
                     Log.e("Server ", serverMessage);
@@ -380,7 +671,7 @@ public class CustomDialog {
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.dialog_pojo_custom);
 
-        final String[] quarantineType = {null};
+
 
 
         int width = (int) (activity.getResources().getDisplayMetrics().widthPixels );
@@ -397,42 +688,13 @@ public class CustomDialog {
         TextView barrier = (TextView) dialog.findViewById(R.id.barrier);
         TextView datescan = (TextView) dialog.findViewById(R.id.datescan);
         TextView timescan = (TextView) dialog.findViewById(R.id.timescan);
-        final Spinner quarantine = (Spinner) dialog.findViewById(R.id.quarantine);
-        final EditText place = (EditText) dialog.findViewById(R.id.place);
-        final LinearLayout placelayout = (LinearLayout) dialog.findViewById(R.id.placelayout);
+
         final EditText number_of_passengers = (EditText) dialog.findViewById(R.id.number_of_passengers);
 
 
 
 
-        quarantine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                 quarantineType[0] = quarantine.getSelectedItem().toString();
-                if(quarantineType[0].equalsIgnoreCase("--Select--")){
-                    quarantineType[0] = "Pending";
-                    scanData.setQuarentineType(quarantineType[0]);
-                    Log.e("tere",quarantineType[0]);
-                    placelayout.setVisibility(View.GONE);
-                }else if(quarantineType[0].equalsIgnoreCase("Institutional")){
-                    quarantineType[0] = "Institutional";
-                    Log.e("tere",quarantineType[0]);
-                    scanData.setQuarentineType(quarantineType[0]);
-                    placelayout.setVisibility(View.VISIBLE);
 
-                }else{
-                    quarantineType[0] = "Home";
-                    Log.e("tere",quarantineType[0]);
-                    scanData.setQuarentineType(quarantineType[0]);
-                    placelayout.setVisibility(View.GONE);                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-
-        });
 
         passnumber.setText(scanData.getPassNo());
         vehiclenumber.setText("-");
@@ -476,13 +738,6 @@ public class CustomDialog {
         proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(place.getText() != null || !place.getText().toString().isEmpty()){
-                    scanData.setQuarentinePlace(place.getText().toString());
-                }else{
-                    scanData.setQuarentinePlace("");
-                }
-
 
                 if (!number_of_passengers.getText().toString().isEmpty() && number_of_passengers.getText().toString() != null) {
 

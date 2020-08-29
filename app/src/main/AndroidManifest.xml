@@ -28,7 +28,7 @@
         <activity android:name=".AddMoreActivity"
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop"
-
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden"></activity>
         <activity

@@ -120,6 +120,8 @@ public class JsonParse {
         object.put("id",data.getId());
         object.put("pass_id",data.getPass_id());
         object.put("remarks",data.getRemarks());
+        object.put("quarantinePlace",data.getQuarentine_place());
+        object.put("quarantineType",data.getQuarentine_type());
 
 
 

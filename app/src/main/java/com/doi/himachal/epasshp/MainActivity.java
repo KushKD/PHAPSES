@@ -562,7 +562,7 @@ public class MainActivity extends LocationBaseActivity implements SamplePresente
                     if (response.getStatus().equalsIgnoreCase("200")) {
                         Log.e("verify", response.toString());
                         //TODO
-                        CD.showDialogHTML(MainActivity.this, response.getResponse(), response.getMessage(),
+                        CD.showDialogHTMLOut(MainActivity.this, response.getResponse(), response.getMessage(),
                                 response.getPass_file(), response.getCovid_test_file(), response.getOther_file());
                     } else {
                         CD.showDialog(MainActivity.this, response.getMessage());
