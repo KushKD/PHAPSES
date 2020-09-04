@@ -144,7 +144,7 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Global_Quarentine = quarantine.getSelectedItem().toString();
                 if(Global_Quarentine.equalsIgnoreCase("--Select--")){
-                    Global_Quarentine = "Pending";
+                    Global_Quarentine = "";
                     parent_details.setQuarantine(Global_Quarentine);
                     Log.e("tere",Global_Quarentine);
                     quarentine_layout.setVisibility(View.GONE);
@@ -516,7 +516,7 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
 
 
                                 UploadObjectManual object = new UploadObjectManual();
-                                object.setUrl("http://covid19epass.hp.gov.in/api/v1/saveofflinebarrierdatav1");
+                                object.setUrl(Econstants.URL_HTTPS+"saveofflinebarrierdatav1");
                                 object.setTasktype(TaskType.MANUAL_FORM_UPLOAD);
                                 object.setMethordName("saveofflinebarrierdata");
                                 object.setOfflineDataEntry(parent_details);

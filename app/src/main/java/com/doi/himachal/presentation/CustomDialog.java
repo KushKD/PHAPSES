@@ -156,7 +156,7 @@ public class CustomDialog {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                  quarantineType[0] = quarantine.getSelectedItem().toString();
                 if(quarantineType[0].equalsIgnoreCase("--Select--")){
-                    quarantineType[0] = "Pending";
+                    quarantineType[0] = "";
                    // scanData.setQuarentineType(quarantineType[0]);
                     Log.e("tere",quarantineType[0]);
                     placelayout.setVisibility(View.GONE);

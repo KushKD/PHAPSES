@@ -378,7 +378,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                Global_Quarentine = quarantine.getSelectedItem().toString();
                 if(Global_Quarentine.equalsIgnoreCase("--Select--")){
-                    Global_Quarentine = "Pending";
+                    Global_Quarentine = "";
                     offlineDataEntry.setQuarantine(Global_Quarentine);
                     Log.e("tere",Global_Quarentine);
                     quarentine_layout.setVisibility(View.GONE);
