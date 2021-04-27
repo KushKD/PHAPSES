@@ -446,6 +446,8 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                     red_zone.setBackgroundColor(Color.parseColor("#800000"));
                     red_zone.setTextColor(Color.WHITE);
                     red_zone.setText("Red Zone Area");
+                }else{
+                    red_zone.setVisibility(View.GONE);
                 }
 
                 Global_fromstatePosition = position;

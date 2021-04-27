@@ -922,7 +922,7 @@
                                 android:layout_weight="1"
                                 android:gravity="left|center_vertical|center_horizontal"
                                 android:padding="5dp"
-                                android:text="Attached Documents for Quarantine Exempted Category"
+                                android:text="Document detail for Quarantine Exempted category"
                                 android:textColor="@color/darkblue" />
 
                             <EditText

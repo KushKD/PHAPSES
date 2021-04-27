@@ -209,6 +209,8 @@ public class AddMoreActivity extends AppCompatActivity implements AsyncTaskListe
                     red_zone.setTextColor(Color.WHITE);
                     red_zone.setText("Red Zone Area");
 
+                }else{
+                    red_zone.setVisibility(View.GONE);
                 }
 
                 fromdistricts = DB.getDistrictsViaState(item.getState_id());
