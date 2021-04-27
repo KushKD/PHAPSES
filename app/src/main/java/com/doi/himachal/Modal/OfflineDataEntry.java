@@ -23,6 +23,7 @@ public class OfflineDataEntry implements Serializable {
     private String block_to;
     private String gram_panchayat;
     private  String CategoryId;
+    private String SubCategoryId;
     private String place_to;
     private String pass_no;
     private String pass_issue_authority;
@@ -49,9 +50,27 @@ public class OfflineDataEntry implements Serializable {
     private int position_to_panchayat;
     private int position_to_tehsil;
     private int position_to_category;
+    private int position_to_subcategory;
+
 
     private String quarantine;
     private String quarantinePlace;
+
+    public String getSubCategoryId() {
+        return SubCategoryId;
+    }
+
+    public void setSubCategoryId(String subCategoryId) {
+        SubCategoryId = subCategoryId;
+    }
+
+    public int getPosition_to_subcategory() {
+        return position_to_subcategory;
+    }
+
+    public void setPosition_to_subcategory(int position_to_subcategory) {
+        this.position_to_subcategory = position_to_subcategory;
+    }
 
     public String getQuarantine() {
         return quarantine;
@@ -392,6 +411,7 @@ public class OfflineDataEntry implements Serializable {
                 ", block_to='" + block_to + '\'' +
                 ", gram_panchayat='" + gram_panchayat + '\'' +
                 ", CategoryId='" + CategoryId + '\'' +
+                ", SubCategoryId='" + SubCategoryId + '\'' +
                 ", place_to='" + place_to + '\'' +
                 ", pass_no='" + pass_no + '\'' +
                 ", pass_issue_authority='" + pass_issue_authority + '\'' +
@@ -416,6 +436,7 @@ public class OfflineDataEntry implements Serializable {
                 ", position_to_panchayat=" + position_to_panchayat +
                 ", position_to_tehsil=" + position_to_tehsil +
                 ", position_to_category=" + position_to_category +
+                ", position_to_subcategory=" + position_to_subcategory +
                 ", quarantine='" + quarantine + '\'' +
                 ", quarantinePlace='" + quarantinePlace + '\'' +
                 ", otherPersons=" + otherPersons +

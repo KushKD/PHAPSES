@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
@@ -28,6 +29,7 @@ import com.doi.himachal.Adapter.GenericAdapterBlocks;
 import com.doi.himachal.Adapter.GenericAdapterCategory;
 import com.doi.himachal.Adapter.GenericAdapterGP;
 import com.doi.himachal.Adapter.GenericAdapterStates;
+import com.doi.himachal.Adapter.GenericAdapterSubCategory;
 import com.doi.himachal.Adapter.GenericAdapterTehsil;
 import com.doi.himachal.Modal.AddMorePeoplePojo;
 import com.doi.himachal.Modal.BlockPojo;
@@ -40,6 +42,7 @@ import com.doi.himachal.Modal.OfflineDataEntry;
 import com.doi.himachal.Modal.ResponsePojo;
 import com.doi.himachal.Modal.ResponsePojoGet;
 import com.doi.himachal.Modal.StatePojo;
+import com.doi.himachal.Modal.SubCategoryPojo;
 import com.doi.himachal.Modal.SuccessResponse;
 import com.doi.himachal.Modal.TehsilPojo;
 import com.doi.himachal.Modal.UploadObject;
@@ -81,10 +84,10 @@ import java.util.Set;
 
 public class ManualEntry extends LocationBaseActivity implements SamplePresenter.SampleView, AsyncTaskListenerObjectForm, AsyncTaskListenerObjectGet, AsyncTaskListenerObjectPost {
 
-    TextView date, time, totalpersons, passenger;
+    TextView date, time, totalpersons, passenger, red_zone;
     EditText names, numberpersons, vehiclenumber, mobilenumber, address, fromplace, placenameto, passno, authority, purpose, qplace ,remarks;
     //SearchableSpinner
-    SearchableSpinner fromdistrict, district, tehsil, block, gp, appdownloaded, category_sp,quarantine;
+    SearchableSpinner fromdistrict, district, tehsil, block, gp, appdownloaded, category_sp, subcategory_sp ,quarantine;
     SearchableSpinner fromstate;
     DatabaseHandler DB = new DatabaseHandler(ManualEntry.this);
     CustomDialog CD = new CustomDialog();
@@ -93,6 +96,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     LinearLayout quarentine_layout;
 
     List<StatePojo> states = null;
+    List<SubCategoryPojo> subCategories  = null;
     List<DistrictPojo> districts = null;
     List<DistrictPojo> fromdistricts = null;
     List<BlockPojo> blocks = null;
@@ -102,6 +106,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     List<CategoryPojo> categories = null;
 
     GenericAdapterStates adapter_states = null;
+    GenericAdapterSubCategory adapterSubCategory = null;
     GenericAdapter adapter, fromAdapter = null;
     GenericAdapterTehsil adapter_tehsil = null;
     GenericAdapterBlocks adapterBlocks = null;
@@ -111,9 +116,9 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     LinearLayout grampanchayat;
     OfflineDataEntry offlineDataEntry = new OfflineDataEntry();
 
-    String Global_fromstate, Global_Category, Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat, Global_toBlockName,Global_Quarentine, Global_QuarentinePlace;
+    String Global_fromstate, Global_Category, Global_subCategory ,  Global_fromdistrict, Global_todistrict, Global_totehsil, Global_toblock, Global_togramPanchayat, Global_toBlockName,Global_Quarentine, Global_QuarentinePlace;
     int Global_fromstatePosition, Global_fromdistrictPosition, Global_todistrictPosition, Global_totehsilPosition,
-            Global_toblockPosition, Global_togramPanchayatPosition, Global_categoryPosition;
+            Global_toblockPosition, Global_togramPanchayatPosition, Global_categoryPosition , Global_subCategoryPosition;
 
     private SamplePresenter samplePresenter;
     public String userLocation = null;
@@ -235,6 +240,9 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
 
                     offlineDataEntry.setPosition_to_category(Global_categoryPosition);
                     offlineDataEntry.setCategoryId(Global_Category);
+
+                    offlineDataEntry.setPosition_to_subcategory(Global_subCategoryPosition);
+                    offlineDataEntry.setSubCategoryId(Global_subCategory);
 
 
                     offlineDataEntry.setTimeStamp(CommonUtils.getCurrentDate());
@@ -414,6 +422,32 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
 
                 //  Global_district_id = item.getDistrict_id();
                 Log.e("Stateid", item.getState_id());
+
+
+                /**
+                 *   7 == Gujarat
+                 *   12 == Karnataka
+                 *   15 == Maharashtra
+                 *   21 == Punjab
+                 *   22 == Rajasthan
+                 *   27 == Uttar Pradesh
+                 *   34 == Delhi
+                 */
+
+                if(item.getState_name().equalsIgnoreCase("Gujarat") ||
+                        item.getState_name().equalsIgnoreCase("Karnataka") ||
+                        item.getState_name().equalsIgnoreCase("Maharashtra") ||
+                        item.getState_name().equalsIgnoreCase("Punjab") ||
+                        item.getState_name().equalsIgnoreCase("Rajasthan") ||
+                        item.getState_name().equalsIgnoreCase("Uttar Pradesh") ||
+                        item.getState_name().equalsIgnoreCase("Delhi") ){
+
+                    red_zone.setVisibility(View.VISIBLE);
+                    red_zone.setBackgroundColor(Color.parseColor("#800000"));
+                    red_zone.setTextColor(Color.WHITE);
+                    red_zone.setText("Red Zone Area");
+                }
+
                 Global_fromstatePosition = position;
                 Global_fromstate = item.getState_id();
 
@@ -453,6 +487,46 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 Log.e("category ID", item.getCategory_id());
                 Global_categoryPosition = position;
                 Global_Category = item.getCategory_id();
+
+                //Get Sub Category
+                if (AppStatus.getInstance(ManualEntry.this).isOnline()) {
+                    UploadObject object = new UploadObject();
+                    object.setUrl(Econstants.URL_HTTPS);
+                    object.setTasktype(TaskType.GET_SUBCATEGORY);
+                    object.setMethordName("getsubpasscategory");
+                    object.setParam("pass_category_id=");
+                    object.setParam2(Integer.parseInt(Global_Category));
+                    new Generic_Async_Post(
+                            ManualEntry.this,
+                            ManualEntry.this,
+                            TaskType.GET_SUBCATEGORY).
+                            execute(object);
+                } else {
+                    CD.showDialog(ManualEntry.this, "Please connect to Internet and try again.");
+                }
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        subcategory_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                SubCategoryPojo item = adapterSubCategory.getItem(position);
+
+
+                //  Global_district_id = item.getDistrict_id();
+                Log.e("Sub category ID", item.getId());
+                Global_subCategoryPosition = position;
+                Global_subCategory = item.getId();
+
+
 
 
             }
@@ -640,6 +714,8 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                 Log.e("Gram Panchayat Id-===", item.getGp_id());
                 Global_togramPanchayat = item.getGp_id();
                 Global_togramPanchayatPosition = position;
+                Log.e("GP ",Global_togramPanchayat);
+
 
 
             }
@@ -703,6 +779,9 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
 
                 offlineDataEntry.setPosition_to_category(Global_categoryPosition);
                 offlineDataEntry.setCategoryId(Global_Category);
+
+                offlineDataEntry.setPosition_to_subcategory(Global_subCategoryPosition);
+                offlineDataEntry.setSubCategoryId(Global_subCategory);
 
                 offlineDataEntry.setTimeStamp(CommonUtils.getCurrentDate());
                 offlineDataEntry.setAaroyga_app_download(appdownloaded.getSelectedItem().toString());
@@ -936,7 +1015,10 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
 
         grampanchayat = findViewById(R.id.gml);
         category_sp = findViewById(R.id.category_sp);
+        subcategory_sp = findViewById(R.id.subcategory_sp);
         quarentine_layout = findViewById(R.id.quarentine_layout);
+
+        red_zone  = findViewById(R.id.red_zone);
 
 
     }
@@ -1041,7 +1123,9 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
     public void onTaskCompleted(ResponsePojo result, TaskType taskType) throws JSONException {
 
         if (taskType == TaskType.MANUAL_FORM_UPLOAD) {
-            // CD.showDialog(ManualEntry.this,result.getResponse());
+            // CD.showDialog(ManualEntry.this,result.getResponse());\
+            System.out.println(result);
+            Log.e("Response......", result.toString());
             SuccessResponse response = JsonParse.getSuccessResponse(result.getResponse());
             if (response.getStatus().equalsIgnoreCase("200")) {
                 CD.showDialogCloseActivity(ManualEntry.this, "Data Saved Successfully. " + response.getMessage());
@@ -1168,7 +1252,51 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                     fromstate.setAdapter(adapter_states);
                 }
             }
-        } else if (taskType == TaskType.GET_DISTRICT_VIA_STATE) {
+        } else if (taskType == TaskType.GET_SUBCATEGORY) {
+
+
+            if (result.getResponse().isEmpty()) {
+                CD.showDialog(ManualEntry.this, "Please Connect to Internet and try again.");
+            } else {
+
+                MastersPojoServer response = JsonParse.MasterPojo(result.getResponse());
+                Log.e("Status", response.getStatus());
+                if (Integer.parseInt(response.getStatus()) == 200) {
+                    JSONArray jsonArray = new JSONArray(response.getRecords());
+                    Log.e("Status", jsonArray.toString());
+                    if (jsonArray.length() != 0) {
+                        subCategories = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            SubCategoryPojo pojo = new SubCategoryPojo();
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            pojo.setId(object.optString("id"));
+                            pojo.setName(object.optString("name"));
+                            subCategories.add(pojo);
+                        }
+
+                        SubCategoryPojo subCategoryPojo = new SubCategoryPojo();
+                        subCategoryPojo.setId("-1");
+                        subCategoryPojo.setName("-- Select --");
+                        subCategories.add(0, subCategoryPojo);
+
+                        if (!subCategories.isEmpty()) {
+                            adapterSubCategory = new GenericAdapterSubCategory(ManualEntry.this, android.R.layout.simple_spinner_item, subCategories);
+                            subcategory_sp.setAdapter(adapterSubCategory);
+
+                        } else {
+
+                            CD.showDialog(ManualEntry.this, "Sub Categories Not Found. Something bad happened.");
+                            adapterSubCategory = null;
+                            subcategory_sp.setAdapter(adapterSubCategory);
+                        }
+                    }
+                } else {
+                    CD.showDialog(ManualEntry.this, "Sub Categories  Not Found. Something bad happened.");
+                    adapterSubCategory = null;
+                    subcategory_sp.setAdapter(adapterSubCategory);
+                }
+            }
+        }else if (taskType == TaskType.GET_DISTRICT_VIA_STATE) {
             if (result.getResponse().isEmpty()) {
                 CD.showDialog(ManualEntry.this, "Please Connect to Internet and try again.");
             } else {
@@ -1377,7 +1505,7 @@ public class ManualEntry extends LocationBaseActivity implements SamplePresenter
                             GramPanchayatPojo pojo = new GramPanchayatPojo();
                             JSONObject object = jsonArray.getJSONObject(i);
                             pojo.setGp_name(object.optString("name"));
-                            pojo.setGp_id(object.optString("id"));
+                            pojo.setGp_id(object.optString("panchyat_code"));
 
                             grampanchayats.add(pojo);
                         }

@@ -248,6 +248,6 @@ public class Econstants {
   //  public static final String URL_HTTPS = "https://covid19epass.hp.gov.in/api/v1/";
     public static final String URL_HTTPS = "http://covid19epass.hp.gov.in/api/v1/";
 
-    //getcategory
+    //getcategory  getstates
 
 }

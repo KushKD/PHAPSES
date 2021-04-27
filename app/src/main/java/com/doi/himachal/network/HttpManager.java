@@ -517,6 +517,7 @@ public class HttpManager {
                 userJson.put("remarks", data.getOfflineDataEntry().getRemarks());
 
                 userJson.put("pass_category", Integer.parseInt(data.getOfflineDataEntry().getCategoryId()));
+                userJson.put("pass_sub_category", Integer.parseInt(data.getOfflineDataEntry().getSubCategoryId()));
                 //New Code
                 userJson.put("quarantineType", data.getOfflineDataEntry().getQuarantine());
                 userJson.put("quarantinePlace", data.getOfflineDataEntry().getQuarantinePlace());

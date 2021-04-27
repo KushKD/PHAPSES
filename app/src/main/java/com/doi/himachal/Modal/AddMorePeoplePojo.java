@@ -31,6 +31,15 @@ public class AddMorePeoplePojo implements Serializable {
     private String app_downloaded;
 
     private String category;
+    private String subCategory;
+
+    public String getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(String subCategory) {
+        this.subCategory = subCategory;
+    }
 
     public String getCategory() {
         return category;
@@ -177,7 +186,6 @@ public class AddMorePeoplePojo implements Serializable {
     }
 
 
-
     @Override
     public String toString() {
         return "AddMorePeoplePojo{" +
@@ -199,6 +207,7 @@ public class AddMorePeoplePojo implements Serializable {
                 ", remarks='" + remarks + '\'' +
                 ", app_downloaded='" + app_downloaded + '\'' +
                 ", category='" + category + '\'' +
+                ", subCategory='" + subCategory + '\'' +
                 '}';
     }
 }
